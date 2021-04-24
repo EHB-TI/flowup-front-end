@@ -73,5 +73,22 @@
     </div>
 </template>
 <script>
-
+export default {
+    data() {
+        return {
+            event: {}
+        }
+    },
+    methods: {
+        addEvent() {
+            this.axios
+                .post('http://127.0.0.1:8000/api/events', this.event)
+                .then(response => (
+                    this.$router.push({ name: 'home' })
+                ))
+                .catch(err => console.log(err))
+                .finally( () => this.loading = false)
+        }
+    }
+}
 </script>
