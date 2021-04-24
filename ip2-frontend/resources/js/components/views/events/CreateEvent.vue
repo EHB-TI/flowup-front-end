@@ -1,10 +1,10 @@
 <template>
     <div>
-        <b-container>
+        <div>
             <h1>Create an event</h1>
-        </b-container>
+        </div>
 
-        <b-container>
+        <div>
             <b-form @submit.prevent="addEvent">
                 <b-form-group
                     id="input-group-1"
@@ -69,7 +69,7 @@
 
                 <b-button type="submit" variant="primary">Submit</b-button>
             </b-form>
-        </b-container>
+        </div>
     </div>
 </template>
 <script>
