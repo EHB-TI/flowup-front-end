@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\user;
+use App\Models\event;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserFactory extends Factory
+class EventFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = user::class;
+    protected $model = event::class;
 
     /**
      * Define the model's default state.
