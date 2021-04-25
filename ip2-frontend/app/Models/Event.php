@@ -9,6 +9,10 @@ class Event extends Model
 {
     use HasFactory;
 
+    protected $table = 'events';
+
+    public $primaryKey = 'id';
+
     protected $fillable = [
         'name',
         'description',
