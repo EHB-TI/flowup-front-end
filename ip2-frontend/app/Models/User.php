@@ -9,9 +9,17 @@ class user extends Model
 {
     use HasFactory;
 
-    protected $table = 'events';
+    protected $table = 'users';
 
     public $primaryKey = 'id';
 
-    public $timestamps = true;
+    protected $fillable = [
+        'firstName',
+        'lastName',
+        'email',
+        'birthDate',
+        'role',
+        'study'
+    ];
+
 }
