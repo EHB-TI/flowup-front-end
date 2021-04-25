@@ -19,6 +19,31 @@
         </b-form>
     </div>
 </template>
+<script>
+    export default {
+        data() {
+            return {
+                event: {}
+            }
+        },
+        created() {
+            this.axios
+                .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+                .then((res) => {
+                    this.event = res.data;
+                });
+        },
+        methods: {
+            editEvent() {
+                this.axios
+                    .patch(`http://localhost:8000/api/events/${this.$route.params.id}`, this.event)
+                    .then((res) => {
+                        this.$router.push({ name: 'home' });
+                    });
+            }
+        }
+    }
+</script>
 <style scoped>
 
 </style>
