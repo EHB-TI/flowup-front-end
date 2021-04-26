@@ -128,7 +128,7 @@ h1{
 }
 
 .date {
-    border-radius: 10px;
+    border-radius: 10px;    
     border: 1px solid black;
     z-index: 3;
     width: 50px;
