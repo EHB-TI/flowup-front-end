@@ -29,10 +29,9 @@
 </head>
 <body>
     <div id="app">
-  
         <sidebar></sidebar>
       
-        <div style="margin-left:100px; margin-right: 25px;">
+        <div style="margin-left: 100px;">
             @yield('content')
         </div>
     </div>

@@ -1,17 +1,19 @@
 <template>
     <div>
-        <div class="relative">
-            <h1 class="absolute left-0 top-0">Browse</h1>
+        <div>
+            <h1>Browse</h1>
         </div>  
 
-        <br><br><br> 
 
-
-        <div class="relative">
+        <div>
             <events></events>
         </div>
     </div>
 </template>
+<script>
+
+</script>
+
 <style scoped>
 
 </style>

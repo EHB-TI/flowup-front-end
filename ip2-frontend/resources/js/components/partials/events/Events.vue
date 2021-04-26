@@ -1,19 +1,19 @@
 <template>
         <div>
             <div class="event" v-for="event in events" :key="event.id">
-                <b-card class="event-card">
-                    <div class="card-heading absolute top-3 left-3">
-                        <h3> {{ event.name }} </h3>
-                        <p class="description"> {{ event.description }} </p>
-                    </div>
+                <router-link :to="{name: 'event', params: { id: event.id}}">
+                    <b-card class="event-card">
+                        <div class="card-heading absolute top-3 left-3">
+                            <h3 class="title"> {{ event.name }} </h3>
+                            <p class="description"> {{ event.description }} </p>
+                        </div>
 
-                    <div class="absolute top-3 right-3 date">
-                        <span class="date-day">{{ getDay(event.startsAt) }}</span>
-                        <span class="date-month">{{ getMonth(event.startsAt) }}</span>
-                    </div>
-
-                    <router-link class="absolute bottom-3 left-3" :to="{name: 'event', params: { id: event.id}}">More details...</router-link>
-                </b-card>
+                        <div class="absolute top-3 right-3 date">
+                            <span class="date-day">{{ getDay(event.startsAt) }}</span>
+                            <span class="date-month">{{ getMonth(event.startsAt) }}</span>
+                        </div>
+                    </b-card>
+                </router-link>
             </div>
         </div>
 </template>
@@ -21,11 +21,11 @@
 export default {
     data() { 
         return {
-            events: []
+            events: {}
         }
     },
     created() {
-        this.axios
+            this.axios
             .get('http://127.0.0.1:8000/api/events')
             .then(response => {
                 this.events = response.data;
@@ -93,6 +93,12 @@ export default {
     margin-right: 10px;
     margin-top: 10px;
     padding: 5px;
+    color: black;
+    border-radius: 8%;
+}
+
+.event-card:hover {
+    background-color: rgb(241, 240, 240);
 }
 
 .date {
@@ -123,6 +129,10 @@ export default {
 
 .description {
     height: 100px;
+    width: 250px;
+}
+
+.title {
     width: 250px;
 }
 </style>
