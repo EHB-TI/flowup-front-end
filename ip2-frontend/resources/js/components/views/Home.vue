@@ -2,8 +2,6 @@
     <div>
         <div class="relative">
             <h1 class="absolute left-0 top-0">Browse</h1>
-       
-            <searchbar class="absolute top-0 right-0"></searchbar>
         </div>  
 
         <br><br><br> 

@@ -15,7 +15,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 //Components global registration
 Vue.component('sidebar', require('./components/partials/SideBar.vue').default);
-Vue.component('event', require('./components/partials/events/Event.vue').default);
 Vue.component('events', require('./components/partials/events/Events.vue').default);
 Vue.component('searchbar', require('./components/partials/SearchBar.vue').default);
 

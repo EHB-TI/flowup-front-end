@@ -15,7 +15,7 @@
                     id="input-name"
                     v-model="event.name"
                     type="text"
-                    placeholder="Enter name..."
+                    placeholder="Enter name (max. 30 characters)"
                     required>
                     </b-form-input>
                 </b-form-group>
@@ -29,7 +29,7 @@
                     id="input-description"
                     v-model="event.description"
                     type="text"
-                    placeholder="Enter description..."
+                    placeholder="Enter description (max. 50 characters)"
                     rows="3"
                     max-rows="6"
                     required>
