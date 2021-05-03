@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\user;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
 
 class UserFactory extends Factory
 {
@@ -22,7 +24,13 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'uuid' => Str::random(10),
+            'firstName' => $this->faker->firstName,
+            'lastName' => $this->faker->lastName,
+            'email' => $this->faker->unique()->safeEmail,
+            'birthDate' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
+            'role' => 'student',
+            'study' => 'TI'
         ];
     }
 }
