@@ -7,16 +7,30 @@ use Illuminate\Http\Request;
 
 class StatusController extends Controller
 {
-    public function GetMssg(){
-        error_log("got here");
-        $RamUsage = memory_get_usage();
-        $CPUload = array_sum(sys_getloadavg())/count(sys_getloadavg());
-        $now =  new DateTime("now");
-        $XSDate = $now->format(\DateTime::RFC3339);
-        $error = null;
-        error_log("got here 2");
-        //#region XSD
-        $xsd = '<?xml version="1.0" encoding="utf-8"?>
+  public function GetMssg()
+  {
+    error_log("got here");
+    $fh = fopen('/proc/meminfo', 'r');
+    $mem = 0;
+    while ($line = fgets($fh)) {
+      $pieces = array();
+      if (preg_match('/^MemTotal:\s+(\d+)\skB$/', $line, $pieces)) {
+        $mem = $pieces[1];
+        break;
+      }
+    }
+    fclose($fh);
+    error_log($mem);
+    error_log(memory_get_usage());
+    $RamUsage = 100/$mem*memory_get_usage();
+    
+    $CPUload = array_sum(sys_getloadavg()) / count(sys_getloadavg());
+    $now =  new DateTime("now");
+    $XSDate = $now->format(\DateTime::RFC3339);
+    $error = null;
+    error_log("got here 2");
+    //#region XSD
+    $xsd = '<?xml version="1.0" encoding="utf-8"?>
     
         <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
           <xs:element name="heartbeat">
@@ -62,10 +76,10 @@ class StatusController extends Controller
             </xs:complexType>
           </xs:element>
         </xs:schema>';
-        //#endregion
-    
-        //#region XML string
-        $msg = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+    //#endregion
+
+    //#region XML string
+    $msg = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
     
         <heartbeat>
             <header>
@@ -79,17 +93,17 @@ class StatusController extends Controller
               <RAMload>$RamUsage</RAMload>
             </body>
         </heartbeat>";
-        //#endregion
-        
-        $xml = new \DOMDocument();
-        $xml->loadXML($msg);
-        if(! $xml->schemaValidateSource($xsd)){
-            $error = libxml_get_last_error();
-        }
-        error_log($msg);
-        return response()->json([
-            'msg' => $msg,
-            'error' => $error,
-        ]);
+    //#endregion
+
+    $xml = new \DOMDocument();
+    $xml->loadXML($msg);
+    if (!$xml->schemaValidateSource($xsd)) {
+      $error = libxml_get_last_error();
     }
+    error_log($msg);
+    return response()->json([
+      'msg' => $msg,
+      'error' => $error,
+    ]);
+  }
 }
