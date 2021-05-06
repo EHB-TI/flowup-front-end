@@ -1,16 +1,20 @@
 <template>
         <div>
-            <div class="event" v-for="event in events" :key="event.id">
+            <div class="event static" v-for="event in events" :key="event.id">
                 <router-link :to="{name: 'event', params: { id: event.id}}">
-                    <b-card class="event-card">
+                    <b-card class="event-card ">
                         <div class="card-heading absolute top-3 left-3">
                             <h3 class="title"> {{ event.name }} </h3>
-                            <p class="description"> {{ event.description }} </p>
                         </div>
+                        
 
-                        <div class="absolute top-3 right-3 date">
-                            <span class="date-day">{{ getDay(event.startsAt) }}</span>
-                            <span class="date-month">{{ getMonth(event.startsAt) }}</span>
+                        <div class="absolute date">
+                            <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
+                                <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAtDate) }}</span>
+                            </div>
+                            <div class="bottom-date absolute inset-x-0 bottom-0 top-12 left-6 right-5 h-8">
+                                <span class="text-black font-bold text-l ">{{ getMonth(event.startsAtDate) }}</span>
+                            </div>
                         </div>
                     </b-card>
                 </router-link>
@@ -88,8 +92,8 @@ export default {
 }
 
 .event-card {
-    width: 350px;
-    height: 200px;
+    width: 360px;
+    height: 150px;
     margin-right: 10px;
     margin-top: 10px;
     padding: 5px;
@@ -102,6 +106,24 @@ export default {
 }
 
 .date {
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    top: -15px;
+    right: 10px;
+    border: solid black 1px;
+}
+
+.top-date {
+    border-radius: 15px 15px 0 0;
+}
+
+.bottom-date {
+    border-radius: 0 0 15px 15px;
+}
+
+
+/* .date {
     display: flex;
     flex-direction: column;
     background-color: #ffdada;
@@ -125,7 +147,7 @@ export default {
     line-height: 1;
     font-size: 1rem;
     text-transform: uppercase;
-}
+} */
 
 .description {
     height: 100px;

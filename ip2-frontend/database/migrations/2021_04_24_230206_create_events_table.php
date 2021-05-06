@@ -17,10 +17,12 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('name', 30);
-            $table->string('description', 64);
+            $table->string('description');
             $table->string('location');
-            $table->dateTime('startsAt');
-            $table->dateTime('endsAt');
+            $table->date('startsAtDate');
+            $table->time('startsAtTime');
+            $table->date('endsAtDate');
+            $table->time('endsAtTime');
             $table->timestamps();
         });
     }

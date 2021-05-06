@@ -1,6 +1,124 @@
 <template>
     <div>
-        <b-row>
+         <a-layout>
+            <a-layout-header style="background:white; height:175px; padding: 10px;">
+                
+                <div class="">
+                    <h1> {{ event.name }} </h1>
+                </div>
+                <div style="float:left;">
+                    <b-card class="date">
+                        <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAtDate) }}</span>
+                        </div>
+                        <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
+                            <span class="text-black font-bold text-l ">{{ getMonth(event.startsAtDate) }}</span>
+                        </div> 
+                    </b-card>
+                </div>
+                <div style="float:left; padding:10px;">
+                    <h1> {{ event.startsAtTime }} - {{ event.endsAtTime }}</h1>
+                </div>
+            </a-layout-header>
+
+            <a-layout>
+                <a-layout-content style="background: white; padding:10px; height:725px;">
+                    <div class="">
+                        <h2>About</h2>
+                        <p v-html="event.description"></p>
+                    </div>
+                </a-layout-content>
+
+                <a-layout-sider style="background:white; padding:10px; height:725px;">
+                    <div>
+                        <h2>Attendees</h2>
+                        <ul style="overflow:hidden; overflow-y:scroll; height:650px;">
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                            <li>
+                                <a-avatar shape="circle" size="large" icon="user" />
+                                <span>Mark Zuckerberg</span>
+                            </li>
+                            <br>
+                        </ul>
+                    </div>
+                </a-layout-sider>
+            </a-layout>
+        </a-layout>
+
+
+
+
+
+
+
+
+
+
+        <!-- <b-row>
             <b-col class="" cols="8">
                 <div>
                     <div class="">
@@ -64,8 +182,9 @@
                     </div>
                 </div>    
             </b-col>
-        </b-row>
-    </div>
+        </b-row> -->
+
+    </div> 
 
 </template>
 <script>
@@ -96,10 +215,13 @@ export default {
             getDay(date) {
                 var day = date.substring(8,10);
 
+                console.log(day);
+                console.log(date);
+
                 return day;
             },
             getMonth(date) {
-                var month = date.toString().substring(5,7);
+                var month = date.substring(5,7);
 
                 switch(month) {
                     case "01":
