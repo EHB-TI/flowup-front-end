@@ -18,8 +18,10 @@ class EventController extends Controller
         $event = new Event([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'startsAt' => $request->input('startsAt'),
-            'endsAt' => $request->input('endsAt'),
+            'startsAtDate' => $request->input('startsAtDate'),
+            'startsAtTime' => $request->input('startsAtTime'),
+            'endsAtDate' => $request->input('endsAtDate'),            
+            'endsAtTime' => $request->input('endsAtTime'),
             'location' => $request->input('location')
         ]);
         $event->save();

@@ -1,38 +1,72 @@
 <template>
-    <div class=" d-flex flex-row ">
-        <div class="d-flex flex-column mt-3 greybg">
-            <div class=" d-flex flex-row">
-                <h4>19:20 - 20:30</h4> 
-                <div class="date d-flex flex-column date mx-6">
-                <div>   
-                        <span class="date-day">{{ getDay(event.startsAt)}}</span>
+    <div>
+        <b-row>
+            <b-col class="" cols="8">
+                <div>
+                    <div class="">
+                        <h1> {{ event.name }} </h1>
+                    </div>
                 </div>
 
-                <div> 
-                        <span class="date-month">{{ getMonth(event.startsAt) }}</span>
-                </div>
-                
-                </div>
+                <div class="relative top-10">
+                    <div>
+                        <b-card style="float:left;" class="date">
+                            <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
+                                <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAtDate) }}</span>
+                            </div>
+                            <div class="bottom-date absolute inset-x-0 bottom-0 top-12 left-6 right-5 h-8">
+                                <span class="text-black font-bold text-l ">{{ getMonth(event.startsAt) }}</span>
+                            </div>
+                        </b-card>
+                    </div>
 
-            <h1 align-h="center" class="align-self-center">{{event.name}}</h1>
-        </div>
-            
+                    <div style="float:left;">
+                        <h1 style="margin-top:15px; margin-left:25px;"> {{ event.startsAt }} - {{ event.endsAt }} </h1>
+                    </div> 
+                </div>
+                <br>              
+                <br>
+                <br>
+                <br>
+                <div style="float:left;" class="relative top-32">
+                    <h2 class="">Description</h2>
+                    <p style="overflow:hidden; overflow-y:scroll; height:575px; width:950px;">Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy Lorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is Lorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummyLorem Ipsum is simply dummy simply dummyLorem Ipsum is simply dummy</p>
+                </div>
+            </b-col>
 
-            <div class="d-flex flex-column mt-5">
-                <h3>About</h3>
-                <p>{{event.description}}</p>
-            
-            </div>
-        </div>
-        <div class="mt-5 d-flex flex-column align-items-center">
-            <h3>Attendees</h3>
-            <b-list-group>
-                <b-list-group-item>Bob de bauwer</b-list-group-item>
-                <b-list-group-item>Bob de bauwer</b-list-group-item>
-                <b-list-group-item>Bob de bauwer</b-list-group-item>
-            </b-list-group>
-        </div>        
+
+            <b-col class="top-32 text-center"  cols="4">
+                <div>
+                    <div>
+                        <h2>Attendees</h2>
+                        <ul style="overflow:hidden; overflow-y:scroll; height:200px;">
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                             <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                             <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                            <li>Mark Zuckerberg</li>
+                        </ul>
+                    </div>
+                </div>    
+            </b-col>
+        </b-row>
     </div>
+
 </template>
 <script>
 export default {
@@ -57,95 +91,72 @@ export default {
                     .then(response => {
                         let i = this.event.map(data => data.id).indexOf(id);
                         this.event.splice(i, 1);
-                        this.$router.push({ name: 'home' });
                     });
-            },getDay(date) {
-            var date = date.substring(8,10);
+            },
+            getDay(date) {
+                var day = date.substring(8,10);
 
-            return date;
-        },
-        getMonth(date) {
-            var date = date.toString().substring(5,7);
+                return day;
+            },
+            getMonth(date) {
+                var month = date.toString().substring(5,7);
 
-            switch(date) {
-                case "01":
-                    return "jan";
-                    break;
-                case "02":
-                    return "feb";
-                    break;
-                case "03":
-                    return "mar";
-                    break;
-                case "04":
-                    return "apr";
-                    break;    
-                case "05":
-                    return "may";
-                    break;
-                case "06":
-                    return "jun";
-                    break;
-                case "07":
-                    return "jul";
-                    break;
-                case "08":
-                    return "aug";
-                    break;  
-                case "09":
-                    return "sep";
-                    break;
-                case "10":
-                    return "oct";
-                    break;
-                case "11":
-                    return "nov";
-                    break;
-                case "12":
-                    return "dec";
-                    break;                      
+                switch(month) {
+                    case "01":
+                        return "jan";
+                        break;
+                    case "02":
+                        return "feb";
+                        break;
+                    case "03":
+                        return "mar";
+                        break;
+                    case "04":
+                        return "apr";
+                        break;    
+                    case "05":
+                        return "may";
+                        break;
+                    case "06":
+                        return "jun";
+                        break;
+                    case "07":
+                        return "jul";
+                        break;
+                    case "08":
+                        return "aug";
+                        break;  
+                    case "09":
+                        return "sep";
+                        break;
+                    case "10":
+                        return "oct";
+                        break;
+                    case "11":
+                        return "nov";
+                        break;
+                    case "12":
+                        return "dec";
+                        break;                      
+                }
             }
-        }
         }
 }
 </script>
 <style scoped>
-.greybg{
-    background-color: #F3F5F2;
-    height: 100vh;
-    width: 80%;
-    padding: 20px;
-}
-
-.greybg + div{
-    width: 20%;
-    background-color:white;
-}
-
-h1{
-    text-align: center;
-    margin-left: 25%;
-}
-
 .date {
-    border-radius: 10px;    
-    border: 1px solid black;
-    z-index: 3;
-    width: 50px;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    margin-left: 5%;
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    border: solid 1px black;
 }
 
-.date div{
-    border-radius: 10px 10px 0 0;
-    background-color: red;
+.top-date {
+    border-radius: 15px 15px 0 0;
 }
 
-.date div + div{
-    border-radius: 0 0 10px 10px;
-    background-color: white;
+.bottom-date {
+    border-radius: 0 0 15px 15px;
 }
 
 </style>
