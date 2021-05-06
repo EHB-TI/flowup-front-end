@@ -3,9 +3,12 @@
          <a-layout>
             <a-layout-header style="background:white; height:175px; padding: 10px;">
                 
-                <div class="">
-                    <h1> {{ event.name }} </h1>
+                <div>
+                    <h1 class="absolute top-6 left-26" style=""> {{ event.name }} </h1>
+                    <b-button class="absolute top-10 right-16" variant="danger">Participate</b-button>
                 </div>
+
+                <br>
                 <div style="float:left;">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
@@ -22,17 +25,17 @@
             </a-layout-header>
 
             <a-layout>
-                <a-layout-content style="background: white; padding:10px; height:725px;">
+                <a-layout-content style="background: white; padding:10px; height:700px;">
                     <div class="">
                         <h2>About</h2>
                         <p v-html="event.description"></p>
                     </div>
                 </a-layout-content>
 
-                <a-layout-sider style="background:white; padding:10px; height:725px;">
+                <a-layout-sider style="background:white; padding:10px; height:700px;">
                     <div>
                         <h2>Attendees</h2>
-                        <ul style="overflow:hidden; overflow-y:scroll; height:650px;">
+                        <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
                             <li>
                                 <a-avatar shape="circle" size="large" icon="user" />
                                 <span>Mark Zuckerberg</span>
