@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')     
-     <div style="padding-top:10px;">
+     <div style="background:white;">
         <router-view></router-view>
     </div>  
 @endsection
