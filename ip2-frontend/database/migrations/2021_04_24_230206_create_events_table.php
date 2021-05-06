@@ -17,7 +17,7 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('name', 30);
-            $table->string('description');
+            $table->string('description', 1000);
             $table->string('location');
             $table->date('startsAtDate');
             $table->time('startsAtTime');

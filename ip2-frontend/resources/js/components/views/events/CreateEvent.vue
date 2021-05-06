@@ -110,12 +110,14 @@
                         <div v-if="showEnd">
                             <h1>Is this information correct?</h1>
                             <h3> {{ event.name }} </h3>
-                            <p style="width:200px;" v-html="event.description"></p>
-                            <p> {{ event.startsAtDate }} at {{ event.startsAtTime }} </p>
-                            <p> {{ event.endsAtDate }} at {{ event.endsAtTime }} </p>
-                            <p> {{ event.location }} </p>
+                            <p style="width:400px;" v-html="event.description"></p> 
+                            <div>
+                                <p> {{ event.startsAtDate }} at {{ event.startsAtTime }} 
+                                <p> {{ event.endsAtDate }} at {{ event.endsAtTime }} </p>
+                            </div>
+                            <p> {{ event.location }} </p> 
 
-
+                            <b-button variant="danger" @click="showNameForm()">Edit event</b-button>
                             <b-button type="submit" variant="primary">Create event</b-button>
                         </div>
                     </transition>  
@@ -162,17 +164,22 @@ export default {
                 .catch(err => console.log(err))
                 .finally( () => this.loading = false)
         },
+        showNameForm() {
+            this.showEnd = false;
+            this.showName = true;
+        },
         showDescForm() {
+            this.showEnd = false;           
             this.showName = false;
-
             this.showDescription = true;
         },
         showDateForm(){
+            this.showEnd = false;
             this.showDescription = false;
-
             this.showDate = true;
         },
         showLocationForm() {
+            this.showEnd = false;
             this.showDate = false;
             this.x =false;
 
@@ -180,7 +187,6 @@ export default {
         },
         showEndForm() {
             this.showLocation = false;
-
             this.showEnd = true;
         },
         onStartsAtDate(date, dateString) {
