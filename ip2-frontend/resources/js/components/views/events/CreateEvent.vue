@@ -52,22 +52,21 @@
 
                     <transition name="slide-fade">
                         <div v-if="x === 'one'">
-                            <h3>Start at</h3>
-                            <a-date-picker />    
-                            <a-time-picker format="h:mm"/>
+                            <h3>Starts at</h3>
+                            <a-date-picker @change="onStartsAtDateOne"/>    
+                            <a-time-picker @change="onStartsAtTime" format="h:mm"/>
 
                             <br><br>
 
                             <h3>Ends at</h3>
-                            <a-date-picker />    
-                            <a-time-picker format="h:mm"/>
+                            <a-time-picker @change="onEndsAtTime" format="h:mm"/>
                             <b-button @click="showLocationForm()">Next</b-button>
                         </div>
                     </transition>
 
                     <transition name="slide-fade">
                         <div v-if="x === 'mult'">
-                            <h3>Start at</h3>
+                            <h3>Starts at</h3>
                             <a-date-picker @change="onStartsAtDate"/>        
                             <a-time-picker @change="onStartsAtTime" format="h:mm"/>
 
@@ -103,13 +102,16 @@
                     <transition name="slide-fade">
                         <div v-if="showEnd">
                             <h1>Is this information correct?</h1>
-                            <h3> {{ event.name }} </h3>
+                            <span> Your event is called <strong>{{ event.name }}</strong> </span> <br>
+                            <span> Start the <strong>{{ event.startsAtDate }}</strong> at <strong>{{ event.startsAtTime }}</strong> and ends the <strong>{{ event.endsAtDate }}</strong> at  <strong>{{ event.endsAtTime }}</strong> </span> <br>
+                            <span> Located at <strong>{{ event.location }}</strong> </span>
+
+                            <br> <br>
+
+                            <span> Description </span>
                             <p style="width:400px;" v-html="event.description"></p> 
-                            <div>
-                                <p> {{ event.startsAtDate }} at {{ event.startsAtTime }} 
-                                <p> {{ event.endsAtDate }} at {{ event.endsAtTime }} </p>
-                            </div>
-                            <p> {{ event.location }} </p> 
+                            
+                            
 
                             <b-button variant="danger" @click="showNameForm()">Edit event</b-button>
                             <b-button type="submit" variant="primary">Create event</b-button>
@@ -172,6 +174,15 @@ export default {
             this.showDescription = false;
             this.showDate = true;
         },
+        showLocationOneForm() {
+            this.showEnd = false;
+            this.showDate = false;
+            this.x =false;
+
+            this.showLocation = true;
+
+            this.event.endsDate = this.event.startsAtDate;
+        },
         showLocationForm() {
             this.showEnd = false;
             this.showDate = false;
@@ -185,6 +196,11 @@ export default {
         },
         onStartsAtDate(date, dateString) {
             this.event.startsAtDate = dateString;
+        },
+        onStartsAtDateOne(date, dateString) {
+            this.event.startsAtDate = dateString;
+            this.event.endsAtDate = dateString;
+
         },
         onStartsAtTime(time, timeString) {
             this.event.startsAtTime = timeString;
