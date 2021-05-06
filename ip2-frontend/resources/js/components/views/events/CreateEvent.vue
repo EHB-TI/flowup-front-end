@@ -4,8 +4,6 @@
         <b-container class="mx-auto">
              <div class="d-flex justify-content-center" style="margin-top: 10%">
                  <b-form @submit.prevent="addEvent">
-
-
                     <!-- Name -->
                     <div v-if="showName">
                         <h1>Enter a name for your event</h1>
@@ -20,10 +18,6 @@
                         </b-form-group> 
 
                         <b-button @click="showDescForm()">Next</b-button>
-
-
-                
-
                     </div>
 
 
