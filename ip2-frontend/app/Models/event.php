@@ -18,10 +18,8 @@ class Event extends Model
         'description',
         'startsAtDate',
         'startsAtTime',
-
         'endsAtDate',
         'endsAtTime',
-
         'location'
     ];
 }
