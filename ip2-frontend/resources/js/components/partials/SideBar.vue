@@ -4,11 +4,11 @@
 		<!-- Side Nav Bar-->
 
 		<div class="h-16 flex items-center w-full">
-			<a class="h-6 w-6 mx-auto" href="http://svelte.dev/">
+			<a class="h-6 w-6 mx-auto" href="">
 				<img
 					class="h-6 w-6 mx-auto"
-					src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Svelte_Logo.svg/512px-Svelte_Logo.svg.png"
-					alt="svelte logo" />
+					src="https://o.remove.bg/downloads/f96ec957-fd72-4112-83e2-fff584dd82f1/letter-d-png-5a369b5a7e1573.7584737815135281545164-removebg-preview.png"
+					alt="logo" />
 			</a>
 		</div>  
 
