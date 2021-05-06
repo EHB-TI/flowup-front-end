@@ -109,9 +109,11 @@
                     <transition name="slide-fade">
                         <div v-if="showEnd">
                             <h1>Is this information correct?</h1>
-                            <pre> {{ event }} </pre>
-
-
+                            <h3> {{ event.name }} </h3>
+                            <p style="width:200px;" v-html="event.description"></p>
+                            <p> {{ event.startsAtDate }} at {{ event.startsAtTime }} </p>
+                            <p> {{ event.endsAtDate }} at {{ event.endsAtTime }} </p>
+                            <p> {{ event.location }} </p>
 
 
                             <b-button type="submit" variant="primary">Create event</b-button>
