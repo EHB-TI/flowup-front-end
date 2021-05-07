@@ -20,7 +20,7 @@ class EventController extends Controller
             'description' => $request->input('description'),
             'startsAtDate' => $request->input('startsAtDate'),
             'startsAtTime' => $request->input('startsAtTime'),
-            'endsAtDate' => $request->input('endsAtDate'),            
+            'endsAtDate' => $request->input('endsAtDate'),
             'endsAtTime' => $request->input('endsAtTime'),
             'location' => $request->input('location')
         ]);
@@ -29,7 +29,7 @@ class EventController extends Controller
         return response()->json('Event created!');
     }
 
-    public function show($id) 
+    public function show($id)
     {
         $event = Event::find($id);
         return response()->json($event);
@@ -49,5 +49,9 @@ class EventController extends Controller
         $event->delete();
 
         return response()->json('Event deleted');
+    }
+
+    public static function recieveEvent($message){
+
     }
 }

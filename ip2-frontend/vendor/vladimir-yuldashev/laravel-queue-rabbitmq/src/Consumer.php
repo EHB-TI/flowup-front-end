@@ -78,8 +78,14 @@ class Consumer extends Worker
 
         $this->channel = $connection->getChannel();
 
+        $this->channel->exchange_declare('direct_logs', 'direct', false, false, false);
+
+        $this->channel->queue_declare("frontend", false, true, true, false);
+
         //$channel->exchange_declare('direct_logs', 'direct', false, false, false);
-        //$this->channel->queue_bind($queue, 'direct_logs', $severity);
+        $this->channel->queue_bind($queue, 'direct_logs', 'user');
+        $this->channel->queue_bind($queue, 'direct_logs', 'event');
+        $this->channel->queue_bind($queue, 'direct_logs', 'frontend_error');
 
         $this->channel->basic_qos(
             $this->prefetchSize,
@@ -96,21 +102,26 @@ class Consumer extends Worker
             false,
             false,
             false,
-            function (AMQPMessage $message) use ($connection, $options, $connectionName, $queue, $jobClass, &$jobsProcessed): void {
-                error_log($message->getBody() + ' ' + $message->delivery_info['routing_key']);
+            function (AMQPMessage $message) use ($connection, $options, $connectionName, $queue, $jobClass, &$jobsProcessed) {
+
+                error_log($message->getBody());
+
+                error_log($message->delivery_info['routing_key']);
+
                 $routingKey = $message->delivery_info['routing_key'];
 
                 switch ($routingKey) {
-                    case 'user':
-                        //UserController::receiveUser($message);
-                        break;
-                    case 'event':
-                        //EventController::receiveEvent($message);
-                        break;
-                    case 'frontend_error':
-                        //EventController::receiveEvent($message);
-                        break;
-                }
+                     case 'user':
+                         //UserController::receiveUser($message);
+                         break;
+                     case 'event':
+                        error_log('switch it up');
+                         EventController::recieveEvent($message);
+                         break;
+                     case 'frontend_error':
+                         //EventController::receiveEvent($message);
+                         break;
+                 }
 
                 }
         );
