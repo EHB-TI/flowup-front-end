@@ -10,10 +10,10 @@
 
                         <div class="absolute date">
                             <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
-                                <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAtDate) }}</span>
+                                <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAt) }}</span>
                             </div>
                             <div class="bottom-date absolute inset-x-0 bottom-0 top-12 left-6 right-5 h-8">
-                                <span class="text-black font-bold text-l ">{{ getMonth(event.startsAtDate) }}</span>
+                                <span class="text-black font-bold text-l ">{{ getMonth(event.startsAt) }}</span>
                             </div>
                         </div>
                     </b-card>
