@@ -129,7 +129,7 @@
                         <div v-if="showEnd">
                             <h1>Is this information correct?</h1>
                             <span> Your event is called <strong>{{ event.name }}</strong> </span> <br>
-                            <span> Start the <strong>{{ event.startsAtDate }}</strong> at <strong>{{ event.startsAtTime }}</strong> and ends the <strong>{{ event.endsAtDate }}</strong> at  <strong>{{ event.endsAtTime }}</strong> </span> <br>
+                            <span> Start the <strong>{{ event.startsAt }}</strong> and ends the <strong>{{ event.endsAt  }}</strong> </span> <br>
                             <span> Located at <strong>{{ event.location }}</strong> </span>
 
                             <br> <br>
