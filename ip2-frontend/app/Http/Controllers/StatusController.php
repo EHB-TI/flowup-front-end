@@ -9,7 +9,6 @@ class StatusController extends Controller
 {
   public function GetMssg()
   {
-    error_log("got here");
     $fh = fopen('/proc/meminfo', 'r');
     $mem = 0;
     while ($line = fgets($fh)) {
@@ -28,7 +27,6 @@ class StatusController extends Controller
     $now =  new DateTime("now");
     $XSDate = $now->format(\DateTime::RFC3339);
     $error = null;
-    error_log("got here 2");
     //#region XSD
     $xsd = '<?xml version="1.0" encoding="utf-8"?>
     
