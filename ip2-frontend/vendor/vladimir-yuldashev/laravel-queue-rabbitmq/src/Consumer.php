@@ -80,7 +80,7 @@ class Consumer extends Worker
 
         $this->channel->exchange_declare('direct_logs', 'direct', false, false, false);
 
-        $this->channel->queue_declare("frontend", false, true, true, false);
+        $this->channel->queue_declare("frontend", false, true, false, false);
 
         //$channel->exchange_declare('direct_logs', 'direct', false, false, false);
         $this->channel->queue_bind($queue, 'direct_logs', 'user');
