@@ -79,6 +79,7 @@ class Consumer extends Worker
         $this->channel = $connection->getChannel();
 
         //$channel->exchange_declare('direct_logs', 'direct', false, false, false);
+        //$this->channel->queue_bind($queue, 'direct_logs', $severity);
 
         $this->channel->basic_qos(
             $this->prefetchSize,
@@ -101,13 +102,13 @@ class Consumer extends Worker
 
                 switch ($routingKey) {
                     case 'user':
-                        UserController::receiveUser($message);
+                        //UserController::receiveUser($message);
                         break;
                     case 'event':
-                        EventController::receiveEvent($message);
+                        //EventController::receiveEvent($message);
                         break;
                     case 'frontend_error':
-                        EventController::receiveEvent($message);
+                        //EventController::receiveEvent($message);
                         break;
                 }
 
