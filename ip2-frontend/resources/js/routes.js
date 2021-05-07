@@ -3,6 +3,7 @@ import About from './components/views/About';
 import Calendar from './components/views/Calendar';
 import Profile from './components/views/Profile';
 import Settings from './components/views/Settings'
+import Event from './components/views/events/Event'
 import CreateEvent from './components/views/events/CreateEvent';
 import EditEvent from './components/views/events/EditEvent';
 import NotFound from './components/views/NotFound';
@@ -46,6 +47,12 @@ export default {
             name: 'edit',
             path: '/edit/:id',
             component: EditEvent
+        },
+        {
+            name: 'event',
+            path: '/event/:id',
+            component: Event
         }
+
     ]
 }

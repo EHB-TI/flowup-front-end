@@ -29,11 +29,26 @@
 </head>
 <body>
     <div id="app">
-  
-        <sidebar></sidebar>
-      
-        <div style="margin-left:100px; margin-right: 25px;">
+        <!-- <sidebar></sidebar>
+        
+        <div style="">
             @yield('content')
+        </div> -->
+
+
+        <div id="components-layout-demo-basic">
+            <a-layout>
+            <a-layout-sider style="background: yellow;" width="81">
+                <sidebar></sidebar> 
+            </a-layout-sider>
+            <a-layout>
+                <a-layout-content style="background:white">
+                    <div style="padding: 15px;">
+                        @yield('content')
+                    </div> 
+                </a-layout-content>
+            </a-layout>
+            </a-layout>
         </div>
     </div>
 </body>
