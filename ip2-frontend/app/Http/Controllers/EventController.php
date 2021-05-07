@@ -26,7 +26,7 @@ class EventController extends Controller
             'endsAt' => $request->input('endsAt'),            
             'location' => $request->input('location')
         ]);
-        //$event->save();
+        $event->save();
         $this->publishToEventQueue($event, "create");
         return response()->json('Event created!');
     }
@@ -56,7 +56,8 @@ class EventController extends Controller
     public function publishToEventQueue(Event $event,string $type){
         $now =  new DateTime("now");
         $XSDate = $now->format(\DateTime::RFC3339);
-        error_log($event->description);
+        $startsAt = date_create_from_format("Y-m-d H:i:s",$event->startsAt);
+        $endsAt = date_create_from_format("Y-m-d H:i:s",$event->endsAt);
         $xsd = '<?xml version="1.0" encoding="utf-8"?> 
 
         <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
@@ -160,13 +161,12 @@ class EventController extends Controller
             <agenda>Agenda</agenda>
             <name>{$event->name}</name>
             <startEvent>{$XSDate}</startEvent>
-            <endEvent>{$XSDate}</endEvent>
+            <endEvent>{$startsAt->format(\DateTime::RFC3339)}</endEvent>
             <description>Test</description>
-            <location>{$event->location}</location>
+            <location>{$endsAt->format(\DateTime::RFC3339)}</location>
             <guests>mroreoehb@outlook.com</guests>
           </body>
         </event>";
-        error_log($msg);
         $xml = new \DOMDocument();
         $xml->loadXML($msg);
         if (!$xml->schemaValidateSource($xsd)) {
@@ -175,11 +175,13 @@ class EventController extends Controller
             return false;
         }
 
+        $ROUTEKEY = "event";
+        
         $connection = new AMQPStreamConnection('10.3.56.6', 5672, 'guest', 'guest');
         $channel = $connection->channel();
-        $ROUTEKEY = "event";
+        
         $data = new AMQPMessage($msg);
         $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
-        echo ' [x] Sent ', $ROUTEKEY, ':', $msg, "\n";
+        error_log(" [x] Sent $ROUTEKEY, : $msg ");
     }
 }
