@@ -8,24 +8,30 @@
                     <div v-if="showName">
                         <h1>Enter a name for your event</h1>
                         <b-form-group id="input-group-name">
-                            <b-form-input
-                                id="input-name"
-                                v-model="event.name"
-                                type="text"
-                                placeholder="Enter name (max. 30 characters)"
-                                required>
-                            </b-form-input>
+                                <b-form-input
+                                    id="input-name"
+                                    v-model="event.name"
+                                    type="text"
+                                    placeholder="Enter name (max. 30 characters)"
+                                    required>
+                                </b-form-input>
                         </b-form-group>  
                         <b-button @click="showDescForm()">Next</b-button>                          
                     </div>
-
 
                     <!-- Description -->
                     <transition name="slide-fade">
                         <div v-if="showDescription">
                             <h1>Describe your event</h1>
 
-                            <vue-editor v-model="event.description"></vue-editor>
+                            <!-- <vue-editor v-model="event.description"></vue-editor> -->
+                            <b-form-textarea
+                                id="textarea"
+                                v-model="event.description"
+                                placeholder="Enter a description"
+                                rows="3"
+                                max-rows="6"
+                            ></b-form-textarea>
                             
                             <br>
 
@@ -48,7 +54,6 @@
 
                     <br><br>
 
-
                     <transition name="slide-fade">
                         <div v-if="x === 'one'">
                             <h3>Starts at</h3>
@@ -58,16 +63,18 @@
                                 :disabled-date="disabledDate"/>    
                             <a-time-picker @change="onStartsAtTime" format="h:mm"/> -->
                             <a-date-picker
-                                    @change="onChangeOne"
-                                    format="YYYY-MM-DD HH:mm:ss"
-                                    :disabled-date="disabledDate"
-                                    :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
+                                @change="onChangeOne"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                :disabled-date="disabledDate"
+                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
 
                             <h3>Ends at</h3>
                             <!-- <a-time-picker 
                                 @change="onEndsAtTime" 
                                 format="h:mm"/>  -->
-                                <a-time-picker format="h:mm:ss" @change="onChangeOneTime" />
+                                <a-time-picker 
+                                format="h:mm:ss" 
+                                @change="onChangeOneTime"/>
 
                             <b-button @click="showLocationForm()">Next</b-button> 
                         </div>
@@ -87,7 +94,6 @@
                                 :disabled-date="disabledDate"/>    
                             <a-time-picker @change="onStartsAtTime" format="h:mm"/>
                             
-
                             <br><br> -->
 
                             <h3>Ends at</h3>
@@ -137,8 +143,6 @@
                             <span> Description </span>
                             <p style="width:400px;" v-html="event.description"></p> 
                             
-                            
-
                             <b-button variant="danger" @click="showNameForm()">Edit event</b-button>
                             <b-button type="submit" variant="primary">Create event</b-button>
                         </div>
@@ -146,19 +150,17 @@
                  </b-form>
              </div>
         </b-container>
-
-                                <pre>{{ event }}</pre>
-
     </div>
 </template>
 <script>
 import moment from 'moment';
 
+
 export default {
     data() {
         // const now = new Date();
         // const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
+        
         // const minDate = new Date(today);
         // minDate.setYear(minDate.getFullYear());
         // minDate.setMonth(minDate.getMonth());
@@ -175,20 +177,17 @@ export default {
             showDateOneDay: false,
             showDateMultDay: false,
 
-            // min: minDate,
-            // state:false,
-
             x:'',
 
             today: moment(),
             dateFormat: 'DD/MM/YYYY',
 
-            ends: ''
-
-
-
-
+            ends: '',
         }
+    },
+    validations: {
+        
+        
     },
     methods: {
         addEvent() {
