@@ -76,13 +76,15 @@ class Consumer extends Worker
         /** @var RabbitMQQueue $connection */
         $connection = $this->manager->connection($connectionName);
 
+        //declare channel
         $this->channel = $connection->getChannel();
 
         $this->channel->exchange_declare('direct_logs', 'direct', false, false, false);
 
+        //decleare queue with durable feature
         $this->channel->queue_declare("frontend", false, true, false, false);
 
-        //$channel->exchange_declare('direct_logs', 'direct', false, false, false);
+        //bind queue to routing user, event and frontend_error
         $this->channel->queue_bind($queue, 'direct_logs', 'user');
         $this->channel->queue_bind($queue, 'direct_logs', 'event');
         $this->channel->queue_bind($queue, 'direct_logs', 'frontend_error');
@@ -93,8 +95,7 @@ class Consumer extends Worker
             null
         );
 
-        $jobClass = $connection->getJobClass();
-
+        //uses a basic cosnsume on the specified queue
         $this->channel->basic_consume(
             $queue,
             $this->consumerTag,
@@ -102,14 +103,15 @@ class Consumer extends Worker
             false,
             false,
             false,
-            function (AMQPMessage $message) use ($connection, $options, $connectionName, $queue, $jobClass, &$jobsProcessed) {
+            function (AMQPMessage $message) {
 
+                //show the message body
                 error_log($message->getBody());
-
+                //show the routing key of the message
                 error_log($message->delivery_info['routing_key']);
 
                 $routingKey = $message->delivery_info['routing_key'];
-
+                //select which controller handels the message based on the routing key
                 switch ($routingKey) {
                      case 'user':
                          //UserController::receiveUser($message);
