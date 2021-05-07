@@ -9,19 +9,19 @@
                 </div>
 
                 <br>
-                <div style="float:left;">
+                <!-- <div style="float:left;">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
-                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAtDate) }}</span>
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAt) }}</span>
                         </div>
                         <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
-                            <span class="text-black font-bold text-l ">{{ getMonth(event.startsAtDate) }}</span>
+                            <span class="text-black font-bold text-l ">{{ getMonth(event.startsAt) }}</span>
                         </div> 
                     </b-card>
                 </div>
                 <div style="float:left; padding:10px;">
-                    <h1> {{ event.startsAtTime }} - {{ event.endsAtTime }}</h1>
-                </div>
+                    <h1> {{ event.startsAt }} - {{ event.endsAt }}</h1>
+                </div> -->
             </a-layout-header>
 
             <a-layout>
@@ -215,56 +215,56 @@ export default {
                         this.event.splice(i, 1);
                     });
             },
-            getDay(date) {
-                var day = date.substring(8,10);
+            // getDay(date) {
+            //     var day = date.substring(8,10);
 
-                console.log(day);
-                console.log(date);
+            //     console.log(day);
+            //     console.log(date);
 
-                return day;
-            },
-            getMonth(date) {
-                var month = date.substring(5,7);
+            //     return day;
+            // },
+            // getMonth(date) {
+            //     var month = date.substring(5,7);
 
-                switch(month) {
-                    case "01":
-                        return "jan";
-                        break;
-                    case "02":
-                        return "feb";
-                        break;
-                    case "03":
-                        return "mar";
-                        break;
-                    case "04":
-                        return "apr";
-                        break;    
-                    case "05":
-                        return "may";
-                        break;
-                    case "06":
-                        return "jun";
-                        break;
-                    case "07":
-                        return "jul";
-                        break;
-                    case "08":
-                        return "aug";
-                        break;  
-                    case "09":
-                        return "sep";
-                        break;
-                    case "10":
-                        return "oct";
-                        break;
-                    case "11":
-                        return "nov";
-                        break;
-                    case "12":
-                        return "dec";
-                        break;                      
-                }
-            }
+            //     switch(month) {
+            //         case "01":
+            //             return "jan";
+            //             break;
+            //         case "02":
+            //             return "feb";
+            //             break;
+            //         case "03":
+            //             return "mar";
+            //             break;
+            //         case "04":
+            //             return "apr";
+            //             break;    
+            //         case "05":
+            //             return "may";
+            //             break;
+            //         case "06":
+            //             return "jun";
+            //             break;
+            //         case "07":
+            //             return "jul";
+            //             break;
+            //         case "08":
+            //             return "aug";
+            //             break;  
+            //         case "09":
+            //             return "sep";
+            //             break;
+            //         case "10":
+            //             return "oct";
+            //             break;
+            //         case "11":
+            //             return "nov";
+            //             break;
+            //         case "12":
+            //             return "dec";
+            //             break;                      
+            //     }
+            //}
         }
 }
 </script>
