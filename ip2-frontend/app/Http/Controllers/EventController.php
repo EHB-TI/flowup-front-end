@@ -7,6 +7,7 @@ use App\Models\Event;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use DateTime;
+use Exception;
 
 class EventController extends Controller
 {
@@ -159,29 +160,35 @@ class EventController extends Controller
           </header>
           <body>
             <agenda>Agenda</agenda>
-            <name>{$event->name}</name>
-            <startEvent>{$XSDate}</startEvent>
-            <endEvent>{$startsAt->format(\DateTime::RFC3339)}</endEvent>
-            <description>Test</description>
-            <location>{$endsAt->format(\DateTime::RFC3339)}</location>
+            <name></name>
+            <startEvent></startEvent>
+            <endEvent></endEvent>
+            <description></description>
+            <location></location>
             <guests>mroreoehb@outlook.com</guests>
           </body>
         </event>";
         $xml = new \DOMDocument();
         $xml->loadXML($msg);
+        $Element = $xml->getElementsByTagName("body")[0];
+
+        $Element->getElementsByTagName("name")[0]->nodeValue = $event->name;
+        $Element->getElementsByTagName("startEvent")[0]->nodeValue = $startsAt->format(\DateTime::RFC3339);
+        $Element->getElementsByTagName("endEvent")[0]->nodeValue = $endsAt->format(\DateTime::RFC3339);
+        $Element->getElementsByTagName("location")[0]->nodeValue = $event->location;
+        $Element->getElementsByTagName("description")[0]->nodeValue = $event->description;
+ 
         if (!$xml->schemaValidateSource($xsd)) {
             $error = libxml_get_last_error();
             error_log($error);
             return false;
         }
-
+        error_log($xml->saveXML());
         $ROUTEKEY = "event";
-        
         $connection = new AMQPStreamConnection('10.3.56.6', 5672, 'guest', 'guest');
         $channel = $connection->channel();
         
-        $data = new AMQPMessage($msg);
+        $data = new AMQPMessage($xml->saveXML());
         $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
-        error_log(" [x] Sent $ROUTEKEY, : $msg ");
     }
 }
