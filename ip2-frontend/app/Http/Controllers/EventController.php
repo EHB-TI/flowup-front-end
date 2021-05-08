@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\Event;
 
@@ -49,5 +50,30 @@ class EventController extends Controller
         $event->delete();
 
         return response()->json('Event deleted');
+    }
+
+
+    //
+    public static function recieveEvent(AMQPMessage $message){
+        $message->ack();
+        $xml = $message->getBody();
+        $doc = new DOMDocument;
+        $doc->loadXML($xml);
+        $xsd = "XML-XSD/event.xsd";
+        if($doc->SchemaValidate($xsd)){
+            $event = new Event([
+                'name' => $doc->body->name,
+                'description' => $doc->body->description,
+                'startsAtDate' => $doc->body->startsAtDate,
+                'startsAtTime' => $doc->body->startsAtTime,
+                'endsAtDate' => $doc->body->endsAtDate,
+                'endsAtTime' => $doc->body->endsAtTime,
+                'location' => $doc->body->location
+            ]);
+
+            $event->save();
+        }else{
+            error_log('error');
+        }
     }
 }
