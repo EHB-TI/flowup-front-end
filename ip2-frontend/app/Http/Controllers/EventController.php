@@ -50,8 +50,4 @@ class EventController extends Controller
 
         return response()->json('Event deleted');
     }
-
-    public static function recieveEvent($message){
-
-    }
 }

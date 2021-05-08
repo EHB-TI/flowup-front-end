@@ -3,14 +3,14 @@
 namespace VladimirYuldashev\LaravelQueueRabbitMQ;
 
 use Exception;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\EventController;
 use Illuminate\Container\Container;
 use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Message\AMQPMessage;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\EventController;
 use Throwable;
 use VladimirYuldashev\LaravelQueueRabbitMQ\Queue\RabbitMQQueue;
 
