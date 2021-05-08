@@ -78,7 +78,8 @@ class Consumer extends Worker
 
         //declare channel
         $this->channel = $connection->getChannel();
-
+        
+        //declare exchange
         $this->channel->exchange_declare('direct_logs', 'direct', false, false, false);
 
         //decleare queue with durable feature
