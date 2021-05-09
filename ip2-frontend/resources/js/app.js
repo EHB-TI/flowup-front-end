@@ -12,7 +12,6 @@ import VueAxios from 'vue-axios';
 import { Datetime } from 'vue-datetime';
 import Vue2Editor from "vue2-editor";
 import Antd from 'ant-design-vue';
-import { ValidationProvider } from 'vee-validate';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -25,7 +24,7 @@ Vue.component('sidebar', require('./components/partials/SideBar.vue').default);
 Vue.component('events', require('./components/partials/events/Events.vue').default);
 Vue.component('searchbar', require('./components/partials/SearchBar.vue').default);
 Vue.component('datetime', Datetime);
-Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 
 Vue.use(VueAxios, axios)

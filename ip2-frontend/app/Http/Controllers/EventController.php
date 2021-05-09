@@ -13,7 +13,7 @@ class EventController extends Controller
     //
     public function index()
     {
-        $events = Event::all()->toArray();
+        $events = Event::orderBy('startsAt', 'desc')->paginate(25)->toArray();
         return array_reverse($events);
     }
 
@@ -26,8 +26,8 @@ class EventController extends Controller
             'endsAt' => $request->input('endsAt'),            
             'location' => $request->input('location')
         ]);
-        //$event->save();
-        $this->publishToEventQueue($event, "create");
+        $event->save();
+        //$this->publishToEventQueue($event, "create");
         return response()->json('Event created!');
     }
 
