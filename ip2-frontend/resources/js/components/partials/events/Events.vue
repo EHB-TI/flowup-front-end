@@ -1,6 +1,8 @@
 <template>
+ <a-layout style="background:white;">
+      <a-layout-content>
         <div>
-            <div class="event static" v-for="event in events" :key="event.id">
+            <div class="event static" v-for="event in events.data" :key="event.id">
                 <router-link :to="{name: 'event', params: { id: event.id}}">
                     <b-card class="event-card ">
                         <div class="card-heading absolute top-3 left-3">
@@ -20,6 +22,11 @@
                 </router-link>
             </div>
         </div>
+          </a-layout-content>
+      <a-layout-footer style="background:white; height:65px;" class="mx-auto">
+            <pagination :data="events" @pagination-change-page="getResults"></pagination>
+      </a-layout-footer>
+    </a-layout>
 </template>
 <script>
 export default {
@@ -36,6 +43,12 @@ export default {
             });
     },
     methods: {
+         getResults(page = 1) {
+			axios.get('http://127.0.0.1:8000/api/events?page=' + page)
+				.then(response => {
+					this.events = response.data;
+				});
+		},
         getDay(date) {
             var date = date.substring(8,10);
 
@@ -92,10 +105,10 @@ export default {
 }
 
 .event-card {
-    width: 360px;
-    height: 150px;
+    width: 345px;
+    height: 135px;
     margin-right: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
     padding: 5px;
     color: black;
     border-radius: 8%;
