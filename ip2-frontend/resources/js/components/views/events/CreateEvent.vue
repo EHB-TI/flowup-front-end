@@ -8,25 +8,30 @@
                     <div v-if="showName">
                         <h1>Enter a name for your event</h1>
                         <b-form-group id="input-group-name">
-                            <b-form-input
-                                id="input-name"
-                                v-model="event.name"
-                                type="text"
-                                placeholder="Enter name (max. 30 characters)"
-                                required>
-                            </b-form-input>
-                        </b-form-group> 
-
-                        <b-button @click="showDescForm()">Next</b-button>
+                                <b-form-input
+                                    id="input-name"
+                                    v-model="event.name"
+                                    type="text"
+                                    placeholder="Enter name (max. 30 characters)"
+                                    required>
+                                </b-form-input>
+                        </b-form-group>  
+                        <b-button @click="showDescForm()">Next</b-button>                          
                     </div>
-
 
                     <!-- Description -->
                     <transition name="slide-fade">
                         <div v-if="showDescription">
                             <h1>Describe your event</h1>
 
-                            <vue-editor v-model="event.description"></vue-editor>
+                            <!-- <vue-editor v-model="event.description"></vue-editor> -->
+                            <b-form-textarea
+                                id="textarea"
+                                v-model="event.description"
+                                placeholder="Enter a description"
+                                rows="3"
+                                max-rows="6"
+                            ></b-form-textarea>
                             
                             <br>
 
@@ -49,33 +54,60 @@
 
                     <br><br>
 
-
                     <transition name="slide-fade">
                         <div v-if="x === 'one'">
                             <h3>Starts at</h3>
-                            <a-date-picker @change="onStartsAtDateOne"/>    
-                            <a-time-picker @change="onStartsAtTime" format="h:mm"/>
-
-                            <br><br>
+                            <!-- <a-date-picker 
+                                :format="dateFormat" 
+                                @change="onStartsAtDateOne"
+                                :disabled-date="disabledDate"/>    
+                            <a-time-picker @change="onStartsAtTime" format="h:mm"/> -->
+                            <a-date-picker
+                                @change="onChangeOne"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                :disabled-date="disabledDate"
+                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
 
                             <h3>Ends at</h3>
-                            <a-time-picker @change="onEndsAtTime" format="h:mm"/>
-                            <b-button @click="showLocationForm()">Next</b-button>
+                            <!-- <a-time-picker 
+                                @change="onEndsAtTime" 
+                                format="h:mm"/>  -->
+                                <a-time-picker 
+                                format="h:mm:ss" 
+                                @change="onChangeOneTime"/>
+
+                            <b-button @click="showLocationForm()">Next</b-button> 
                         </div>
                     </transition>
 
                     <transition name="slide-fade">
                         <div v-if="x === 'mult'">
                             <h3>Starts at</h3>
-                            <a-date-picker @change="onStartsAtDate"/>        
+                            <a-date-picker
+                                @change="onChangeStart"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                :disabled-date="disabledDate"
+                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
+                            <!-- <a-date-picker 
+                                :format="dateFormat" 
+                                @change="onStartsAtDateOne"
+                                :disabled-date="disabledDate"/>    
                             <a-time-picker @change="onStartsAtTime" format="h:mm"/>
-
-                            <br><br>
+                            
+                            <br><br> -->
 
                             <h3>Ends at</h3>
-                            <a-date-picker @change="onEndsAtDate" />    
-                            <a-time-picker @change="onEndsAtTime" format="h:mm"/>
-                            <b-button @click="showLocationForm()">Next</b-button>
+                            <a-date-picker
+                                @change="onChangeEnd"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                :disabled-date="disabledDate"
+                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
+                            <!-- <a-date-picker 
+                            @change="onEndsAtDate"
+                            :format="dateFormat" 
+                            :disabled-date="disabledDateEnd"/>    
+                            <a-time-picker @change="onEndsAtTime" format="h:mm"/>-->
+                            <b-button @click="showLocationForm()">Next</b-button> 
                         </div> 
                     </transition>
 
@@ -103,7 +135,7 @@
                         <div v-if="showEnd">
                             <h1>Is this information correct?</h1>
                             <span> Your event is called <strong>{{ event.name }}</strong> </span> <br>
-                            <span> Start the <strong>{{ event.startsAtDate }}</strong> at <strong>{{ event.startsAtTime }}</strong> and ends the <strong>{{ event.endsAtDate }}</strong> at  <strong>{{ event.endsAtTime }}</strong> </span> <br>
+                            <span> Start the <strong>{{ event.startsAt }}</strong> and ends the <strong>{{ event.endsAt  }}</strong> </span> <br>
                             <span> Located at <strong>{{ event.location }}</strong> </span>
 
                             <br> <br>
@@ -111,8 +143,6 @@
                             <span> Description </span>
                             <p style="width:400px;" v-html="event.description"></p> 
                             
-                            
-
                             <b-button variant="danger" @click="showNameForm()">Edit event</b-button>
                             <b-button type="submit" variant="primary">Create event</b-button>
                         </div>
@@ -123,15 +153,18 @@
     </div>
 </template>
 <script>
+import moment from 'moment';
+
+
 export default {
     data() {
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        const minDate = new Date(today);
-        minDate.setYear(minDate.getFullYear());
-        minDate.setMonth(minDate.getMonth());
-        minDate.setDate(minDate.getDate() + 1);
+        // const now = new Date();
+        // const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        // const minDate = new Date(today);
+        // minDate.setYear(minDate.getFullYear());
+        // minDate.setMonth(minDate.getMonth());
+        // minDate.setDate(minDate.getDate() + 1);
 
         return {
             event: {},
@@ -144,11 +177,17 @@ export default {
             showDateOneDay: false,
             showDateMultDay: false,
 
-            min: minDate,
-            state:false,
+            x:'',
 
-            x:''
+            today: moment(),
+            dateFormat: 'DD/MM/YYYY',
+
+            ends: '',
         }
+    },
+    validations: {
+        
+        
     },
     methods: {
         addEvent() {
@@ -180,8 +219,6 @@ export default {
             this.x =false;
 
             this.showLocation = true;
-
-            this.event.endsDate = this.event.startsAtDate;
         },
         showLocationForm() {
             this.showEnd = false;
@@ -194,23 +231,46 @@ export default {
             this.showLocation = false;
             this.showEnd = true;
         },
-        onStartsAtDate(date, dateString) {
-            this.event.startsAtDate = dateString;
-        },
-        onStartsAtDateOne(date, dateString) {
-            this.event.startsAtDate = dateString;
-            this.event.endsAtDate = dateString;
 
+        moment,
+
+        range(start, end) {
+            const result = [];
+            for(let i = start; i < end; i++) {
+                result.push(i);
+            }
+            return result;
         },
-        onStartsAtTime(time, timeString) {
-            this.event.startsAtTime = timeString;
+        disabledDate(current) {
+            return current && current < moment().endOf('day');
         },
-        onEndsAtDate(date, dateString) {
-            this.event.endsAtDate = dateString;
+
+        onChangeStart(date, dateString){
+            this.event.startsAt = dateString;
+            
         },
-        onEndsAtTime(time, timeString) {
-            this.event.endsAtTime = timeString;
+
+        onChangeEnd(date, dateString){
+            this.event.endsAt = dateString;
+        },
+        onChangeOne(date, dateString){
+    
+
+            this.event.startsAt = dateString;
+
+            var endDate = dateString.substring(0,10);
+
+            console.log(endDate);
+            this.ends = endDate;
+        },
+        onChangeOneTime(time, timeString){
+            var endResultDate = this.ends + " " + timeString;
+
+            this.event.endsAt = endResultDate;
+
+            console.log(this.event.endsAt);
         }
+
     }
 }
 </script>
