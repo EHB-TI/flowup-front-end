@@ -52,18 +52,17 @@ class EventController extends Controller
         return response()->json('Event deleted');
     }
 
-
-    //
     public static function recieveEvent(AMQPMessage $message){
+        error_log('in controller');
         $message->ack();
-        $xml = $message->getBody();
-        $doc = new DOMDocument;
-        $doc->loadXML($xml);
+        $string = $message->getBody();
+        $doc = new \DOMDocument();
+        $doc->loadXML($string);
         $xsd = "XML-XSD/event.xsd";
-        if($doc->SchemaValidate($xsd)){
+        $bool = $doc->SchemaValidate($xsd);
+        if($bool){
             $event = new Event([
                 'name' => $doc->body->name,
-                'description' => $doc->body->description,
                 'startsAtDate' => $doc->body->startsAtDate,
                 'startsAtTime' => $doc->body->startsAtTime,
                 'endsAtDate' => $doc->body->endsAtDate,

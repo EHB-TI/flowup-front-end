@@ -108,17 +108,18 @@ class Consumer extends Worker
 
                 //show the message body
                 error_log($message->getBody());
-                //show the routing key of the message
-                error_log($message->delivery_info['routing_key']);
+                
 
                 $routingKey = $message->delivery_info['routing_key'];
+
+                //show the routing key of the message
+                error_log($routingKey);
                 //select which controller handels the message based on the routing key
                 switch ($routingKey) {
                      case 'user':
                          //UserController::receiveUser($message);
                          break;
                      case 'event':
-                        error_log('switch it up');
                          EventController::recieveEvent($message);
                          break;
                      case 'frontend_error':
