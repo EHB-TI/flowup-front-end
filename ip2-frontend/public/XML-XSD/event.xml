@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <event>
+          <header>
+            <UUID>5698cd50-3acc-4f15-9ce2-83545cbfe0ba</UUID>
+            <organiserUUID>333ade47-03d1-40bb-9912-9a6c86a60169</organiserUUID>
+            <method></method>
+            <origin>FrontEnd</origin>
+            <version>2</version>
+            <timestamp></timestamp>
+          </header>
+          <body>
+            <agenda>Agenda</agenda>
+            <name></name>
+            <startEvent></startEvent>
+            <endEvent></endEvent>
+            <description></description>
+            <location></location>
+          </body>
+        </event>
