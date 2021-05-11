@@ -7,8 +7,7 @@
 			<a class="h-6 w-6 mx-auto" href="">
 				<img
 					class="h-6 w-6 mx-auto"
-					src="https://o.remove.bg/downloads/f96ec957-fd72-4112-83e2-fff584dd82f1/letter-d-png-5a369b5a7e1573.7584737815135281545164-removebg-preview.png"
-					alt="logo" />
+					src="" />
 			</a>
 		</div>  
 

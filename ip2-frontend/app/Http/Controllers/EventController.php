@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\Event;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use DateTime;
+use Exception;
 
 class EventController extends Controller
 {
@@ -19,14 +22,12 @@ class EventController extends Controller
         $event = new Event([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'startsAtDate' => $request->input('startsAtDate'),
-            'startsAtTime' => $request->input('startsAtTime'),
-            'endsAtDate' => $request->input('endsAtDate'),
-            'endsAtTime' => $request->input('endsAtTime'),
+            'startsAt' => $request->input('startsAt'),
+            'endsAt' => $request->input('endsAt'),            
             'location' => $request->input('location')
         ]);
         $event->save();
-
+        $this->publishToEventQueue($event, "create");
         return response()->json('Event created!');
     }
 

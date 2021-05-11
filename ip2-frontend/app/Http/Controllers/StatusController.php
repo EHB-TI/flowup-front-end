@@ -9,7 +9,8 @@ class StatusController extends Controller
 {
   public function GetMssg()
   {
-    error_log("got here");
+
+    //Code from: https://stackoverflow.com/questions/1455379/get-server-ram-with-php
     $fh = fopen('/proc/meminfo', 'r');
     $mem = 0;
     while ($line = fgets($fh)) {
@@ -20,15 +21,16 @@ class StatusController extends Controller
       }
     }
     fclose($fh);
-    error_log($mem);
-    error_log(memory_get_usage());
+
+    //End Code from github
+
+    
     $RamUsage = 100/$mem*memory_get_usage();
     
     $CPUload = array_sum(sys_getloadavg()) / count(sys_getloadavg());
     $now =  new DateTime("now");
     $XSDate = $now->format(\DateTime::RFC3339);
     $error = null;
-    error_log("got here 2");
     //#region XSD
     $xsd = '<?xml version="1.0" encoding="utf-8"?>
     
