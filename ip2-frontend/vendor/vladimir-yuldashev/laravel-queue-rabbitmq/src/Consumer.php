@@ -117,10 +117,18 @@ class Consumer extends Worker
                 //select which controller handels the message based on the routing key
                 switch ($routingKey) {
                      case 'user':
-                         //UserController::receiveUser($message);
+                        try{
+                            UserController::recieveUser($message);
+                        }catch(Exception $ex){
+                            error_log($ex);
+                        }
                          break;
                      case 'event':
-                         EventController::recieveEvent($message);
+                        try{
+                            EventController::recieveEvent($message);
+                        }catch(Exception $ex){
+                            error_log($ex);
+                        }
                          break;
                      case 'frontend_error':
                          //EventController::receiveEvent($message);

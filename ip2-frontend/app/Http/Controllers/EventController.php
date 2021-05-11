@@ -54,22 +54,21 @@ class EventController extends Controller
     }
 
     public static function recieveEvent(AMQPMessage $message){
-        error_log('in controller');
         $message->ack();
         $string = $message->getBody();
         $doc = new \DOMDocument();
         $doc->loadXML($string);
-        $xsd = "XML-XSD/event.xsd";
-        $bool = $doc->SchemaValidate($xsd);
-        if($bool){
-            $event = new Event([
-                'name' => $doc->body->name,
-                'startsAtDate' => $doc->body->startsAtDate,
-                'startsAtTime' => $doc->body->startsAtTime,
-                'endsAtDate' => $doc->body->endsAtDate,
-                'endsAtTime' => $doc->body->endsAtTime,
-                'location' => $doc->body->location
+        $XSDPath = "public/XML-XSD/event.xsd";
+        if($doc->SchemaValidate($XSDPath)){
+            $body = $doc->getElementsByTagName("body")[0];
+             $event = new Event([
+                'name' => $body->getElementsByTagName("name")[0]->nodeValue, 
+                'startsAt' => $body->getElementsByTagName("startEvent")[0]->nodeValue,
+                'endsAt' => $body->getElementsByTagName("endEvent")[0]->nodeValue,
+                'location' => $body->getElementsByTagName("location")[0]->nodeValue,
+                'description' => $body->getElementsByTagName("description")[0]->nodeValue,
             ]);
+           
 
             $event->save();
         }else{
