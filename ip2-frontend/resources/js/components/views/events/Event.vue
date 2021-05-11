@@ -28,7 +28,7 @@
                 <a-layout-content style="background: white; padding:10px; height:700px;">
                     <div class="">
                         <h2>About</h2>
-                        <p> {{ event.description }} </p>
+                        <p v-html="event.description"></p>
                     </div>
                 </a-layout-content>
 
