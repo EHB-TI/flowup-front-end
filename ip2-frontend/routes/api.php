@@ -28,5 +28,12 @@ Route::middleware('api')->group(function () {
 
 });
 
+Route::post('checkName', \App\Http\Controllers\EventController::class . '@checkName');
+Route::post('checkDescription', \App\Http\Controllers\EventController::class . '@checkDescription');
+Route::post('checkLocation', \App\Http\Controllers\EventController::class . '@checkLocation');
+Route::post('checkDate', \App\Http\Controllers\EventController::class . '@checkDate');
+
+
+
 Route::get('/status', [StatusController::class, 'GetMssg']);
 

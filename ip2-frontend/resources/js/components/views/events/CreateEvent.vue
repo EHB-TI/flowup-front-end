@@ -7,6 +7,21 @@
                     <!-- Name -->
                     <div v-if="showName">
                         <h1>Enter a name for your event</h1>
+
+                        <a-alert
+                            v-if="errorName.required"
+                            message="The name field is required."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
+                        <a-alert
+                            v-if="errorName.size"
+                            message="The name field must not be greater than 30 chararcters."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
+
+
                         <b-form-group id="input-group-name">
                                 <b-form-input
                                     id="input-name"
@@ -16,7 +31,8 @@
                                     required>
                                 </b-form-input>
                         </b-form-group>  
-                        <b-button @click="showDescForm()">Next</b-button>                          
+
+                        <b-button @click="checkName()">Next</b-button>                          
                     </div>
 
                     <!-- Description -->
@@ -24,7 +40,15 @@
                         <div v-if="showDescription">
                             <h1>Describe your event</h1>
 
+                            <a-alert
+                            v-if="errorDescription"
+                            message="The description field is required."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
+
                             <!-- <vue-editor v-model="event.description"></vue-editor> -->
+
                             <b-form-textarea
                                 id="textarea"
                                 v-model="event.description"
@@ -35,7 +59,7 @@
                             
                             <br>
 
-                            <b-button @click="showDateForm()">Next</b-button>
+                            <b-button @click="checkDescription()">Next</b-button>
                         </div>
                     </transition>
 
@@ -43,6 +67,12 @@
                     <transition name="slide-fade">
                         <div v-if="showDate">
                             <h1>What type of event is it?</h1>
+                            <a-alert
+                                v-if="errorDate"
+                                message="The date fields are all required."
+                                type="error"
+                                banner
+                                style="margin-bottom:8px;" />
                             <b-form-group>
                                 <b-form-radio-group plain>
                                     <b-form-radio v-model="x" name="oneday-radios" value="one">One day event</b-form-radio>
@@ -76,7 +106,7 @@
                                 format="h:mm:ss" 
                                 @change="onChangeOneTime"/>
 
-                            <b-button @click="showLocationForm()">Next</b-button> 
+                            <b-button @click="checkDate()">Next</b-button> 
                         </div>
                     </transition>
 
@@ -107,7 +137,7 @@
                             :format="dateFormat" 
                             :disabled-date="disabledDateEnd"/>    
                             <a-time-picker @change="onEndsAtTime" format="h:mm"/>-->
-                            <b-button @click="showLocationForm()">Next</b-button> 
+                            <b-button @click="checkDate()">Next</b-button> 
                         </div> 
                     </transition>
 
@@ -115,6 +145,12 @@
                     <transition name="slide-fade">
                         <div v-if="showLocation">
                             <h1>Where does the event happen?</h1>
+                            <a-alert
+                            v-if="errorLocation"
+                            message="The location field is required."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
                             <b-form-group id="input-group-loc">
                                 <b-form-input
                                     id="input-location"
@@ -126,7 +162,7 @@
                             </b-form-group>
 
 
-                            <b-button @click="showEndForm()">Next</b-button>
+                            <b-button @click="checkLocation()">Next</b-button>
                         </div>
                     </transition>    
 
@@ -156,38 +192,59 @@
 import moment from 'moment';
 
 
+
+//Class to record error and error message
+class Errors {
+  constructor() {
+    this.errors = {};
+  }
+
+  //Get error message
+  get(field) {
+    if (this.errors[field]) {
+      return this.errors[field][0];
+    }
+  }
+
+  //Record the error
+  record(errors) {
+    this.errors = errors.errors;
+  }
+}
+
 export default {
     data() {
-        // const now = new Date();
-        // const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        
-        // const minDate = new Date(today);
-        // minDate.setYear(minDate.getFullYear());
-        // minDate.setMonth(minDate.getMonth());
-        // minDate.setDate(minDate.getDate() + 1);
-
         return {
             event: {},
+
+            //Show components
             showName: true,
             showDescription: false,
             showLocation: false,
             showEnd: false,
-
             showDate: false,
             showDateOneDay: false,
             showDateMultDay: false,
-
             x:'',
+            //
 
+            //Date handling
             today: moment(),
             dateFormat: 'DD/MM/YYYY',
-
             ends: '',
+            //
+
+            //Errors
+            errors: new Errors(),
+            errorName: {
+                required: false,
+                size: false,
+            },
+            errorDescription: false,
+            errorLocation: false,
+            errorDate: false
+            //
         }
-    },
-    validations: {
-        
-        
     },
     methods: {
         addEvent() {
@@ -199,39 +256,121 @@ export default {
                 .catch(err => console.log(err))
                 .finally( () => this.loading = false)
         },
+
+        //Errorhandling
+        checkName() {
+            let response = "";
+            this.axios
+                .post('http://127.0.0.1:8000/api/checkName', this.event)
+                 .then(res => (
+                    this.showEnd = false,          
+                    this.showName = false,
+                    this.showDescription = true,
+
+                    this.response = res.data
+                ))
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+
+                    console.log(err.response.data.errors['name'][0]);
+
+                    if(err.response.data.errors['name'][0] === "The name field is required.") 
+                    {
+                        this.errorName.required = true;
+                        this.errorName.size = false;
+                    } else if(err.response.data.errors['name'][0] === "The name must not be greater than 30 characters.")
+                    {
+                        this.errorName.size = true;
+                        this.errorName.required = false;
+                    }
+                        
+                })
+                .finally( () => this.loading = false)
+        },
+
+        checkDescription() {
+            let response = "";
+            this.axios
+                .post('http://127.0.0.1:8000/api/checkDescription', this.event)
+                 .then(res => (
+                    this.showEnd = false,
+                    this.showDescription = false,
+                    this.showDate = true,
+
+                    this.response = res.data
+                ))
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+
+                    console.log(err.response.data.errors['description']);
+
+                   
+                    this.errorDescription = true;
+       
+                })
+                .finally( () => this.loading = false)
+        },
+
+        checkLocation() {
+            let response = "";
+            this.axios
+                .post('http://127.0.0.1:8000/api/checkLocation', this.event)
+                 .then(res => (
+                    this.showLocation = false,
+                    this.showEnd = true,
+
+                    this.response = res.data
+                ))
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+
+                    console.log(err.response.data.errors['location']);
+
+                   
+                    this.errorLocation = true;
+       
+                })
+                .finally( () => this.loading = false)
+        },
+
+        checkDate() {
+            let response = "";
+            this.axios
+                .post('http://127.0.0.1:8000/api/checkDate', this.event)
+                 .then(res => (
+                    // this.showLocation = false,
+                    // this.showEnd = true,
+                    this.showEnd = false,
+                    this.showDate = false,
+                    this.x =false,
+
+                    this.showLocation = true,
+
+                    this.response = res.data
+                ))
+                .catch((err) => {
+                    this.errors.record(err.response.data);
+
+                    console.log(err.response.data.errors['startsAt']);
+                    console.log(err.response.data.errors['endsAt']);
+
+
+                    this.errorDate = true;
+       
+                })
+                .finally( () => this.loading = false)
+        },
+        //
+
+
+        //Show components
         showNameForm() {
             this.showEnd = false;
             this.showName = true;
         },
-        showDescForm() {
-            this.showEnd = false;           
-            this.showName = false;
-            this.showDescription = true;
-        },
-        showDateForm(){
-            this.showEnd = false;
-            this.showDescription = false;
-            this.showDate = true;
-        },
-        showLocationOneForm() {
-            this.showEnd = false;
-            this.showDate = false;
-            this.x =false;
+        //
 
-            this.showLocation = true;
-        },
-        showLocationForm() {
-            this.showEnd = false;
-            this.showDate = false;
-            this.x =false;
-
-            this.showLocation = true;
-        },
-        showEndForm() {
-            this.showLocation = false;
-            this.showEnd = true;
-        },
-
+        //Date handling
         moment,
 
         range(start, end) {
@@ -270,18 +409,12 @@ export default {
 
             console.log(this.event.endsAt);
         }
+        //
 
     }
 }
 </script>
 <style scoped>
-
-
-.eventType:hover {
-    background-color: rgb(238, 238, 238);
-    cursor: pointer;
-}
-
 .slide-fade-enter-active {
   transition: all 0.8s ease;
 }

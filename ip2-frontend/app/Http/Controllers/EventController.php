@@ -53,6 +53,42 @@ class EventController extends Controller
         return response()->json('Event deleted');
     }
 
+    //ErrorHandling
+    public function checkName(Request $request)
+    {
+      $this->validate($request, [
+        'name' => 'required|max:30'
+      ]);
+    }
+
+    public function checkDescription(Request $request)
+    {
+      $this->validate($request, [
+        'description' => 'required'
+      ]);
+    }
+
+    public function checkLocation(Request $request)
+    {
+      $this->validate($request, [
+        'location' => 'required'
+      ]);
+    }
+
+    public function checkDate(Request $request)
+    {
+      $this->validate($request, [
+        'startsAt' => 'required',
+        'endsAt' => 'required'
+      ]);
+    }
+
+
+
+    
+    //
+
+    //RabbitMQ
     public function publishToEventQueue(Event $event,string $type){
         $now =  new DateTime("now");
         $XSDate = $now->format(\DateTime::RFC3339);
