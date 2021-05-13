@@ -6,7 +6,13 @@
                 <div>
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} </h1>
                     <b-button class="absolute top-10 right-16" variant="danger">Participate</b-button>
+                     <router-link :to="{name: 'edit', params: { id: event.id}}">
+                    <b-button class="absolute top-10 right-48" variant="primary">Edit event</b-button>
+                     </router-link>
                 </div>
+               
+                
+               
 
                 <br>
                 <div style="float:left;">
