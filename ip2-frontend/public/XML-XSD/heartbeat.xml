@@ -1,0 +1,14 @@
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
+    
+        <heartbeat>
+            <header>
+              <code></code>
+              <origin>FrontEnd</origin>
+              <timestamp></timestamp>
+            </header>
+            <body>
+              <nameService></nameService>
+              <CPUload></CPUload>
+              <RAMload>e</RAMload>
+            </body>
+        </heartbeat>
