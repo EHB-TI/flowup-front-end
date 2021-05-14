@@ -22,18 +22,18 @@ class StatusController extends Controller
     }
     fclose($fh);
 
-    //End Code from github
+    //End Code from stackoverflow
 
-    
+
     $RamUsage = 100/$mem*memory_get_usage();
-    
+
     $CPUload = array_sum(sys_getloadavg()) / count(sys_getloadavg());
     $now =  new DateTime("now");
     $XSDate = $now->format(\DateTime::RFC3339);
     $error = null;
     //#region XSD
     $xsd = '<?xml version="1.0" encoding="utf-8"?>
-    
+
         <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
           <xs:element name="heartbeat">
             <xs:complexType>
@@ -82,7 +82,7 @@ class StatusController extends Controller
 
     //#region XML string
     $msg = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-    
+
         <heartbeat>
             <header>
               <code>2000</code>

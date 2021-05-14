@@ -63,6 +63,22 @@ return [
             ]) : [],
         ],
 
+        'uuid' => [
+            'driver' => env('DB_CONNECTION_UUID'),
+            'host' => env('DB_HOST_UUID', '127.0.0.1'),
+            'port' => env('DB_PORT_UUID', '3306'),
+            'database' => env('DB_DATABASE_UUID', 'forge'),
+            'username' => env('DB_USERNAME_UUID', 'forge'),
+            'password' => env('DB_PASSWORD_UUID', ''),
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
