@@ -1,11 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -62,7 +61,6 @@ class EventController extends Controller
     }
 
     public function publishToEventQueue(Event $event,string $type){
-
       //Geting DateTimes in right format
         $now =  new DateTime("now",new DateTimeZone("Europe/Brussels"));
         $XSDate = $now->format(\DateTime::RFC3339);
@@ -111,5 +109,27 @@ class EventController extends Controller
         $data = new AMQPMessage($xml->saveXML());
         $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
         return true;
+    }
+     public static function recieveEvent(AMQPMessage $message){
+        $message->ack();
+        $string = $message->getBody();
+        $doc = new \DOMDocument();
+        $doc->loadXML($string);
+        $XSDPath = "public/XML-XSD/event.xsd";
+        if($doc->SchemaValidate($XSDPath)){
+            $body = $doc->getElementsByTagName("body")[0];
+             $event = new Event([
+                'name' => $body->getElementsByTagName("name")[0]->nodeValue, 
+                'startsAt' => $body->getElementsByTagName("startEvent")[0]->nodeValue,
+                'endsAt' => $body->getElementsByTagName("endEvent")[0]->nodeValue,
+                'location' => $body->getElementsByTagName("location")[0]->nodeValue,
+                'description' => $body->getElementsByTagName("description")[0]->nodeValue,
+            ]);
+           
+
+            $event->save();
+        }else{
+            error_log('error');
+        }
     }
 }
