@@ -21,6 +21,7 @@ class EventController extends Controller
     {
         $event = new Event([
             'name' => $request->input('name'),
+            'user_id' => $request->input('user_id'),
             'startEvent' => $request->input('startEvent'),
             'endEvent' => $request->input('endEvent'),     
             'description' => $request->input('description'),       

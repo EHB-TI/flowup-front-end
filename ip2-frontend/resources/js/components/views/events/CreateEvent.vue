@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        {{ user }}
         <b-container class="mx-auto">
              <div class="d-flex justify-content-center" style="margin-top: 10%">
                  <b-form @submit.prevent="addEvent">
@@ -158,6 +158,8 @@
 
                             <span> Description </span>
                             <strong><span style="width:400px;"> {{ event.description }} </span></strong>
+
+                            <!-- <input type="hidden" name="user_id" :value="user.id"> -->
                             
                             <b-button variant="danger" @click="showNameForm()">Edit event</b-button>
                             <b-button type="submit" variant="primary">Create event</b-button>
@@ -170,8 +172,6 @@
 </template>
 <script>
 import moment from 'moment';
-
-
 
 //Class to record error and error message
 class Errors {
@@ -195,7 +195,11 @@ class Errors {
 export default {
     data() {
         return {
-            event: {},
+            event: {
+
+            },
+
+            user: {},
 
             //Show components
             showName: true,
@@ -226,8 +230,25 @@ export default {
             //
         }
     },
+    created() {
+        this.axios
+            .get(`http://127.0.0.1:8000/api/users/1`)
+            .then((response) => {
+                // handle success
+                this.user = response.data;
+                
+                this.event.user_id = this.user.id;
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    },
     methods: {
         addEvent() {
+            this.user.id = 
+
             this.axios
                 .post('http://127.0.0.1:8000/api/events', this.event)
                 .then(response => (

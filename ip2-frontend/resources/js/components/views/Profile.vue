@@ -23,10 +23,10 @@
                             {{ user.email }}
                         </a-descriptions-item>
                         <a-descriptions-item label="Birthday">
-                        {{ user.birthDate }}
+                            {{ user.birthDate }}
                         </a-descriptions-item>
                         <a-descriptions-item label="Study">
-                        {{ user.study }}
+                            {{ user.study }}
                         </a-descriptions-item>
                     </a-descriptions>
                 </a-layout-content>
@@ -51,8 +51,6 @@ export default {
             .then((response) => {
                 // handle success
                 this.user = response.data;
-               
-               
             })
             .catch(function (error) {
                 // handle error
