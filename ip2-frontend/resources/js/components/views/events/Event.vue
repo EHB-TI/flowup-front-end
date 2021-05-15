@@ -28,13 +28,24 @@
                 <div style="float:left; padding:10px;">
                     <h1> {{ getTime(event.startEvent) }} - {{ getTime(event.endEvent) }}</h1>
                 </div>
+
+                 <div style="float:left;">
+                    <b-card class="date">
+                        <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAt) }}</span>
+                        </div>
+                        <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
+                            <span class="text-black font-bold text-l ">{{ getMonth(event.endsAt) }}</span>
+                        </div> 
+                    </b-card>
+                </div>
             </a-layout-header>
 
             <a-layout>
                 <a-layout-content style="background: white; padding:10px; height:700px;">
                     <div class="">
                         <h2>About</h2>
-                        <p v-html="event.description"></p>
+                        <p> {{ event.description }} </p>
                     </div>
                 </a-layout-content>
 

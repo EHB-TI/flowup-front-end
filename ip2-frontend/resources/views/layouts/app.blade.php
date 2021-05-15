@@ -31,7 +31,7 @@
     <div id="app">
         <div id="components-layout-demo-basic">
             <a-layout>
-            <a-layout-sider style="background: yellow;" width="81">
+            <a-layout-sider style="background: white;" width="81">
                 <sidebar></sidebar> 
             </a-layout-sider>
             <a-layout>
