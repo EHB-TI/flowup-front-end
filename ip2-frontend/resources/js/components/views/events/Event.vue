@@ -18,15 +18,15 @@
                 <div style="float:left;">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
-                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAt) }}</span>
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startEvent) }}</span>
                         </div>
                         <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
-                            <span class="text-black font-bold text-l ">{{ getMonth(event.startsAt) }}</span>
+                            <span class="text-black font-bold text-l ">{{ getMonth(event.startEvent) }}</span>
                         </div> 
                     </b-card>
                 </div>
                 <div style="float:left; padding:10px;">
-                    <h1> {{ getTime(event.startsAt) }} - {{ getTime(event.endsAt) }}</h1>
+                    <h1> {{ getTime(event.startEvent) }} - {{ getTime(event.endEvent) }}</h1>
                 </div>
             </a-layout-header>
 

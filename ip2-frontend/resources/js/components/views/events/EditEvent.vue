@@ -39,17 +39,17 @@
                 <b-form-group
                     id="input-group-3"
                     label="Starts at"
-                    label-for="startsAt">
+                    label-for="startEvent">
 
-                    <b-form-datepicker id="example-datepicker" v-model="event.startsAt" class="mb-2"></b-form-datepicker>
+                    <b-form-datepicker id="example-datepicker" v-model="event.startEvent" class="mb-2"></b-form-datepicker>
                 </b-form-group>
 
                 <b-form-group
                     id="input-group-4"
                     label="Ends at"
-                    label-for="endsAt">
+                    label-for="endEvent">
 
-                    <b-form-datepicker id="example-datepicker" v-model="event.endsAt" class="mb-2"></b-form-datepicker>
+                    <b-form-datepicker id="example-datepicker" v-model="event.endEvent" class="mb-2"></b-form-datepicker>
                 </b-form-group>
 
 

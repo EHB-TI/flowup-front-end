@@ -13,7 +13,7 @@ class EventController extends Controller
     //
     public function index()
     {
-        $events = Event::orderBy('startsAt', 'desc')->paginate(25)->toArray();
+        $events = Event::orderBy('startEvent', 'desc')->paginate(25)->toArray();
         return array_reverse($events);
     }
 
@@ -21,9 +21,9 @@ class EventController extends Controller
     {
         $event = new Event([
             'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'startsAt' => $request->input('startsAt'),
-            'endsAt' => $request->input('endsAt'),            
+            'startEvent' => $request->input('startEvent'),
+            'endEvent' => $request->input('endEvent'),     
+            'description' => $request->input('description'),       
             'location' => $request->input('location')
         ]);
         $event->save();
@@ -78,8 +78,8 @@ class EventController extends Controller
     public function checkDate(Request $request)
     {
       $this->validate($request, [
-        'startsAt' => 'required',
-        'endsAt' => 'required'
+        'startEvent' => 'required',
+        'endEvent' => 'required'
       ]);
     }
 

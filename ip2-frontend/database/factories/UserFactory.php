@@ -24,11 +24,10 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'uuid' => $this->faker->uuid,
             'firstName' => $this->faker->firstName,
             'lastName' => $this->faker->lastName,
             'email' => $this->faker->unique()->safeEmail,
-            'birthDate' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
+            'birthDay' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
             'role' => 'student',
             'study' => 'TI'
         ];
