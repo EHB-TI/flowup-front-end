@@ -35,5 +35,7 @@ Route::post('checkDate', \App\Http\Controllers\EventController::class . '@checkD
 
 
 
+
 Route::get('/status', [StatusController::class, 'GetMssg']);
+
 

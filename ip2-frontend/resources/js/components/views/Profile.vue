@@ -9,7 +9,7 @@
         <a-layout>
             <a-layout-header style="background:white; height: 120px; padding: 15px;">
                 <a-avatar style="float:left;" :size="86" icon="user" src="https://cdn.dribbble.com/users/986811/screenshots/4601947/argentina_leo_messi.png?compress=1&resize=400x300"/>
-                <h1 style="float:left; padding:15px;">Souheib Touri</h1>
+                <h1 style="float:left; padding:15px;">{{ user.firstName }} {{ user.lastName }}</h1>
                 
                 <b-button variant="primary" style="float:right; padding:10px; margin-top: 20px; margin-right:10px;">
                     Edit profile
@@ -20,13 +20,13 @@
                     <h3>Your information</h3>
                     <a-descriptions bordered>
                         <a-descriptions-item label="Email">
-                        souheibtouri@hotmail.com
+                            {{ user.email }}
                         </a-descriptions-item>
                         <a-descriptions-item label="Birthday">
-                        22-03-1999
+                        {{ user.birthDate }}
                         </a-descriptions-item>
                         <a-descriptions-item label="Study">
-                        TI
+                        {{ user.study }}
                         </a-descriptions-item>
                     </a-descriptions>
                 </a-layout-content>
@@ -42,27 +42,24 @@
 export default {
     data() {
         return {
-            users: {}
+            user: {}
         }
     },
-    methods: {
-        fetchUsers() {
-            axios
-            .get('http://127.0.0.1:8000/api/users')
-            .then(function (response) {
+    created(){
+            this.axios
+            .get(`http://127.0.0.1:8000/api/users/1`)
+            .then((response) => {
                 // handle success
-                console.log(response.data);
+                this.user = response.data;
+               
+               
             })
             .catch(function (error) {
                 // handle error
                 console.log(error);
             });
-        },
-        created() {
-            this.fetchUsers();
-        }
-
     }
+
 }
 </script>
 
