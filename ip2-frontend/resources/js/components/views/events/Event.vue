@@ -5,10 +5,14 @@
                 
                 <div>
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} </h1>
+<<<<<<< HEAD
                     <b-button class="absolute top-10 right-16" variant="danger">Participate</b-button>
                      <router-link :to="{name: 'edit', params: { id: event.id}}">
                     <b-button class="absolute top-10 right-48" variant="primary">Edit event</b-button>
                      </router-link>
+=======
+                    <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
+>>>>>>> AttendeeController
                 </div>
                
                 
@@ -134,7 +138,9 @@
 export default {
         data() {
             return {
-                event: {}
+                event: {},
+                user: {},
+                event_subscriber: {}
             }
         },
         created() {
@@ -143,6 +149,7 @@ export default {
                 .then((res) => {
                     this.event = res.data;
                     console.log(this.event);
+                    this.fetchUser();
                 });
                 
         },
@@ -158,14 +165,13 @@ export default {
             getDay(date) {
                 var day = date.substring(8,10);
 
-                console.log(day);
-                console.log(date);
+                
 
                 return day;
             },
             getMonth(date) {
                 var month = date.substring(5,7);
-                console.log(month);
+                
 
                 switch(month) {
                     case "01":
@@ -208,9 +214,35 @@ export default {
             },
             getTime(time){
                 var result = time.substring(11,16);
-                console.log(result);
+                
                 return result;
+            },
+            fetchUser(){
+                axios
+                .get(`http://127.0.0.1:8000/api/users/1`)
+                .then((response) => {
+                    this.user = response.data
+                    console.log(this.user)
+                })
+                 .catch(function (error) {
+                // handle error
+                console.log(error);
+                });
+            },
+            participate(){
+                this.event_subscriber.user_id = this.user[0]['id'];
+                this.event_subscriber.event_id = this.event.id;
+                axios
+                .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
+                .then((reponse) => {
+                    console.log(reponse);
+                })
+                .catch(function (error){
+                    console.log(error);
+                });
             }
+            
+            
         }
 }
 </script>
