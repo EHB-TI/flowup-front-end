@@ -5,14 +5,11 @@
                 
                 <div>
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} </h1>
-<<<<<<< HEAD
-                    <b-button class="absolute top-10 right-16" variant="danger">Participate</b-button>
+                     <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
                      <router-link :to="{name: 'edit', params: { id: event.id}}">
                     <b-button class="absolute top-10 right-48" variant="primary">Edit event</b-button>
                      </router-link>
-=======
-                    <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
->>>>>>> AttendeeController
+                   
                 </div>
                
                 
@@ -36,10 +33,10 @@
                  <div style="float:left;">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
-                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startsAt) }}</span>
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startEvent) }}</span>
                         </div>
                         <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
-                            <span class="text-black font-bold text-l ">{{ getMonth(event.endsAt) }}</span>
+                            <span class="text-black font-bold text-l ">{{ getMonth(event.endEvent) }}</span>
                         </div> 
                     </b-card>
                 </div>
@@ -215,6 +212,7 @@ export default {
             getTime(time){
                 var result = time.substring(11,16);
                 
+
                 return result;
             },
             fetchUser(){
@@ -261,5 +259,4 @@ export default {
 .bottom-date {
     border-radius: 0 0 15px 15px;
 }
-
 </style>
