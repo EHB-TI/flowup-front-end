@@ -14,10 +14,11 @@ class Event extends Model
     public $primaryKey = 'id';
 
     protected $fillable = [
+        'user_id',
         'name',
+        'startEvent',
+        'endEvent',
         'description',
-        'startsAt',
-        'endsAt',
         'location'
     ];
 }

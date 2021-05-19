@@ -14,11 +14,10 @@ class User extends Model
     public $primaryKey = 'id';
 
     protected $fillable = [
-        'uuid',
         'firstName',
         'lastName',
         'email',
-        'birthDate',
+        'birthDay',
         'role',
         'study'
     ];

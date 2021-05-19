@@ -15,16 +15,13 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
-            $table->string('name', 30);
-            $table->string('description', 1000);
-            $table->string('location');
-            $table->dateTime('startsAt');
-            $table->dateTime('endsAt');
-            // $table->date('startsAtDate');
-            // $table->time('startsAtTime');
-            // $table->date('endsAtDate');
-            // $table->time('endsAtTime');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('name', 32);
+            $table->dateTime('startEvent');
+            $table->dateTime('endEvent');
+            $table->string('description', 2048);
+            $table->string('location', 64);
             $table->timestamps();
         });
     }

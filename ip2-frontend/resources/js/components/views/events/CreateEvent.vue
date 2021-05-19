@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <b-container class="mx-auto">
              <div class="d-flex justify-content-center" style="margin-top: 10%">
                  <b-form @submit.prevent="addEvent">
@@ -87,23 +86,15 @@
                     <transition name="slide-fade">
                         <div v-if="x === 'one'">
                             <h3>Starts at</h3>
-                            <!-- <a-date-picker 
-                                :format="dateFormat" 
-                                @change="onStartsAtDateOne"
-                                :disabled-date="disabledDate"/>    
-                            <a-time-picker @change="onStartsAtTime" format="h:mm"/> -->
                             <a-date-picker
                                 @change="onChangeOne"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
 
                             <h3>Ends at</h3>
-                            <!-- <a-time-picker 
-                                @change="onEndsAtTime" 
-                                format="h:mm"/>  -->
                                 <a-time-picker 
-                                format="h:mm:ss" 
+                                format="HH:mm:ss" 
                                 @change="onChangeOneTime"/>
 
                             <b-button @click="checkDate()">Next</b-button> 
@@ -117,26 +108,14 @@
                                 @change="onChangeStart"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
-                            <!-- <a-date-picker 
-                                :format="dateFormat" 
-                                @change="onStartsAtDateOne"
-                                :disabled-date="disabledDate"/>    
-                            <a-time-picker @change="onStartsAtTime" format="h:mm"/>
-                            
-                            <br><br> -->
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>                     
 
                             <h3>Ends at</h3>
                             <a-date-picker
                                 @change="onChangeEnd"
-                                format="YYYY-MM-DD HH:mm:ss"
+                                format="YYYY-MM-DD HH:mm:ss"          
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
-                            <!-- <a-date-picker 
-                            @change="onEndsAtDate"
-                            :format="dateFormat" 
-                            :disabled-date="disabledDateEnd"/>    
-                            <a-time-picker @change="onEndsAtTime" format="h:mm"/>-->
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
                             <b-button @click="checkDate()">Next</b-button> 
                         </div> 
                     </transition>
@@ -171,13 +150,15 @@
                         <div v-if="showEnd">
                             <h1>Is this information correct?</h1>
                             <span> Your event is called <strong>{{ event.name }}</strong> </span> <br>
-                            <span> Start the <strong>{{ event.startsAt }}</strong> and ends the <strong>{{ event.endsAt  }}</strong> </span> <br>
+                            <span> Start the <strong>{{ event.startEvent }}</strong> and ends the <strong>{{ event.endEvent  }}</strong> </span> <br>
                             <span> Located at <strong>{{ event.location }}</strong> </span>
 
                             <br> <br>
 
                             <span> Description </span>
-                            <p style="width:400px;" v-html="event.description"></p> 
+                            <strong><span style="width:400px;"> {{ event.description }} </span></strong>
+
+                            <!-- <input type="hidden" name="user_id" :value="user.id"> -->
                             
                             <b-button variant="danger" @click="showNameForm()">Edit event</b-button>
                             <b-button type="submit" variant="primary">Create event</b-button>
@@ -190,8 +171,6 @@
 </template>
 <script>
 import moment from 'moment';
-
-
 
 //Class to record error and error message
 class Errors {
@@ -215,7 +194,11 @@ class Errors {
 export default {
     data() {
         return {
-            event: {},
+            event: {
+
+            },
+
+            user: {},
 
             //Show components
             showName: true,
@@ -246,8 +229,25 @@ export default {
             //
         }
     },
+    created() {
+        this.axios
+            .get(`http://127.0.0.1:8000/api/users/1`)
+            .then((response) => {
+                // handle success
+                this.user = response.data;
+                
+                this.event.user_id = this.user.id;
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    },
     methods: {
         addEvent() {
+            this.user.id = 
+
             this.axios
                 .post('http://127.0.0.1:8000/api/events', this.event)
                 .then(response => (
@@ -304,7 +304,6 @@ export default {
 
                     console.log(err.response.data.errors['description']);
 
-                   
                     this.errorDescription = true;
        
                 })
@@ -351,8 +350,8 @@ export default {
                 .catch((err) => {
                     this.errors.record(err.response.data);
 
-                    console.log(err.response.data.errors['startsAt']);
-                    console.log(err.response.data.errors['endsAt']);
+                    console.log(err.response.data.errors['startEvent']);
+                    console.log(err.response.data.errors['endEvent']);
 
 
                     this.errorDate = true;
@@ -384,30 +383,36 @@ export default {
             return current && current < moment().endOf('day');
         },
 
+        multDisabledDate(){
+            var date = this.event.startEvent;
+
+            var day = date.substring(0,10);
+            
+            
+            return moment(day, 'YYYY-MM-DD')
+        },
+
         onChangeStart(date, dateString){
-            this.event.startsAt = dateString;
+            this.event.startEvent = dateString;
             
         },
 
         onChangeEnd(date, dateString){
-            this.event.endsAt = dateString;
+            this.event.endEvent = dateString;
         },
         onChangeOne(date, dateString){
-    
-
-            this.event.startsAt = dateString;
+            this.event.startEvent = dateString;
 
             var endDate = dateString.substring(0,10);
 
-            console.log(endDate);
             this.ends = endDate;
         },
         onChangeOneTime(time, timeString){
             var endResultDate = this.ends + " " + timeString;
 
-            this.event.endsAt = endResultDate;
+            this.event.endEvent = endResultDate;
 
-            console.log(this.event.endsAt);
+            console.log(this.event.endEvent);
         }
         //
 

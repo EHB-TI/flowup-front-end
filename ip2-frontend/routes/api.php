@@ -37,6 +37,15 @@ Route::post('checkDate', \App\Http\Controllers\EventController::class . '@checkD
 Route::post('participate', \App\Http\Controllers\EventSubscriberController::class . '@store');
 
 
+Route::post('participate', \App\Http\Controllers\EventSubscriberController::class . '@store');
+
+
+Route::get('showByUser/{id}', \App\Http\Controllers\EventController::class . '@showByUser');
+Route::get('showSubscribers/{id}', \App\Http\Controllers\EventSubscriberController::class . '@show');
+
+
+
 
 Route::get('/status', [StatusController::class, 'GetMssg']);
+
 
