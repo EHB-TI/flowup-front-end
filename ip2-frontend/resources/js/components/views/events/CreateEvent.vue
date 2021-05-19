@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{ user }}
         <b-container class="mx-auto">
              <div class="d-flex justify-content-center" style="margin-top: 10%">
                  <b-form @submit.prevent="addEvent">
@@ -91,11 +90,11 @@
                                 @change="onChangeOne"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
 
                             <h3>Ends at</h3>
                                 <a-time-picker 
-                                format="h:mm:ss" 
+                                format="HH:mm:ss" 
                                 @change="onChangeOneTime"/>
 
                             <b-button @click="checkDate()">Next</b-button> 
@@ -109,14 +108,14 @@
                                 @change="onChangeStart"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>                     
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>                     
 
                             <h3>Ends at</h3>
                             <a-date-picker
                                 @change="onChangeEnd"
-                                format="YYYY-MM-DD HH:mm:ss"
+                                format="YYYY-MM-DD HH:mm:ss"          
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
                             <b-button @click="checkDate()">Next</b-button> 
                         </div> 
                     </transition>
@@ -384,6 +383,15 @@ export default {
             return current && current < moment().endOf('day');
         },
 
+        multDisabledDate(){
+            var date = this.event.startEvent;
+
+            var day = date.substring(0,10);
+            
+            
+            return moment(day, 'YYYY-MM-DD')
+        },
+
         onChangeStart(date, dateString){
             this.event.startEvent = dateString;
             
@@ -393,8 +401,6 @@ export default {
             this.event.endEvent = dateString;
         },
         onChangeOne(date, dateString){
-    
-
             this.event.startEvent = dateString;
 
             var endDate = dateString.substring(0,10);

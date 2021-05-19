@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EventSubscriber;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
 class EventSubscriberController extends Controller
@@ -53,12 +54,14 @@ class EventSubscriberController extends Controller
      * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function show(EventSubscriber $event_id)
+    public function show($id)
     {
         //
-        $eventSubscribers = EventSubscriber::Where($event_id);
+        $eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
         return response()->json($eventSubscribers);
     }
+
+
 
     /**
      * Show the form for editing the specified resource.

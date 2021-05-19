@@ -23,10 +23,15 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
+        $email = $firstName . '.' . $lastName . '@student.desiderius.be';
+
         return [
-            'firstName' => $this->faker->firstName,
-            'lastName' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'email' => $email,
             'birthDay' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
             'role' => 'student',
             'study' => 'TI'

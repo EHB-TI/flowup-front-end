@@ -27,6 +27,7 @@ class EventController extends Controller
             'description' => $request->input('description'),       
             'location' => $request->input('location')
         ]);
+
         $event->save();
         //$this->publishToEventQueue($event, "create");
         return response()->json('Event created!');
@@ -35,6 +36,12 @@ class EventController extends Controller
     public function show($id)
     {
         $event = Event::find($id);
+        return response()->json($event);
+    }
+
+    public function showByUser($id)
+    {
+        $event = Event::where('user_id', '=', $id)->get();
         return response()->json($event);
     }
 
@@ -83,7 +90,6 @@ class EventController extends Controller
         'endEvent' => 'required'
       ]);
     }
-
 
 
     

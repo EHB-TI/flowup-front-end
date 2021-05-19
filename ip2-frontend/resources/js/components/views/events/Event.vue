@@ -4,17 +4,15 @@
             <a-layout-header style="background:white; height:175px; padding: 10px;">
                 
                 <div>
-                    <h1 class="absolute top-6 left-26" style=""> {{ event.name }} </h1>
-                     <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
-                     <router-link :to="{name: 'edit', params: { id: event.id}}">
-                    <b-button class="absolute top-10 right-48" variant="primary">Edit event</b-button>
-                     </router-link>
+                    <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
+                    <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
+                    <b-button class="absolute top-10 right-48" variant="danger" @click="unParticipate()">Unparticipate</b-button>
+                    <router-link :to="{name: 'edit', params: { id: event.id}}">
+                        <b-button class="absolute top-10 right-96" variant="primary">Edit event</b-button>
+                    </router-link>
                    
                 </div>
                
-                
-               
-
                 <br>
                 <div style="float:left;">
                     <b-card class="date">
@@ -54,74 +52,9 @@
                     <div>
                         <h2>Attendees</h2>
                         <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
-                            <li>
+                            <li v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
-                            </li>
-                            <br>
-                            <li>
-                                <a-avatar shape="circle" size="large" icon="user" />
-                                <span>Mark Zuckerberg</span>
+                                <span>{{ sub.user_id }}</span>
                             </li>
                             <br>
                         </ul>
@@ -129,6 +62,7 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
+        <pre>{{ subscribers.length }}</pre>
     </div> 
 </template>
 <script>
@@ -137,17 +71,52 @@ export default {
             return {
                 event: {},
                 user: {},
-                event_subscriber: {}
+
+                event_subscriber: {},
+
+                subscribers: {},
+
             }
         },
         created() {
+            //Fetch the event (by id)
             this.axios
                 .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
                 .then((res) => {
                     this.event = res.data;
-                    console.log(this.event);
-                    this.fetchUser();
+                    this.event_subscriber.event_id = this.event.id;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });;
+
+            //Fetch logged in user
+            this.axios
+                .get(`http://127.0.0.1:8000/api/users/1`)
+                .then((response) => {
+                    this.user = response.data
+                    this.event_subscriber.user_id = this.user.id;
+                })
+                .catch(function (error) {
+                    console.log(error);
                 });
+
+            //Fetch all attendees
+            this.axios
+                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
+                .then((response) => {
+                    this.subscribers = response.data
+                    console.log(this.subscribers)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+
+            //Check if attendee exists
+            
+            
+    
                 
         },
         methods: {
@@ -161,8 +130,6 @@ export default {
             },
             getDay(date) {
                 var day = date.substring(8,10);
-
-                
 
                 return day;
             },
@@ -211,25 +178,11 @@ export default {
             },
             getTime(time){
                 var result = time.substring(11,16);
-                
 
                 return result;
             },
-            fetchUser(){
-                axios
-                .get(`http://127.0.0.1:8000/api/users/1`)
-                .then((response) => {
-                    this.user = response.data
-                    console.log(this.user)
-                })
-                 .catch(function (error) {
-                // handle error
-                console.log(error);
-                });
-            },
+
             participate(){
-                this.event_subscriber.user_id = this.user[0]['id'];
-                this.event_subscriber.event_id = this.event.id;
                 axios
                 .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
                 .then((reponse) => {
@@ -238,9 +191,23 @@ export default {
                 .catch(function (error){
                     console.log(error);
                 });
+            }, 
+
+            unParticipate(){
+                
+                for(var i = 0;i < this.subscribers.length;i++)
+                {
+                    // if(this.user.id === this.subscribers[i].id)
+                    // {
+                    //     console.log("EXISTS");
+                    // } else {
+                    //     console.log("Does Not exist");
+                    // }
+
+                    console.log(this.subscribers[i].id)
+                    console.log(this.user.id)
+                }
             }
-            
-            
         }
 }
 </script>
