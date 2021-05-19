@@ -75,7 +75,6 @@ export default {
                 event_subscriber: {},
 
                 subscribers: {},
-
             }
         },
         created() {
@@ -110,14 +109,7 @@ export default {
                 })
                 .catch(function (error) {
                     console.log(error);
-                });
-
-
-            //Check if attendee exists
-            
-            
-    
-                
+                });           
         },
         methods: {
             deleteEvent(id) {
@@ -195,18 +187,18 @@ export default {
 
             unParticipate(){
                 
-                for(var i = 0;i < this.subscribers.length;i++)
-                {
-                    // if(this.user.id === this.subscribers[i].id)
-                    // {
-                    //     console.log("EXISTS");
-                    // } else {
-                    //     console.log("Does Not exist");
-                    // }
+                // for(var i = 0;i < this.subscribers.length;i++)
+                // {
+                //     // if(this.user.id === this.subscribers[i].id)
+                //     // {
+                //     //     console.log("EXISTS");
+                //     // } else {
+                //     //     console.log("Does Not exist");
+                //     // }
 
-                    console.log(this.subscribers[i].id)
-                    console.log(this.user.id)
-                }
+                //     console.log(this.subscribers[i].id)
+                //     console.log(this.user.id)
+                // }
             }
         }
 }
