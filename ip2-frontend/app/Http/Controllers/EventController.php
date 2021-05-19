@@ -14,7 +14,7 @@ class EventController extends Controller
     //
     public function index()
     {
-        $events = Event::all()->toArray();
+        $events = Event::orderBy('startEvent', 'desc')->paginate(25)->toArray();
         return array_reverse($events);
     }
 
@@ -22,12 +22,12 @@ class EventController extends Controller
     {
         $event = new Event([
             'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'startsAt' => $request->input('startsAt'),
-            'endsAt' => $request->input('endsAt'),            
+            'user_id' => $request->input('user_id'),
+            'startEvent' => $request->input('startEvent'),
+            'endEvent' => $request->input('endEvent'),     
+            'description' => $request->input('description'),       
             'location' => $request->input('location')
         ]);
-
         if($this->publishToEventQueue($event, "create")){
           $event->save();
           return response()->json('Event created!');
@@ -38,6 +38,12 @@ class EventController extends Controller
     public function show($id)
     {
         $event = Event::find($id);
+        return response()->json($event);
+    }
+
+    public function showByUser($id)
+    {
+        $event = Event::where('user_id', '=', $id)->get();
         return response()->json($event);
     }
 
@@ -60,6 +66,41 @@ class EventController extends Controller
         return response()->json('Event deleted');
     }
 
+    //ErrorHandling
+    public function checkName(Request $request)
+    {
+      $this->validate($request, [
+        'name' => 'required|max:30'
+      ]);
+    }
+
+    public function checkDescription(Request $request)
+    {
+      $this->validate($request, [
+        'description' => 'required'
+      ]);
+    }
+
+    public function checkLocation(Request $request)
+    {
+      $this->validate($request, [
+        'location' => 'required'
+      ]);
+    }
+
+    public function checkDate(Request $request)
+    {
+      $this->validate($request, [
+        'startEvent' => 'required',
+        'endEvent' => 'required'
+      ]);
+    }
+
+
+    
+    //
+
+    //RabbitMQ
     public function publishToEventQueue(Event $event,string $type){
       //Geting DateTimes in right format
         $now =  new DateTime("now",new DateTimeZone("Europe/Brussels"));

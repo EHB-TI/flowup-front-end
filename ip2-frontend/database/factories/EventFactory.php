@@ -24,12 +24,12 @@ class EventFactory extends Factory
     public function definition()
     {
         return [
-            'uuid' => $this->faker->uuid,
-            'name' => $this->faker->text($maxNbChars = 30) ,
+            'user_id' => $this->faker->numberBetween(1,10),
+            'name' => $this->faker->text($maxNbChars = 32),
+            'startEvent' => $this->faker->dateTime($max = 'now'),
+            'endEvent' => $this->faker->dateTime($max = 'now'),
             'description' => $this->faker->text($maxNbChars = 500),
             'location' => $this->faker->city,
-            'startsAt' => $this->faker->dateTime($max = 'now'),
-            'endsAt' => $this->faker->dateTime($max = 'now'),
         ];
     }
 }

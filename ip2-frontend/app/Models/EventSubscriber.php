@@ -5,21 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class EventSubscriber extends Model
 {
     use HasFactory;
 
-    protected $table = 'users';
+    protected $table = 'event_subscribers';
 
     public $primaryKey = 'id';
 
     protected $fillable = [
-        'firstName',
-        'lastName',
-        'email',
-        'birthDay',
-        'role',
-        'study'
+        'user_id',
+        'event_id',
     ];
 
+  
 }

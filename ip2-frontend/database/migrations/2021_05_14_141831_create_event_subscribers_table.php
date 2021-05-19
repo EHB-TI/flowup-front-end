@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttendeesTable extends Migration
+class CreateEventSubscribersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateAttendeesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendees', function (Blueprint $table) {
+        Schema::create('event_subscribers', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('event_id');
@@ -24,13 +23,16 @@ class CreateAttendeesTable extends Migration
         });
     }
 
-    /**
+   /**
      * Reverse the migrations.
      *
      * @return void
      */
     public function down()
     {
-        Schema::dropIfExists('attendees');
+        Schema::dropIfExists('event_subscribers');
     }
 }
+
+
+

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendee;
+use App\Models\EventSubscriber;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
-class AttendeeController extends Controller
+class EventSubscriberController extends Controller
 {
-    /**
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -15,8 +16,8 @@ class AttendeeController extends Controller
     public function index()
     {
         //
-        $attendees = Attendee::all()->toArray();
-        return array_reverse($attendees);
+        $eventSubscriber = EventSubscriber::all()->toArray();
+        return array_reverse($eventSubscriber);
     }
 
     /**
@@ -38,35 +39,37 @@ class AttendeeController extends Controller
     public function store(Request $request)
     {
         //
-        $attendee = new Attendee([
+        $eventSubscriber = new EventSubscriber([
             'user_id' => $request->input('user_id'),
             'event_id' => $request->input('event_id')
         ]);
-        $attendee->save();
+        $eventSubscriber->save();
 
-        return response()->json('Attendee created!');
+        return response()->json('EventSubscriber created!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Attendee  $attendee
+     * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function show(Attendee $attendee)
+    public function show($id)
     {
         //
-        $attendee = Attendee::find($id);
-        return response()->json($attendee);
+        $eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
+        return response()->json($eventSubscribers);
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Attendee  $attendee
+     * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function edit(Attendee $attendee)
+    public function edit(EventSubscriber $eventSubscriber)
     {
         //
     }
@@ -75,10 +78,10 @@ class AttendeeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Attendee  $attendee
+     * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Attendee $attendee)
+    public function update(Request $request, EventSubscriber $eventSubscriber)
     {
         //
     }
@@ -86,15 +89,15 @@ class AttendeeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Attendee  $attendee
+     * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
-        $attendee = Attendee::find($id);
-        $attendee->delete();
+        $eventSubscriber = EventSubscriber::find($id);
+        $eventSubscriber->delete();
 
-        return response()->json('Attendance deleted');
+        return response()->json('EventSubscriber deleted');
     }
 }
