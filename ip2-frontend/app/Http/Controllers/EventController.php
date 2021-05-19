@@ -157,6 +157,7 @@ class EventController extends Controller
         $XSDPath = "public/XML-XSD/event.xsd";
         if($doc->SchemaValidate($XSDPath)){
             $body = $doc->getElementsByTagName("body")[0];
+            $startEvent = date_create_from_format(\DateTime::RFC3339,$body->getElementsByTagName("startEvent")[0]->nodeValue);
             $endEvent = date_create_from_format(\DateTime::RFC3339,$body->getElementsByTagName("endEvent")[0]->nodeValue);
             
             $event = new Event([
