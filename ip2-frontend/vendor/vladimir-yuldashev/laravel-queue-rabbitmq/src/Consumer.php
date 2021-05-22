@@ -78,7 +78,7 @@ class Consumer extends Worker
 
         //declare channel
         $this->channel = $connection->getChannel();
-        
+
         //declare exchange
         $this->channel->exchange_declare('direct_logs', 'direct', false, false, false);
 
@@ -88,7 +88,7 @@ class Consumer extends Worker
         //bind queue to routing user, event and frontend_error
         $this->channel->queue_bind($queue, 'direct_logs', 'user');
         $this->channel->queue_bind($queue, 'direct_logs', 'event');
-        $this->channel->queue_bind($queue, 'direct_logs', 'frontend_error');
+        $this->channel->queue_bind($queue, 'direct_logs', 'frontend');
 
         $this->channel->basic_qos(
             $this->prefetchSize,
@@ -108,7 +108,22 @@ class Consumer extends Worker
 
                 //show the message body
                 error_log($message->getBody());
-                
+
+                $string = $message->getBody();
+                $doc = new \DOMDocument();
+                $doc->loadXML($string);
+                $XSDPath = "public/XML-XSD/event.xsd";
+                if($doc->SchemaValidate($XSDPath)){
+                    EventController::recieveEvent($doc);
+                }else{
+                    $XSDPath = "public/XML-XSD/user.xsd";
+                    if($doc->SchemaValidate($XSDPath)){
+
+                    }else{
+                        error_log('xml is not valid');
+                    }
+                }
+
 
                 $routingKey = $message->delivery_info['routing_key'];
 
@@ -130,8 +145,8 @@ class Consumer extends Worker
                             error_log($ex);
                         }
                          break;
-                     case 'frontend_error':
-                         //EventController::receiveEvent($message);
+                     case 'frontend':
+                         EventController::receiveEvent($message);
                          break;
                  }
 
