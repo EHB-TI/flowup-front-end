@@ -32,7 +32,7 @@ class UserFactory extends Factory
             'firstName' => $firstName,
             'lastName' => $lastName,
             'email' => $email,
-            'birthDay' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
+            'birthday' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
             'role' => 'student',
             'study' => 'TI'
         ];

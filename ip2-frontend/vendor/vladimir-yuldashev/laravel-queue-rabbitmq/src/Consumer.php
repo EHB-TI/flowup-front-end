@@ -2,6 +2,7 @@
 
 namespace VladimirYuldashev\LaravelQueueRabbitMQ;
 
+use App\Http\Controllers\ConsumerController;
 use Exception;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
@@ -88,7 +89,7 @@ class Consumer extends Worker
         //bind queue to routing user, event and frontend_error
         $this->channel->queue_bind($queue, 'direct_logs', 'user');
         $this->channel->queue_bind($queue, 'direct_logs', 'event');
-        $this->channel->queue_bind($queue, 'direct_logs', 'frontend_error');
+        $this->channel->queue_bind($queue, 'direct_logs', 'FrontEnd');
 
         $this->channel->basic_qos(
             $this->prefetchSize,
@@ -108,33 +109,12 @@ class Consumer extends Worker
 
                 //show the message body
                 error_log($message->getBody());
+                try{
+                    ConsumerController::recievemssg($message);
+                }catch(Exception $e){
+                    error_log($e);
+                }
                 
-
-                $routingKey = $message->delivery_info['routing_key'];
-
-                //show the routing key of the message
-                error_log($routingKey);
-                //select which controller handels the message based on the routing key
-                switch ($routingKey) {
-                     case 'user':
-                        try{
-                            UserController::recieveUser($message);
-                        }catch(Exception $ex){
-                            error_log($ex);
-                        }
-                         break;
-                     case 'event':
-                        try{
-                            EventController::recieveEvent($message);
-                        }catch(Exception $ex){
-                            error_log($ex);
-                        }
-                         break;
-                     case 'frontend_error':
-                         //EventController::receiveEvent($message);
-                         break;
-                 }
-
                 }
         );
 

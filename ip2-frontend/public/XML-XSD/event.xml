@@ -3,11 +3,12 @@
 <event>
     <header>
         <UUID></UUID>
+        <sourceEntityId></sourceEntityId>
         <organiserUUID></organiserUUID>
+        <organiserSourceEntityId>1</organiserSourceEntityId>
         <method></method>
         <origin>FrontEnd</origin>
-        <version>1</version>
-        <sourceEntityId></sourceEntityId>
+        <version></version>
         <timestamp></timestamp>
     </header>
     <body>

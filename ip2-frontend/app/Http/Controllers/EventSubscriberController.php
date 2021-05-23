@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\EventSubscriber;
 use App\Models\Event;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 class EventSubscriberController extends Controller
 {
@@ -100,4 +104,49 @@ class EventSubscriberController extends Controller
 
         return response()->json('EventSubscriber deleted');
     }
+
+    public function sendXMLtoUUID(EventSubscriber $eventSubscriber,string $type){
+        //Geting DateTimes in right format
+          $now =  new DateTime("now",new DateTimeZone("Europe/Brussels"));
+          $XSDate = $now->format(\DateTime::RFC3339);
+  
+          //Seting type to all cap
+          $type = strtoupper($type);
+  
+          //XML/XSD paths
+          $xmlPath = "XML-XSD/event.xml";
+          $XSDPath = "XML-XSD/event.xsd";
+          
+          //Loading in the XML
+          $xml = new \DOMDocument();
+          $xml->load($xmlPath);
+  
+          //Changing Header Value
+          $header = $xml->getElementsByTagName("header")[0];
+  
+          $header->getElementsByTagName("method")[0]->nodeValue = $type;
+          $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
+  
+          //Changing Body values
+          $body = $xml->getElementsByTagName("body")[0];
+
+          
+          
+          //Validate XML whit XSD
+          if (!$xml->schemaValidate($XSDPath)) {
+              $error = libxml_get_last_error();
+              error_log($error);
+              return false;
+          }
+  
+          //Publish event to event queue
+          error_log($xml->saveXML());
+          $ROUTEKEY = "UUID";
+          $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+          $channel = $connection->channel();
+          
+          $data = new AMQPMessage($xml->saveXML());
+          $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
+          return true;
+      }
 }
