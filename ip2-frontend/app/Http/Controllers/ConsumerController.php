@@ -38,11 +38,11 @@ class ConsumerController extends Controller
 
         $doc = new \DOMDocument();
         $doc->loadXML($string);
-        
+
         //get type
         $type = $doc->documentElement->tagName;
         $XSD = "";
-        switch($doc->documentElement->tagName){
+        switch ($doc->documentElement->tagName) {
             case ConsumerController::EVENT:
                 $XSD = $eventXSD;
                 break;
@@ -74,66 +74,95 @@ class ConsumerController extends Controller
                 //Got message from UUID
                 //No sourceEntityId but filled UUID
                 if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
-                    //Message confirming it is not in our DB
-                    //Set correct route
-                    $ROUTEKEY = "UUID";
 
-                    //Execute request on correct type (Create obj, Update obj or Delete obj)
-                    switch ($type) {
-                        case ConsumerController::USER:
-                            switch ($header->getElementsByTagName("method")[0]->nodeValue) {
-                                case "CREATE":
-                                    $id = UserController::storeRecievedUser($doc);
-                                    $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $id;
-                                    break;
-                                case "UPDATE":
-                                    //TODO Execute an user update
-                                    break;
-                                case "DELETE":
-                                    //TODO Execute an user delete
-                                    break;
-                            }
-                            break;
-
-                        case ConsumerController::EVENT:
-                            switch ($header->getElementsByTagName("method")[0]->nodeValue) {
-                                case "CREATE":
-                                    $id = EventController::storeRecievedEvent($doc);
-                                    $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $id;
-                                    break;
-                                case "UPDATE":
-                                    //TODO Execute an event update
-                                    break;
-                                case "DELETE":
-                                    //TODO Execute an event delete
-                                    break;
-                            }
-                            break;
+                    if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "CREATE") {
 
 
-                        case ConsumerController::EVENTSUBSCRIBE:
-                            switch ($header->getElementsByTagName("method")[0]->nodeValue) {
-                                case "CREATE":
-                                    //TODO Store en eventSubscribe you recieved
-                                    break;
-                                case "UPDATE":
-                                    //TODO Execute an eventSubscribe update
-                                    break;
-                                case "DELETE":
-                                    //TODO Execute an eventSubscribe delete
-                                    break;
-                            }
-                            break;
+                        //Message confirming it is not in our DB
+                        //Set correct route
+                        $ROUTEKEY = "UUID";
+
+                        //Execute request on correct type (Create obj)
+                        switch ($type) {
+                            case ConsumerController::USER:
+                                $id = UserController::storeRecievedUser($doc);
+                                break;
+
+                            case ConsumerController::EVENT:
+                                $id = EventController::storeRecievedEvent($doc);
+                                break;
+
+                            case ConsumerController::EVENTSUBSCRIBE:
+                                $id = EventSubscriberController::storeRecievedEventSubscribe($doc);
+                                break;
+                        }
+                        $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $id;
+
+                        //Update got saved to UUID Master
+                    } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "UPDATE") {
+                        //Set correct route
+                        $ROUTEKEY = $type;
                     }
                 } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue != "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
-                    //Message confirming it is saved in our DB
-                    //Send to User queue
-                    $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
 
-                    //Set correct route
+                    if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "CREATE") {
+
+
+                        //Message confirming it is not in our DB
+                        //Set correct route
+                        $ROUTEKEY = "UUID";
+
+                        //Execute request on correct type (Update obj)
+                        switch ($type) {
+                            case ConsumerController::USER:
+                                UserController::updateRecievedUser($doc);
+                                break;
+
+                            case ConsumerController::EVENT:
+                                EventController::updateRecievedEvent($doc);
+                                break;
+
+                            case ConsumerController::EVENTSUBSCRIBE:
+                                EventSubscriberController::updateRecievedEventSubscibe($doc);
+                                break;
+                        }
+
+                        //Create got saved to UUID Master
+                    } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "CREATE") {
+                        //Message confirming it is saved in our DB
+                        //Send to User queue
+                        $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
+
+                        //Set correct route
+                        $ROUTEKEY = $type;
+                    } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "DELETE") {
+                        //Message confirming it is not in our DB
+                        //Set correct route
+                        $ROUTEKEY = "UUID";
+
+                        //Execute request on correct type (Delete obj)
+                        switch ($type) {
+                            case ConsumerController::USER:
+                                UserController::deleteRecievedUser($doc);
+                                break;
+
+                            case ConsumerController::EVENT:
+                                EventController::deleteRecievedEvent($doc);
+                                break;
+
+                            case ConsumerController::EVENTSUBSCRIBE:
+                                EventSubscriberController::deleteRecievedEventSubscibe($doc);
+                                break;
+                        }
+                        //Dont send if deleted
+                        return;
+                    }
+                } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue != "" && $header->getElementsByTagName("UUID")[0]->nodeValue == "") {
+                    //Delete got saved in UUID Master
                     $ROUTEKEY = $type;
                 }
 
+                //Send to RabbitMQ
                 $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
                 $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
                 $data = new AMQPMessage($doc->saveXML());

@@ -149,4 +149,35 @@ class EventSubscriberController extends Controller
           $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
           return true;
       }
+
+      public static function storeRecievedEventSubscribe(\DOMDocument $doc){
+
+        $body = $doc->getElementsByTagName("body")[0];
+        $eventSubscriber = new EventSubscriber([
+            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0],
+            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]
+        ]);
+        $eventSubscriber->save();
+
+        return $eventSubscriber->id;
+      }
+
+      public static function updateRecievedEventSubscibe(\DOMDocument $doc)
+      {
+        $body = $doc->getElementsByTagName("body")[0];
+
+        $EventSubscriber = EventSubscriber::find($body->getElementsByTagName("sourceEntityId")[0]);
+        $newEventSubscriber = new EventSubscriber([
+            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0],
+            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]
+        ]);
+        $EventSubscriber->update($newEventSubscriber);
+      }
+
+      public static function deleteRecievedEventSubscibe(\DOMDocument $doc)
+      {
+        $header = $doc->getElementsByTagName("header")[0];
+        $EventSubscriber = EventSubscriber::find($header->getElementsByTagName("sourceEntityId")[0]);
+        $EventSubscriber->delete();
+      }
 }

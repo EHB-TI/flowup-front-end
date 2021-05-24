@@ -153,29 +153,53 @@ class EventController extends Controller
     $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
     return true;
   }
-  
+
   public static function storeRecievedEvent(\DOMDocument $doc)
   {
     $body = $doc->getElementsByTagName("body")[0];
-      $startEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("startEvent")[0]->nodeValue);
-      $endEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("endEvent")[0]->nodeValue);
+    $startEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("startEvent")[0]->nodeValue);
+    $endEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("endEvent")[0]->nodeValue);
 
-      $event = new Event([
-        'name' => $body->getElementsByTagName("name")[0]->nodeValue,
-        'user_id' => 9,
-        'startEvent' =>  $startEvent,
-        'endEvent' => $endEvent,
-        'location' => $body->getElementsByTagName("location")[0]->nodeValue,
-        'description' => $body->getElementsByTagName("description")[0]->nodeValue,
-      ]);
-
-      error_log('got here');
+    $event = new Event([
+      'name' => $body->getElementsByTagName("name")[0]->nodeValue,
+      'user_id' => 9,
+      'startEvent' =>  $startEvent,
+      'endEvent' => $endEvent,
+      'location' => $body->getElementsByTagName("location")[0]->nodeValue,
+      'description' => $body->getElementsByTagName("description")[0]->nodeValue,
+    ]);
 
 
-      $event->save();
+    $event->save();
 
-      
 
-      return $event->id;
+
+    return $event->id;
+  }
+
+  public static function updateRecievedEvent(\DOMDocument $doc)
+  {
+    $body = $doc->getElementsByTagName("body")[0];
+    $header = $doc->getElementsByTagName("header")[0];
+    $startEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("startEvent")[0]->nodeValue);
+    $endEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("endEvent")[0]->nodeValue);
+    $event = Event::find($body->getElementsByTagName("sourceEntityId")[0]->nodeValue);
+    $updateEvent = new Event([
+      'name' => $body->getElementsByTagName("name")[0]->nodeValue,
+      'user_id' => 9,
+      'startEvent' =>  $startEvent,
+      'endEvent' => $endEvent,
+      'location' => $body->getElementsByTagName("location")[0]->nodeValue,
+      'description' => $body->getElementsByTagName("description")[0]->nodeValue,
+    ]);
+
+    $event->update($updateEvent);
+  }
+
+  public static function deleteRecievedEvent(\DOMDocument $doc)
+  {
+    $header = $doc->getElementsByTagName("header")[0];
+    $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
+    $event->delete();
   }
 }
