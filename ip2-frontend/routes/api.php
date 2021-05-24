@@ -40,7 +40,8 @@ Route::post('participate', \App\Http\Controllers\EventSubscriberController::clas
 
 
 Route::get('showByUser/{id}', \App\Http\Controllers\EventController::class . '@showByUser');
-Route::get('showSubscribers/{id}', \App\Http\Controllers\EventSubscriberController::class . '@show');
+
+Route::get('showAllSubscribers/{id}', \App\Http\Controllers\EventSubscriberController::class . '@showAllSubscribers');
 
 
 

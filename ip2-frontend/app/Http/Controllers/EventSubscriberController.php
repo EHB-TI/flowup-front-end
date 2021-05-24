@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\EventSubscriber;
 use App\Models\Event;
+use App\Models\User;
+
 use Illuminate\Http\Request;
 
 class EventSubscriberController extends Controller
@@ -56,9 +58,27 @@ class EventSubscriberController extends Controller
      */
     public function show($id)
     {
+        
+    }
+
+    public function showAllSubscribers($event_id)
+    {
         //
-        $eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
-        return response()->json($eventSubscribers);
+        $eventSubscribers = EventSubscriber::select('user_id')->where('event_id', '=', $event_id)->get();
+
+        $results = [];
+
+        for($i = 0; $i < count($eventSubscribers); $i++)
+        {
+            $firstName = User::select('firstName')->where('id', '=', $eventSubscribers[$i]->user_id)->first();
+            $lastName = User::select('lastName')->where('id', '=', $eventSubscribers[$i]->user_id)->first();
+
+            $name = $firstName['firstName'] . ' ' . $lastName['lastName'];
+
+            array_push($results, $name);
+        }
+
+        return response($results);
     }
 
 

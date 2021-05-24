@@ -31,7 +31,7 @@
                  <div style="float:left;">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
-                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startEvent) }}</span>
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.endEvent) }}</span>
                         </div>
                         <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
                             <span class="text-black font-bold text-l ">{{ getMonth(event.endEvent) }}</span>
@@ -52,9 +52,9 @@
                     <div>
                         <h2>Attendees</h2>
                         <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
-                            <li v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
+                            <li v-for="att in attendees" :key="att.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
-                                <span>{{ sub.user_id }}</span>
+                                <span>{{ att }}</span>
                             </li>
                             <br>
                         </ul>
@@ -62,7 +62,6 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
-        <pre>{{ subscribers.length }}</pre>
     </div> 
 </template>
 <script>
@@ -70,11 +69,12 @@ export default {
         data() {
             return {
                 event: {},
+
                 user: {},
 
                 event_subscriber: {},
 
-                subscribers: {},
+                attendees: {},
             }
         },
         created() {
@@ -91,7 +91,7 @@ export default {
 
             //Fetch logged in user
             this.axios
-                .get(`http://127.0.0.1:8000/api/users/1`)
+                .get(`http://127.0.0.1:8000/api/users/3`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -100,16 +100,20 @@ export default {
                     console.log(error);
                 });
 
-            //Fetch all attendees
+
+            //All attendees
             this.axios
-                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
+                .get(`http://127.0.0.1:8000/api/showAllSubscribers/${this.$route.params.id}`)
                 .then((response) => {
-                    this.subscribers = response.data
-                    console.log(this.subscribers)
+                    this.attendees = response.data
+
+                    console.log(this.attendees)
                 })
                 .catch(function (error) {
                     console.log(error);
-                });           
+                });
+
+            
         },
         methods: {
             deleteEvent(id) {
@@ -179,6 +183,8 @@ export default {
                 .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
                 .then((reponse) => {
                     console.log(reponse);
+
+
                 })
                 .catch(function (error){
                     console.log(error);
@@ -187,18 +193,6 @@ export default {
 
             unParticipate(){
                 
-                // for(var i = 0;i < this.subscribers.length;i++)
-                // {
-                //     // if(this.user.id === this.subscribers[i].id)
-                //     // {
-                //     //     console.log("EXISTS");
-                //     // } else {
-                //     //     console.log("Does Not exist");
-                //     // }
-
-                //     console.log(this.subscribers[i].id)
-                //     console.log(this.user.id)
-                // }
             }
         }
 }
