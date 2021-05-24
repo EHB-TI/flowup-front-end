@@ -162,9 +162,14 @@ class EventController extends Controller
             
             $event = new Event([
                 'name' => $body->getElementsByTagName("name")[0]->nodeValue, 
+<<<<<<< Updated upstream
                 'user_id' => 9,
                 'startEvent' =>  $startEvent,
                 'endEvent' => $endEvent,
+=======
+                'startEvent' => $body->getElementsByTagName("startEvent")[0]->nodeValue,
+                'endEvent' => $body->getElementsByTagName("endEvent")[0]->nodeValue,
+>>>>>>> Stashed changes
                 'location' => $body->getElementsByTagName("location")[0]->nodeValue,
                 'description' => $body->getElementsByTagName("description")[0]->nodeValue,
             ]);
