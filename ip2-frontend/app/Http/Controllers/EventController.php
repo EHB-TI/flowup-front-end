@@ -96,8 +96,6 @@ class EventController extends Controller
       ]);
     }
 
-
-    
     //
 
     //RabbitMQ
@@ -105,8 +103,8 @@ class EventController extends Controller
       //Geting DateTimes in right format
         $now =  new DateTime("now",new DateTimeZone("Europe/Brussels"));
         $XSDate = $now->format(\DateTime::RFC3339);
-        $startsAt = date_create_from_format("Y-m-d H:i:s",$event->startsAt)->format(\DateTime::RFC3339);
-        $endsAt = date_create_from_format("Y-m-d H:i:s",$event->endsAt)->format(\DateTime::RFC3339);
+        $startEvent = date_create_from_format("Y-m-d H:i:s",$event->startEvent)->format(\DateTime::RFC3339);
+        $endEvent = date_create_from_format("Y-m-d H:i:s",$event->endEvent)->format(\DateTime::RFC3339);
 
         //Seting type to all cap
         $type = strtoupper($type);
@@ -127,10 +125,10 @@ class EventController extends Controller
 
         //Changing Body values
         $body = $xml->getElementsByTagName("body")[0];
-
+        
         $body->getElementsByTagName("name")[0]->nodeValue = $event->name;
-        $body->getElementsByTagName("startEvent")[0]->nodeValue = $startsAt;
-        $body->getElementsByTagName("endEvent")[0]->nodeValue = $endsAt;
+        $body->getElementsByTagName("startEvent")[0]->nodeValue = $startEvent;
+        $body->getElementsByTagName("endEvent")[0]->nodeValue = $endEvent;
         $body->getElementsByTagName("location")[0]->nodeValue = $event->location;
         $body->getElementsByTagName("description")[0]->nodeValue = $event->description;
         
@@ -144,7 +142,7 @@ class EventController extends Controller
         //Publish event to event queue
         error_log($xml->saveXML());
         $ROUTEKEY = "event";
-        $connection = new AMQPStreamConnection('10.3.56.6', 5672, 'guest', 'guest');
+        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
         $channel = $connection->channel();
         
         $data = new AMQPMessage($xml->saveXML());
@@ -159,13 +157,19 @@ class EventController extends Controller
         $XSDPath = "public/XML-XSD/event.xsd";
         if($doc->SchemaValidate($XSDPath)){
             $body = $doc->getElementsByTagName("body")[0];
-             $event = new Event([
+            $startEvent = date_create_from_format(\DateTime::RFC3339,$body->getElementsByTagName("startEvent")[0]->nodeValue);
+            $endEvent = date_create_from_format(\DateTime::RFC3339,$body->getElementsByTagName("endEvent")[0]->nodeValue);
+            
+            $event = new Event([
                 'name' => $body->getElementsByTagName("name")[0]->nodeValue, 
-                'startsAt' => $body->getElementsByTagName("startEvent")[0]->nodeValue,
-                'endsAt' => $body->getElementsByTagName("endEvent")[0]->nodeValue,
+                'user_id' => 9,
+                'startEvent' =>  $startEvent,
+                'endEvent' => $endEvent,
                 'location' => $body->getElementsByTagName("location")[0]->nodeValue,
                 'description' => $body->getElementsByTagName("description")[0]->nodeValue,
             ]);
+
+            error_log('got here');
            
 
             $event->save();
