@@ -95,18 +95,26 @@ class EventSubscriberController extends Controller
         //
     }
 
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
-        $eventSubscriber = EventSubscriber::find($id);
-        $eventSubscriber->delete();
-
-        return response()->json('EventSubscriber deleted');
+        
+        $user_id = $request->input('user_id');
+        $event_id = $request->input('event_id');
+        if(DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->delete()){
+            return response()->json('EventSubscriber deleted');
+        }
+        else{
+            return response()->json('EventSubscriber does not exist so can\'t be deleted');
+        }
+        
+        
+        
     }
 }

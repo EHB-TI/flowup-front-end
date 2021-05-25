@@ -186,6 +186,14 @@ export default {
             }, 
 
             unParticipate(){
+                axios
+                .post(`http://127.0.0.1:8000/api/unparticipate/`, this.event_subscriber)
+                .then((reponse) => {
+                    console.log(reponse);
+                })
+                .catch(function (error){
+                    console.log(error);
+                });
                 
                 // for(var i = 0;i < this.subscribers.length;i++)
                 // {
