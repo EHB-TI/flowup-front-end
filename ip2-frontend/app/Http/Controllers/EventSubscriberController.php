@@ -95,6 +95,9 @@ class EventSubscriberController extends Controller
         //
     }
 
+    /*public function checkSubscribed(){
+
+    }*/
 
     /**
      * Remove the specified resource from storage.
