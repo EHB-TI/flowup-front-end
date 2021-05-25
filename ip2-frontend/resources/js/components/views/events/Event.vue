@@ -54,7 +54,7 @@
                         <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
                             <li v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
-                                <span>{{ sub.user_id }}</span>
+                                <span>{{ sub.firstName +' '+ sub.lastName }}</span>
                             </li>
                             <br>
                         </ul>

@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\EventSubscriber;
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class EventSubscriberController extends Controller
 {
@@ -57,7 +60,13 @@ class EventSubscriberController extends Controller
     public function show($id)
     {
         //
-        $eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
+        //$eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
+        
+        $eventSubscribers = DB::table('users')
+        ->join('event_subscribers', 'users.id', '=','event_subscribers.user_id')
+        ->select('event_subscribers.id','users.firstName', 'users.lastName')
+        ->where('event_id','=',$id)->get();
+        
         return response()->json($eventSubscribers);
     }
 
