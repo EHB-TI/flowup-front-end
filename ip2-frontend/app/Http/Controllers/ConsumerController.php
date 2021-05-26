@@ -75,7 +75,7 @@ class ConsumerController extends Controller
                 //No sourceEntityId but filled UUID
                 if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
 
-                    if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "CREATE") {
+                    if ($header->getElementsByTagName("method")[0]->nodeValue == "CREATE") {
 
 
                         //Message confirming it is not in our DB
@@ -99,13 +99,13 @@ class ConsumerController extends Controller
                         $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $id;
 
                         //Update got saved to UUID Master
-                    } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "UPDATE") {
+                    } else if ($header->getElementsByTagName("method")[0]->nodeValue == "UPDATE" || $header->getElementsByTagName("method")[0]->nodeValue = "DELETE") {
                         //Set correct route
                         $ROUTEKEY = $type;
                     }
                 } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue != "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
 
-                    if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "CREATE") {
+                    if ($header->getElementsByTagName("method")[0]->nodeValue == "UPDATE") {
 
 
                         //Message confirming it is not in our DB
@@ -128,17 +128,16 @@ class ConsumerController extends Controller
                         }
 
                         //Create got saved to UUID Master
-                    } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "CREATE") {
+                    } else if ($header->getElementsByTagName("method")[0]->nodeValue == "CREATE") {
+                        $ROUTEKEY = "UUID";
                         //Message confirming it is saved in our DB
                         //Send to User queue
                         $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
 
                         //Set correct route
                         $ROUTEKEY = $type;
-                    } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "DELETE") {
+                    } else if ($header->getElementsByTagName("method")[0]->nodeValue == "DELETE") {
                         //Message confirming it is not in our DB
-                        //Set correct route
-                        $ROUTEKEY = "UUID";
 
                         //Execute request on correct type (Delete obj)
                         switch ($type) {

@@ -62,9 +62,12 @@ class EventController extends Controller
   public function destroy($id)
   {
     $event = Event::find($id);
-    $event->delete();
-
-    return response()->json('Event deleted');
+    
+    if ($this->sendXMLtoUUID($event, "delete")) {
+      $event->delete();
+      return response()->json('Event deleted');
+    }
+    
   }
 
   //ErrorHandling
@@ -184,15 +187,14 @@ class EventController extends Controller
     $startEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("startEvent")[0]->nodeValue);
     $endEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("endEvent")[0]->nodeValue);
     $event = Event::find($body->getElementsByTagName("sourceEntityId")[0]->nodeValue);
-    $updateEvent = new Event([
+    $updateEvent = [
       'name' => $body->getElementsByTagName("name")[0]->nodeValue,
       'user_id' => 9,
       'startEvent' =>  $startEvent,
       'endEvent' => $endEvent,
       'location' => $body->getElementsByTagName("location")[0]->nodeValue,
       'description' => $body->getElementsByTagName("description")[0]->nodeValue,
-    ]);
-
+    ];
     $event->update($updateEvent);
   }
 
