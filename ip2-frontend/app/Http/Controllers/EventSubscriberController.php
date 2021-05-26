@@ -95,9 +95,21 @@ class EventSubscriberController extends Controller
         //
     }
 
-    /*public function checkSubscribed(){
-
-    }*/
+    public function checkIfSubscribed(Request $request){
+        
+        $user_id = $request->input('user_id');
+        $event_id = $request->input('event_id');
+        $subscriber = DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->get();
+        error_log($subscriber);
+        if($subscriber->count()==0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
 
     /**
      * Remove the specified resource from storage.

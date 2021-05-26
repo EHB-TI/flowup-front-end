@@ -5,8 +5,7 @@
                 
                 <div>
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
-                    <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
-                    <b-button class="absolute top-10 right-48" variant="danger" @click="unParticipate()">Unparticipate</b-button>
+                    <b-button id="subOrUnSubButton" class="absolute top-10 right-16" variant="danger"  @click="subOrUnsub()">Participate</b-button>
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
                         <b-button class="absolute top-10 right-96" variant="primary">Edit event</b-button>
                     </router-link>
@@ -49,10 +48,10 @@
                 </a-layout-content>
 
                 <a-layout-sider style="background:white; padding:10px; height:700px;">
-                    <div>
+                    <div v-if="showAttendees">
                         <h2>Attendees</h2>
-                        <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
-                            <li v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
+                        <ul  style="overflow:hidden; overflow-y:scroll; height:640px;">
+                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
                                 <span>{{ sub.firstName +' '+ sub.lastName }}</span>
                             </li>
@@ -73,13 +72,14 @@ export default {
                 user: {},
 
                 event_subscriber: {},
-
                 subscribers: {},
+                showAttendees: false,
+                isSubscribed: false,
             }
         },
-        created() {
+        async created() {
             //Fetch the event (by id)
-            this.axios
+            await this.axios
                 .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
                 .then((res) => {
                     this.event = res.data;
@@ -87,10 +87,12 @@ export default {
                 })
                 .catch(function (error) {
                     console.log(error);
-                });;
+                }).then(()=> {
+                    
+                });
 
             //Fetch logged in user
-            this.axios
+            await this.axios
                 .get(`http://127.0.0.1:8000/api/users/1`)
                 .then((response) => {
                     this.user = response.data
@@ -101,15 +103,10 @@ export default {
                 });
 
             //Fetch all attendees
-            this.axios
-                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
-                .then((response) => {
-                    this.subscribers = response.data
-                    console.log(this.subscribers)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });           
+            this.refreshAttendees();
+
+            //check person is subscribed to event
+            this.checkIfSubscribed();           
         },
         methods: {
             deleteEvent(id) {
@@ -174,40 +171,71 @@ export default {
                 return result;
             },
 
-            participate(){
+            refreshAttendees(){
                 axios
-                .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
-                .then((reponse) => {
-                    console.log(reponse);
+                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
+                .then((response) => {
+                    this.subscribers = response.data
+                    this.showAttendees = true;
+                    console.log(this.subscribers)
                 })
-                .catch(function (error){
+                .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            subOrUnsub(){
+                this.checkIfSubscribed()
+                if(this.isSubscribed == 0)
+                {
+                    axios
+                    .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
+                    .then((reponse) => {
+                        console.log(reponse);
+                        //document.getElementById("subOrUnSubButton").textContent="Participate";
+                        this.refreshAttendees(); 
+                    })
+                    .catch(function (error){
+                        console.log(error);
+                    });
+
+                }
+                else
+                {
+                    axios
+                    .post(`http://127.0.0.1:8000/api/unparticipate/`, this.event_subscriber)
+                    .then((reponse) => {
+                        console.log(reponse);
+                        //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
+                        this.refreshAttendees();
+                    })
+                    .catch(function (error){
+                        console.log(error);
+                    });
+                }
+                this.checkIfSubscribed();
+                
             }, 
 
-            unParticipate(){
+            checkIfSubscribed(){
                 axios
-                .post(`http://127.0.0.1:8000/api/unparticipate/`, this.event_subscriber)
-                .then((reponse) => {
-                    console.log(reponse);
+                .post(`http://127.0.0.1:8000/api/checkIfSubscribed/`, this.event_subscriber)
+                .then((response) => {
+                    this.isSubscribed = response.data;
+                    console.log(this.isSubscribed);
+                    var x = document.getElementById("subOrUnSubButton");
+                    if(this.isSubscribed==0){
+                        x.innerHTML="Participate";
+                    }else{
+                        x.innerHTML="UnParticipate";
+                    }
                 })
-                .catch(function (error){
+                .catch(function (error) {
                     console.log(error);
                 });
-                
-                // for(var i = 0;i < this.subscribers.length;i++)
-                // {
-                //     // if(this.user.id === this.subscribers[i].id)
-                //     // {
-                //     //     console.log("EXISTS");
-                //     // } else {
-                //     //     console.log("Does Not exist");
-                //     // }
-
-                //     console.log(this.subscribers[i].id)
-                //     console.log(this.user.id)
-                // }
             }
+            
+            
         }
 }
 </script>
