@@ -3,13 +3,14 @@
          <a-layout>
             <a-layout-header style="background:white; height:175px; padding: 10px;">
                 
-                <div>
+                <div style="display:block; width:80%">
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
-                    <b-button id="subOrUnSubButton" class="absolute top-10 right-16" variant="danger"  @click="subOrUnsub()">Participate</b-button>
+                </div>
+                <div style="display:block; float:right; width:20%">
+                    <b-button id="subOrUnSubButton" class="" variant="danger"  @click="subOrUnsub()">Participate</b-button>
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
-                        <b-button class="absolute top-10 right-96" variant="primary">Edit event</b-button>
+                        <b-button class="" variant="primary">Edit event</b-button>
                     </router-link>
-                   
                 </div>
                
                 <br>
