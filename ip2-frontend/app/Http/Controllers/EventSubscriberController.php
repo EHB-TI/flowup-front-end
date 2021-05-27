@@ -10,7 +10,7 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use App\Models\User
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class EventSubscriberController extends Controller

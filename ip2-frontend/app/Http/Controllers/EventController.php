@@ -204,3 +204,4 @@ class EventController extends Controller
     $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $event->delete();
   }
+}
