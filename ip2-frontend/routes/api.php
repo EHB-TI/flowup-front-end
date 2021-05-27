@@ -46,6 +46,6 @@ Route::get('showAllSubscribers/{id}', \App\Http\Controllers\EventSubscriberContr
 
 
 
-Route::get('/status', [StatusController::class, 'GetMssg']);
+Route::get('/status', [StatusController::class . '@GetMssg']);
 
 

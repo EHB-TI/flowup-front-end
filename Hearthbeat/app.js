@@ -26,7 +26,7 @@ amqp.connect(RABBITMQ, function (error0, connection) {
 });
 
 function SendHeartBeat() {
-  fetch('http://127.0.0.1:8000/api/status').then(response => response.json()).then(data => {
+  fetch('http://localhost/api/status').then(response => response.json()).then(data => {
     if(!data.error || !data){
       channel.sendToQueue(QUEUE, Buffer.from(data.msg))
       console.log(" [x] Sent %s", data.msg);

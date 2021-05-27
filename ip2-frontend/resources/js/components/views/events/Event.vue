@@ -62,6 +62,8 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
+
+
     </div> 
 </template>
 <script>
@@ -116,14 +118,6 @@ export default {
             
         },
         methods: {
-            deleteEvent(id) {
-                this.axios
-                    .delete(`http://127.0.0.1:8000/api/events/${this.$route.params.id}`)
-                    .then(response => {
-                        let i = this.event.map(data => data.id).indexOf(id);
-                        this.event.splice(i, 1);
-                    });
-            },
             getDay(date) {
                 var day = date.substring(8,10);
 
