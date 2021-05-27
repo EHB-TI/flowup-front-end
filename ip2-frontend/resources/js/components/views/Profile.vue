@@ -13,7 +13,7 @@
                             {{ user.email }}
                         </a-descriptions-item>
                         <a-descriptions-item label="Birthday">
-                            {{ user.birthDay }}
+                            {{ user.birthday }}
                         </a-descriptions-item>
                         <a-descriptions-item label="Study">
                             {{ user.study }}

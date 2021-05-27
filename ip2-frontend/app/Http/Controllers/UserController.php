@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use DOMDocument;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 class UserController extends Controller
 {
@@ -90,29 +92,45 @@ class UserController extends Controller
         //
     }
 
-    public static function recieveUser(AMQPMessage $message){
-        $message->ack();
-        $string = $message->getBody();
-        $doc = new \DOMDocument();
-        $doc->loadXML($string);
-        $XSDPath = "public/XML-XSD/user.xsd";
-        if($doc->SchemaValidate($XSDPath)){
-            $body = $doc->getElementsByTagName("body")[0];
-             $user = new User([
-                'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue, 
-                'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
-                'email' => $body->getElementsByTagName("email")[0]->nodeValue,
-                'birthDate' => $body->getElementsByTagName("birthday")[0]->nodeValue,
-                'role' => $body->getElementsByTagName("role")[0]->nodeValue,
-                'study' => $body->getElementsByTagName("study")[0]->nodeValue,
-            ]);
-           
+    public static function storeRecievedUser(\DOMDocument $doc)
+    {
 
-            $user->save();
-        }else{
-            error_log('error');
-        }
+        $body = $doc->getElementsByTagName("body")[0];
+        $user = new User([
+            'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue,
+            'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
+            'email' => $body->getElementsByTagName("email")[0]->nodeValue,
+            'birthday' => $body->getElementsByTagName("birthday")[0]->nodeValue,
+            'role' => $body->getElementsByTagName("role")[0]->nodeValue,
+            'study' => $body->getElementsByTagName("study")[0]->nodeValue,
+        ]);
+
+
+        $user->save();
+        return $user->id;
     }
 
+    public static function updateRecievedUser(\DOMDocument $doc)
+    {
 
+        $body = $doc->getElementsByTagName("body")[0];
+        $header = $doc->getElementsByTagName("header")[0];
+        $user = User::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
+        $newUser = [
+            'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue,
+            'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
+            'email' => $body->getElementsByTagName("email")[0]->nodeValue,
+            'birthday' => $body->getElementsByTagName("birthday")[0]->nodeValue,
+            'role' => $body->getElementsByTagName("role")[0]->nodeValue,
+            'study' => $body->getElementsByTagName("study")[0]->nodeValue,
+        ];
+        $user->update($newUser);
+    }
+
+    public static function deleteRecievedUser(\DOMDocument $doc)
+  {
+    $header = $doc->getElementsByTagName("header")[0];
+    $user = User::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
+    $user->delete();
+  }
 }
