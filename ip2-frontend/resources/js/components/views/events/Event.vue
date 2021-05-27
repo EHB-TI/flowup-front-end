@@ -9,7 +9,7 @@
                 <div style="display:block; float:right; width:20%">
                     <b-button id="subOrUnSubButton" class="" variant="danger"  @click="subOrUnsub()">Participate</b-button>
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
-                        <b-button class="" variant="primary">Edit event</b-button>
+                        <b-button v-if="showEditButton" class="" variant="primary">Edit event</b-button>
                     </router-link>
                 </div>
                
@@ -76,6 +76,7 @@ export default {
                 subscribers: {},
                 showAttendees: false,
                 isSubscribed: false,
+                showEditButton:false,
             }
         },
         async created() {
@@ -94,7 +95,7 @@ export default {
 
             //Fetch logged in user
             await this.axios
-                .get(`http://127.0.0.1:8000/api/users/1`)
+                .get(`http://127.0.0.1:8000/api/users/10`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -107,7 +108,9 @@ export default {
             this.refreshAttendees();
 
             //check person is subscribed to event
-            this.checkIfSubscribed();           
+            this.checkIfSubscribed();
+            //check if person is owner of the event
+            this.checkIfOwnerEvent();           
         },
         methods: {
             deleteEvent(id) {
@@ -234,6 +237,13 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            checkIfOwnerEvent(){
+                console.log(this.event.user_id);
+                if(this.event.user_id == this.event_subscriber.user_id){
+                    this.showEditButton=true;
+                }
             }
             
             
