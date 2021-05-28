@@ -72,6 +72,12 @@
                                 type="error"
                                 banner
                                 style="margin-bottom:8px;" />
+                            <a-alert
+                                v-if="errorEndDateIsNotGreater"
+                                message="The end event must be a date after start event."
+                                type="error"
+                                banner
+                                style="margin-bottom:8px;" />
                             <b-form-group>
                                 <b-form-radio-group plain>
                                     <b-form-radio v-model="x" name="oneday-radios" value="one">One day event</b-form-radio>
@@ -88,13 +94,13 @@
                             <h3>Starts at</h3>
                             <a-date-picker
                                 @change="onChangeOne"
-                                format="YYYY-MM-DD HH:mm:ss"
+                                format="YYYY-MM-DD HH:mm"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>
 
                             <h3>Ends at</h3>
                                 <a-time-picker 
-                                format="HH:mm:ss" 
+                                format="HH:mm" 
                                 @change="onChangeOneTime"/>
 
                             <b-button @click="checkDate()">Next</b-button> 
@@ -225,7 +231,8 @@ export default {
             },
             errorDescription: false,
             errorLocation: false,
-            errorDate: false
+            errorDate: false,
+            errorEndDateIsNotGreater: false,
             //
         }
     },
@@ -331,6 +338,7 @@ export default {
                 })
                 .finally( () => this.loading = false)
         },
+        
 
         checkDate() {
             let response = "";
@@ -352,9 +360,19 @@ export default {
 
                     console.log(err.response.data.errors['startEvent']);
                     console.log(err.response.data.errors['endEvent']);
+                    if(err.response.data.errors['endEvent'][0]==="The end event must be a date after start event.")
+                    {
+                        this.errorEndDateIsNotGreater = true;
+                        this.errorDate = false;
+                    }
+                    if(err.response.data.errors['endEvent'][0]==="The end event field is required." || err.response.data.errors['startEvent'][0]==="The start event field is required." )
+                    {
+                        this.errorDate = true;
+                        this.errorEndDateIsNotGreater=false;
+                    }
+                    
 
 
-                    this.errorDate = true;
        
                 })
                 .finally( () => this.loading = false)
