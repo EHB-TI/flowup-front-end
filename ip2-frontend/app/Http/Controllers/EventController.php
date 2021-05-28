@@ -49,6 +49,7 @@ class EventController extends Controller
 
     $events = DB::table('events')
         ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
+        ->where('endEvent','>=',date('Y-m-d'))
         ->where('event_subscribers.user_id','=',$user_id)->orderBy('startEvent', 'asc')->get();
 
     //$events = EventSubscriber::where('user_id','=',$user_id);

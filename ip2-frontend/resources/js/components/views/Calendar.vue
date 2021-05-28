@@ -3,8 +3,8 @@
                 <a-layout-content style="background: white; padding: 15px;">
                 <div>
                     <h2>My events</h2>
-                         <div class="event" v-for="event in events" :key="event.id">
-                            <router-link :to="{name: 'event', params: { id: event.id}}">
+                         <div class="event" v-for="event in events" :key="event.event_id">
+                            <router-link :to="{name: 'event', params: { id: event.event_id}}">
                                 <b-card class="event-card">
                                     <div class="card-heading">
                                         <h3 class="title"> {{ event.name }} </h3>
@@ -29,7 +29,10 @@
 export default {
         data() { 
             return {
+                
                 user: {},
+
+                //id, user_id, event_id  from table (event_subscribers)
                 events: {},
             }
         },
