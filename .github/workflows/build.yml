@@ -38,9 +38,6 @@ jobs:
       - name: Change Directory Permissions
         working-directory: ${{env.working-directory}}
         run: chmod -R 777 storage bootstrap/cache
-      - name: Static Analysis via PHPStan
-        working-directory: ${{env.working-directory}}
-        run: ./vendor/bin/phpstan analyse --memory-limit=2G
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         working-directory: ${{env.working-directory}}
         run: vendor/bin/phpunit
