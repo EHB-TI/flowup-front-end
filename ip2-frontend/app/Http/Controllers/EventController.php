@@ -49,7 +49,7 @@ class EventController extends Controller
 
     $events = DB::table('events')
         ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
-        ->where('event_subscribers.user_id','=',$user_id)->get();
+        ->where('event_subscribers.user_id','=',$user_id)->orderBy('startEvent', 'asc')->get();
 
     //$events = EventSubscriber::where('user_id','=',$user_id);
     return response()->json($events);
@@ -57,7 +57,7 @@ class EventController extends Controller
 
   public function showByUser($id)
   {
-    $event = Event::where('user_id', '=', $id)->get();
+    $event = Event::where('user_id', '=', $id)->orderBy('startEvent', 'asc')->get();
     return response()->json($event);
   }
 
