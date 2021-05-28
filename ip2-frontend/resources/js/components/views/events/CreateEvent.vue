@@ -94,13 +94,13 @@
                             <h3>Starts at</h3>
                             <a-date-picker
                                 @change="onChangeOne"
-                                format="YYYY-MM-DD HH:mm"
+                                format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
                                 :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>
 
                             <h3>Ends at</h3>
                                 <a-time-picker 
-                                format="HH:mm" 
+                                format="HH:mm:ss" 
                                 @change="onChangeOneTime"/>
 
                             <b-button @click="checkDate()">Next</b-button> 
@@ -114,14 +114,14 @@
                                 @change="onChangeStart"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>                     
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>                     
 
                             <h3>Ends at</h3>
                             <a-date-picker
                                 @change="onChangeEnd"
                                 format="YYYY-MM-DD HH:mm:ss"          
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>
                             <b-button @click="checkDate()">Next</b-button> 
                         </div> 
                     </transition>
