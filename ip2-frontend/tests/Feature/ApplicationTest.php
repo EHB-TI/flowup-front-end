@@ -35,7 +35,6 @@ class ApplicationTest extends TestCase
         ];
 
         $response = $this->post('/api/events', $testEvent);
-        error_log($response->baseResponse->content());
         $response->assertStatus(200);
 
         $event = Event::find(1);
@@ -55,7 +54,6 @@ class ApplicationTest extends TestCase
             'name' => $name
         ];
         $response = $this->patch("/api/events/$event->id", $testEvent);
-        error_log($response->baseResponse->content());
         $response->assertStatus(200);
 
         $event = Event::find($event->id);
@@ -73,7 +71,6 @@ class ApplicationTest extends TestCase
         $name = "Edited event";
 
         $response = $this->delete("/api/events/$event->id");
-        error_log($response->baseResponse->content());
         $response->assertStatus(200);
 
         $event = Event::find($event->id);
