@@ -40,7 +40,7 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         working-directory: ${{env.working-directory}}
-        run: vendor/bin/phpunit
+        run: php artisan test
   # # This piece is optional (continuous deployment).
   # deploy:
   #   runs-on: ubuntu-latest
