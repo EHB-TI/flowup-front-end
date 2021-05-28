@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<event>
+    <header>
+        <UUID></UUID>
+        <sourceEntityId></sourceEntityId>
+        <organiserUUID></organiserUUID>
+        <organiserSourceEntityId>1</organiserSourceEntityId>
+        <method></method>
+        <origin>FrontEnd</origin>
+        <version></version>
+        <timestamp></timestamp>
+    </header>
+    <body>
+        <name></name>
+        <startEvent></startEvent>
+        <endEvent></endEvent>
+        <description></description>
+        <location></location>
+    </body>
+</event>

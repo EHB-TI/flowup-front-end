@@ -52,6 +52,8 @@ class ConsumerController extends Controller
             case ConsumerController::EVENTSUBSCRIBE:
                 $XSD = $eventSubscribeXSD;
                 break;
+            case "error":
+                return;
         }
 
         if ($doc->SchemaValidate($XSD)) {
@@ -64,6 +66,7 @@ class ConsumerController extends Controller
                 //reciefed from other app
                 $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
                 $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
+                $header->getElementsByTagName("OrganiserSourceEntityId")[0]->nodeValue = "";
                 $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
 
                 //Send to UUID
