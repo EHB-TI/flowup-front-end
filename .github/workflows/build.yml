@@ -17,6 +17,7 @@ jobs:
         php-version: '7.4'
     - uses: actions/checkout@v2
     - name: Copy .env
+      working-directory: ${{env.working-directory}}
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
       working-directory: ${{env.working-directory}}
