@@ -95,7 +95,7 @@ export default {
 
             //Fetch logged in user
             await this.axios
-                .get(`http://127.0.0.1:8000/api/users/10`)
+                .get(`http://127.0.0.1:8000/api/users/1`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;

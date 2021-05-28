@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\EventSubscriber;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Illuminate\Support\Facades\DB;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -15,7 +17,7 @@ class EventController extends Controller
   //
     public function index()
     {
-        $events = Event::where('endEvent','>=',date('Y-m-d'))->orderBy('startEvent', 'desc')->paginate(25)->toArray();
+        $events = Event::where('endEvent','>=',date('Y-m-d'))->orderBy('startEvent', 'asc')->paginate(25)->toArray();
         return array_reverse($events);
     }
 
@@ -40,6 +42,17 @@ class EventController extends Controller
   {
     $event = Event::find($id);
     return response()->json($event);
+  }
+
+  public function showEventsYouAttend($user_id){
+    error_log($user_id);
+
+    $events = DB::table('events')
+        ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
+        ->where('event_subscribers.user_id','=',$user_id)->get();
+
+    //$events = EventSubscriber::where('user_id','=',$user_id);
+    return response()->json($events);
   }
 
   public function showByUser($id)

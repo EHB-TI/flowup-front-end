@@ -52,7 +52,7 @@ class EventSubscriberController extends Controller
         ]);
         $eventSubscriber->save();
 
-        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "create")) {
+        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "subscribe")) {
             return response()->json('EventSubscriber created!');
         }
         return response()->json('EventSubscriber creation failed');
@@ -127,12 +127,13 @@ class EventSubscriberController extends Controller
      */
     public function destroy(Request $request)
     {
-        //
-        $eventSubscriber = EventSubscriber::find($id);
+        $user_id = $request->input('user_id');
+        $event_id = $request->input('event_id');
+        $eventSubscriber= EventSubscriber::where('user_id','=',$user_id)->where('event_id','=',$event_id)->first();
 
 
-        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "delete")) {
-            $eventSubscriber->delete();
+        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "unsubscribe")) {
+            DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->delete();
             return response()->json('EventSubscriber deleted');
         }
         return response()->json('EventSubscriber deletion failed');
@@ -148,8 +149,8 @@ class EventSubscriberController extends Controller
         $type = strtoupper($type);
 
         //XML/XSD paths
-        $xmlPath = "XML-XSD/event.xml";
-        $XSDPath = "XML-XSD/event.xsd";
+        $xmlPath = "XML-XSD/eventSubscribe.xml";
+        $XSDPath = "XML-XSD/eventSubscribe.xsd";
 
         //Loading in the XML
         $xml = new \DOMDocument();

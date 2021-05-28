@@ -43,6 +43,7 @@ Route::post('checkIfSubscribed', \App\Http\Controllers\EventSubscriberController
 
 Route::get('showByUser/{id}', \App\Http\Controllers\EventController::class . '@showByUser');
 Route::get('showSubscribers/{id}', \App\Http\Controllers\EventSubscriberController::class . '@show');
+Route::get('showEventsYouAttend/{id}', \App\Http\Controllers\EventController::class . '@showEventsYouAttend');
 
 
 
