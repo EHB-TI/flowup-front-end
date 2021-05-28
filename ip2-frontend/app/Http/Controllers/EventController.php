@@ -84,6 +84,16 @@ class EventController extends Controller
     
   }
 
+  public function checkEditInput(Request $request){
+    $this->validate($request, [
+      'name' => 'required|max:30',
+      'description' => 'required',
+      'location' => 'required',
+      'startEvent' => 'required',
+      'endEvent' => 'required|after:startEvent'
+    ]);
+  }
+
   //ErrorHandling
   public function checkName(Request $request)
   {

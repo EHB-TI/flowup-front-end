@@ -2,6 +2,12 @@
     <div>
         <div>
             <h1>Edit an event</h1>
+            <a-alert
+                v-if="errorInput"
+                message="Input is wrong!"
+                type="error"
+                banner
+                style="margin-bottom:8px;" />
         </div>
 
         <div>
@@ -106,7 +112,7 @@
                     </b-form-input>
                 </b-form-group>
 
-                <b-button type="submit" variant="primary">Submit</b-button>
+                <b-button @click="checkEditInput()" type="submit" variant="primary">Submit</b-button>
             </b-form>
         </div>
     </div>
@@ -114,39 +120,74 @@
 <script>
 import moment from 'moment'
 
-    export default {
-        data() {
-            return {
-                event: {},
+//Class to record error and error message
+class Errors {
+  constructor() {
+    this.errors = {};
+  }
 
-                showDate: true,
+  //Get error message
+  get(field) {
+    if (this.errors[field]) {
+      return this.errors[field][0];
+    }
+  }
 
-                //Date handling
-                x:'',
-                today: moment(),
-                dateFormat: 'DD/MM/YYYY',
-                ends: '',
-                errorDate: false
-                //
-            }
-        },
+  //Record the error
+  record(errors) {
+    this.errors = errors.errors;
+  }
+}
 
-        created() {
+export default {
+    data() {
+        return {
+            event: {},
+
+            showDate: true,
+
+            //Date handling
+            x:'',
+            today: moment(),
+            dateFormat: 'DD/MM/YYYY',
+            ends: '',
+            errorDate: false,
+            //
+
+            errorInput: false,
+        }
+    },
+
+    created() {
             //When component is created -> fetch event based on id given in routing params
+        this.axios
+            .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+            .then((res) => {
+                this.event = res.data;
+            });
+    },
+    methods: {
+        editEvent() {
+            //Edit an event based on filled in event then redirects to homepage
             this.axios
-                .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+                .patch(`http://localhost:8000/api/events/${this.$route.params.id}`, this.event)
                 .then((res) => {
-                    this.event = res.data;
+                    this.$router.push({ name: 'home' });
                 });
-        },
-        methods: {
-            editEvent() {
-                //Edit an event based on filled in event then redirects to homepage
-                this.axios
-                    .patch(`http://localhost:8000/api/events/${this.$route.params.id}`, this.event)
-                    .then((res) => {
-                        this.$router.push({ name: 'home' });
-                    });
+            },
+
+        checkEditInput(){
+            this.axios
+                .post('http://127.0.0.1:8000/api/checkEditInput', this.event)
+                .then((response) => {
+                    console.log(response.data);
+
+                })
+                .catch((err) => {
+                                
+                })
+                .finally( () => this.loading = false)
+
             },
 
             moment,
@@ -155,7 +196,7 @@ import moment from 'moment'
             let response = "";
             this.axios
                 .post('http://127.0.0.1:8000/api/checkDate', this.event)
-                 .then(res => (
+                .then(res => (
                     // this.showLocation = false,
                     // this.showEnd = true,
                     // this.showDate = false,
@@ -221,8 +262,9 @@ import moment from 'moment'
 
             console.log(this.event.endEvent);
         }
-        }
+        
     }
+}
 </script>
 <style scoped>
 

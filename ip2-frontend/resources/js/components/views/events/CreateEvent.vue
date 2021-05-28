@@ -253,8 +253,6 @@ export default {
     },
     methods: {
         addEvent() {
-            this.user.id = 
-
             this.axios
                 .post('http://127.0.0.1:8000/api/events', this.event)
                 .then(response => (

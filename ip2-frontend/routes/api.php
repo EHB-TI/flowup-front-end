@@ -37,6 +37,9 @@ Route::post('checkDate', \App\Http\Controllers\EventController::class . '@checkD
 Route::post('participate', \App\Http\Controllers\EventSubscriberController::class . '@store');
 Route::post('unparticipate', \App\Http\Controllers\EventSubscriberController::class . '@destroy');
 Route::post('checkIfSubscribed', \App\Http\Controllers\EventSubscriberController::class . '@checkIfSubscribed');
+Route::post('checkEditInput', \App\Http\Controllers\EventController::class . '@checkEditInput');
+
+
 
 
 
