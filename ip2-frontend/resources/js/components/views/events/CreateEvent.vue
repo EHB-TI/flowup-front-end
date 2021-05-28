@@ -74,7 +74,7 @@
                                 style="margin-bottom:8px;" />
                             <a-alert
                                 v-if="errorEndDateIsNotGreater"
-                                message="The end event must be a date after start event."
+                                message="The end event date must be a date after start event date."
                                 type="error"
                                 banner
                                 style="margin-bottom:8px;" />
