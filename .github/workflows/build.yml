@@ -39,7 +39,7 @@ jobs:
         working-directory: ${{env.working-directory}}
         run: chmod -R 777 storage bootstrap/cache
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: /ip2-frontend/vendor/bin/phpunit
+        run: ip2-frontendvendor/bin/phpunit
   # # This piece is optional (continuous deployment).
   # deploy:
   #   runs-on: ubuntu-latest
