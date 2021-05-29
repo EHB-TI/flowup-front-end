@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\EventSubscriber;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Illuminate\Support\Facades\DB;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -13,11 +15,11 @@ use Exception;
 class EventController extends Controller
 {
   //
-  public function index()
-  {
-    $events = Event::where('endEvent','>=',date('Y-m-d'))->orderBy('startEvent', 'asc')->paginate(25)->toArray();
-    return array_reverse($events);
-  }
+    public function index()
+    {
+        $events = Event::where('endEvent','>=',date('Y-m-d'))->orderBy('startEvent', 'asc')->paginate(25)->toArray();
+        return array_reverse($events);
+    }
 
   public function store(Request $request)
   {
@@ -42,17 +44,30 @@ class EventController extends Controller
     return response()->json($event);
   }
 
+  public function showEventsYouAttend($user_id){
+    error_log($user_id);
+
+    $events = DB::table('events')
+        ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
+        ->where('endEvent','>=',date('Y-m-d'))
+        ->where('event_subscribers.user_id','=',$user_id)->orderBy('startEvent', 'asc')->get();
+
+    //$events = EventSubscriber::where('user_id','=',$user_id);
+    return response()->json($events);
+  }
+
   public function showByUser($id)
   {
-    $event = Event::where('user_id', '=', $id)->get();
+    $event = Event::where('user_id', '=', $id)->orderBy('startEvent', 'asc')->get();
     return response()->json($event);
   }
 
   public function update($id, Request $request)
   {
     $event = Event::find($id);
-    $event->update($request->all());
+
     if ($this->sendXMLtoUUID($event, "update")) {
+      $event->update($request->all());
       return response()->json('Event updated!');
     }
     return response()->json('Event update failed!');
@@ -69,11 +84,21 @@ class EventController extends Controller
     
   }
 
+  public function checkEditInput(Request $request){
+    $this->validate($request, [
+      'name' => 'required|max:30',
+      'description' => 'required',
+      'location' => 'required',
+      'startEvent' => 'required',
+      'endEvent' => 'required|after:startEvent'
+    ]);
+  }
+
   //ErrorHandling
   public function checkName(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required|max:30'
+      'name' => 'required|max:30|not_regex:/^.+$/i'
     ]);
   }
 
@@ -95,7 +120,7 @@ class EventController extends Controller
   {
     $this->validate($request, [
       'startEvent' => 'required',
-      'endEvent' => 'required'
+      'endEvent' => 'required|after:startEvent'
     ]);
   }
 

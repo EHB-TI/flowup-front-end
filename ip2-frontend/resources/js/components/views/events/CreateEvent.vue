@@ -19,6 +19,12 @@
                             type="error"
                             banner
                             style="margin-bottom:8px;" />
+                        <a-alert
+                            v-if="errorName.regex"
+                            message="The name format is invalid."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
 
 
                         <b-form-group id="input-group-name">
@@ -74,7 +80,7 @@
                                 style="margin-bottom:8px;" />
                             <a-alert
                                 v-if="errorEndDateIsNotGreater"
-                                message="The end event date must be a date after start event date."
+                                message="The end date must be a date after start date."
                                 type="error"
                                 banner
                                 style="margin-bottom:8px;" />
@@ -228,6 +234,7 @@ export default {
             errorName: {
                 required: false,
                 size: false,
+                regex: false
             },
             errorDescription: false,
             errorLocation: false,
@@ -283,10 +290,17 @@ export default {
                     {
                         this.errorName.required = true;
                         this.errorName.size = false;
+                        this.errorName.regex= false;
                     } else if(err.response.data.errors['name'][0] === "The name must not be greater than 30 characters.")
                     {
                         this.errorName.size = true;
                         this.errorName.required = false;
+                        this.errorName.regex= false;
+                    } else if(err.response.data.errors['name'][0] === "The name format is invalid.")
+                    {
+                        this.errorName.size = false;
+                        this.errorName.required = false;
+                        this.errorName.regex= true;
                     }
                         
                 })
@@ -358,6 +372,7 @@ export default {
 
                     console.log(err.response.data.errors['startEvent']);
                     console.log(err.response.data.errors['endEvent']);
+
                     if(err.response.data.errors['endEvent'][0]==="The end event must be a date after start event.")
                     {
                         this.errorEndDateIsNotGreater = true;
