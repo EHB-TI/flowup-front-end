@@ -48,4 +48,4 @@ USER www
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80
-CMD ["php-fpm"]
+CMD [ "./dockerStart.sh" ]

@@ -9,6 +9,7 @@ services:
     image: digitalocean.com/php
     container_name: app
     restart: unless-stopped
+    stdin_open: true
     tty: true
     environment:
       SERVICE_NAME: app
