@@ -27,7 +27,7 @@ export default {
     },
     created() {
             this.axios
-            .get('http://127.0.0.1:8000/api/users')
+            .get('http://localhost:80/api/users')
             .then(response => {
                 this.users = response.data;
             });

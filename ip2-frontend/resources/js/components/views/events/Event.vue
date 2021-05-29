@@ -82,7 +82,7 @@ export default {
         async created() {
             //Fetch the event (by id)
             await this.axios
-                .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+                .get(`http://localhost:80/api/events/${this.$route.params.id}`)
                 .then((res) => {
                     this.event = res.data;
                     this.event_subscriber.event_id = this.event.id;
@@ -95,7 +95,7 @@ export default {
 
             //Fetch logged in user
             await this.axios
-                .get(`http://127.0.0.1:8000/api/users/10`)
+                .get(`http://localhost:80/api/users/10`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -115,7 +115,7 @@ export default {
         methods: {
             deleteEvent(id) {
                 this.axios
-                    .delete(`http://127.0.0.1:8000/api/events/${this.$route.params.id}`)
+                    .delete(`http://localhost:80/api/events/${this.$route.params.id}`)
                     .then(response => {
                         let i = this.event.map(data => data.id).indexOf(id);
                         this.event.splice(i, 1);
@@ -177,7 +177,7 @@ export default {
 
             refreshAttendees(){
                 axios
-                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
+                .get(`http://localhost:80/api/showSubscribers/${this.$route.params.id}`)
                 .then((response) => {
                     this.subscribers = response.data
                     this.showAttendees = true;
@@ -193,7 +193,7 @@ export default {
                 if(this.isSubscribed == 0)
                 {
                     axios
-                    .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
+                    .post(`http://localhost:80/api/participate/`, this.event_subscriber)
                     .then((reponse) => {
                         console.log(reponse);
                         //document.getElementById("subOrUnSubButton").textContent="Participate";
@@ -207,7 +207,7 @@ export default {
                 else
                 {
                     axios
-                    .post(`http://127.0.0.1:8000/api/unparticipate/`, this.event_subscriber)
+                    .post(`http://localhost:80/api/unparticipate/`, this.event_subscriber)
                     .then((reponse) => {
                         console.log(reponse);
                         //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
@@ -223,7 +223,7 @@ export default {
 
             checkIfSubscribed(){
                 axios
-                .post(`http://127.0.0.1:8000/api/checkIfSubscribed/`, this.event_subscriber)
+                .post(`http://localhost:80/api/checkIfSubscribed/`, this.event_subscriber)
                 .then((response) => {
                     this.isSubscribed = response.data;
                     console.log(this.isSubscribed);

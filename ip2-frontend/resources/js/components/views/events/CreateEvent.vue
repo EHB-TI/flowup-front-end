@@ -231,7 +231,7 @@ export default {
     },
     created() {
         this.axios
-            .get(`http://127.0.0.1:8000/api/users/1`)
+            .get(`http://localhost:80/api/users/1`)
             .then((response) => {
                 // handle success
                 this.user = response.data;
@@ -249,7 +249,7 @@ export default {
             this.user.id = 
 
             this.axios
-                .post('http://127.0.0.1:8000/api/events', this.event)
+                .post('http://localhost:80/api/events', this.event)
                 .then(response => (
                     this.$router.push({ name: 'home' })
                 ))
@@ -261,7 +261,7 @@ export default {
         checkName() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkName', this.event)
+                .post('http://localhost:80/api/checkName', this.event)
                  .then(res => (
                     this.showEnd = false,          
                     this.showName = false,
@@ -291,7 +291,7 @@ export default {
         checkDescription() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDescription', this.event)
+                .post('http://localhost:80/api/checkDescription', this.event)
                  .then(res => (
                     this.showEnd = false,
                     this.showDescription = false,
@@ -313,7 +313,7 @@ export default {
         checkLocation() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkLocation', this.event)
+                .post('http://localhost:80/api/checkLocation', this.event)
                  .then(res => (
                     this.showLocation = false,
                     this.showEnd = true,
@@ -335,7 +335,7 @@ export default {
         checkDate() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDate', this.event)
+                .post('http://localhost:80/api/checkDate', this.event)
                  .then(res => (
                     // this.showLocation = false,
                     // this.showEnd = true,

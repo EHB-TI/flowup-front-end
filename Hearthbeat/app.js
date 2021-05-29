@@ -11,22 +11,37 @@ const fetch = require('node-fetch');
 }
 
 let channel;
-amqp.connect(RABBITMQ, function (error0, connection) {
-  if (error0) {
-    throw error0;
+let error = null;
+do {
+  error = setTimeout(rabbitmqCon, 3000);
+  console.log("RabbitMQ is down");
+} while (error);
+
+function rabbitmqCon() {
+  let error = null;
+  try {
+    amqp.connect(RABBITMQ, function (error0, connection) {
+      if (error0) {
+        throw error0;
+      }
+      connection.createChannel(function (error1, getChannel) {
+        if (error1) {
+          throw error1;
+        }
+        channel = getChannel;
+    
+        setInterval(SendHeartBeat, 1000);
+      });
+    });
+  } catch (errors) {
+    error = errors;
   }
-  connection.createChannel(function (error1, getChannel) {
-    if (error1) {
-      throw error1;
-    }
-    channel = getChannel;
+  return error
+}
 
-    setInterval(SendHeartBeat, 1000);
-  });
-});
-
-function SendHeartBeat() {
-  fetch('http://127.0.0.1:8000/api/status').then(response => response.json()).then(data => {
+async function SendHeartBeat() {
+  try {
+    await fetch('http://localhost:80/api/status').then(response => response.json()).then(data => {
     if(!data.error || !data){
       channel.sendToQueue(QUEUE, Buffer.from(data.msg))
       console.log(" [x] Sent %s", data.msg);
@@ -34,4 +49,9 @@ function SendHeartBeat() {
       clearInterval();
     }
   });
+  } catch (error) {
+    console.log("Service is down");
+    clearInterval();
+  }
+  
 }
