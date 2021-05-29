@@ -149,7 +149,7 @@ import moment from 'moment'
                     });
             },
 
-            deleteEvent(id) {
+            deleteEvent() {
                 this.axios
                     .delete(`http://127.0.0.1:8000/api/events/${this.$route.params.id}`)
                     .then(response => {
