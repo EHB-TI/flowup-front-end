@@ -149,6 +149,7 @@ class EventController extends Controller
         $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
         return true;
     }
+    
      public static function recieveEvent(AMQPMessage $message){
         $message->ack();
         $string = $message->getBody();
