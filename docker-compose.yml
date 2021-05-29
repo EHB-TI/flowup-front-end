@@ -4,7 +4,7 @@ services:
   #PHP Service
   app:
     build:
-      context: .
+      context: ip2-frontend/
       dockerfile: Dockerfile
     image: digitalocean.com/php
     container_name: app
@@ -19,6 +19,35 @@ services:
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
+    #command: php artisan rabbitmq:consume
+
+  hearthbeat:
+    build:
+      context: Hearthbeat/
+      dockerfile: Dockerfile
+    container_name: hearthbeat
+    restart: unless-stopped
+    working_dir: /usr/src/app
+    networks:
+      - app-network
+
+  #Consumer
+#   consumer:
+#     build:
+#         context: consumer/
+#     image: digitalocean.com/php
+#     container_name: consumer
+#     restart: unless-stopped
+#     tty: true
+#     environment:
+#         SERVICE_NAME: app
+#         SERVICE_TAGS: dev
+#     working_dir: /var/www
+#     volumes:
+#         - ./:/var/www
+#         - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+#     networks:
+#         - app-network
 
   #Nginx Service
   webserver:
@@ -34,6 +63,7 @@ services:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
       - app-network
+
 
 #Docker Networks
 networks:
