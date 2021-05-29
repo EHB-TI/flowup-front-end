@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\EventSubscriber;
 use App\Models\Event;
-use App\Models\User;
 
 use DateTime;
 use DateTimeZone;
@@ -68,14 +67,6 @@ class EventSubscriberController extends Controller
      */
     public function show($id)
     {
-        
-    }
-
-    public function showAllSubscribers($event_id)
-    {
-        //
-        //$eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
-        
         $eventSubscribers = DB::table('users')
         ->join('event_subscribers', 'users.id', '=','event_subscribers.user_id')
         ->select('event_subscribers.id','users.firstName', 'users.lastName')

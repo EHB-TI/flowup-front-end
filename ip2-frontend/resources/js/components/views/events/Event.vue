@@ -62,8 +62,7 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
-
-
+        <pre>{{ subscribers.length }}</pre>
     </div> 
 </template>
 <script>
@@ -71,12 +70,8 @@ export default {
         data() {
             return {
                 event: {},
-
                 user: {},
-
                 event_subscriber: {},
-
-                attendees: {},
                 subscribers: {},
                 showAttendees: false,
                 isSubscribed: false,
@@ -96,10 +91,9 @@ export default {
                 }).then(()=> {
                     
                 });
-
             //Fetch logged in user
-            this.axios
-                .get(`http://127.0.0.1:8000/api/users/3`)
+            await this.axios
+                .get(`http://127.0.0.1:8000/api/users/1`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -107,38 +101,21 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 });
-
-            //All attendees
-            this.axios
-                .get(`http://127.0.0.1:8000/api/showAllSubscribers/${this.$route.params.id}`)
-                .then((response) => {
-                    this.attendees = response.data
-
-                    console.log(this.attendees)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
             //Fetch all attendees
             this.refreshAttendees();
-
             //check person is subscribed to event
             this.checkIfSubscribed();
-            
             //check if person is owner of the event
             this.checkIfOwnerEvent();           
         },
         methods: {
             getDay(date) {
                 var day = date.substring(8,10);
-
                 return day;
             },
             getMonth(date) {
                 var month = date.substring(5,7);
                 
-
                 switch(month) {
                     case "01":
                         return "jan";
@@ -180,17 +157,10 @@ export default {
             },
             getTime(time){
                 var result = time.substring(11,16);
-
                 return result;
             },
-
             refreshAttendees(){
                 axios
-                .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
-                .then((reponse) => {
-                    console.log(reponse);
-
-
                 .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
                 .then((response) => {
                     this.subscribers = response.data
@@ -201,7 +171,6 @@ export default {
                     console.log(error);
                 });
             },
-
             subOrUnsub(){
                 this.checkIfSubscribed()
                 if(this.isSubscribed == 0)
@@ -216,7 +185,6 @@ export default {
                     .catch(function (error){
                         console.log(error);
                     });
-
                 }
                 else
                 {
@@ -234,7 +202,6 @@ export default {
                 this.checkIfSubscribed();
                 
             }, 
-
             checkIfSubscribed(){
                 axios
                 .post(`http://127.0.0.1:8000/api/checkIfSubscribed/`, this.event_subscriber)
@@ -252,7 +219,6 @@ export default {
                     console.log(error);
                 });
             },
-
             checkIfOwnerEvent(){
                 console.log(this.event.user_id);
                 if(this.event.user_id == this.event_subscriber.user_id){
@@ -271,11 +237,9 @@ export default {
     border-radius: 15px;
     border: solid 1px black;
 }
-
 .top-date {
     border-radius: 15px 15px 0 0;
 }
-
 .bottom-date {
     border-radius: 0 0 15px 15px;
 }
