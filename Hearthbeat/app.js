@@ -3,6 +3,10 @@ let os = require("os");
 let fs = require("fs");
 const fetch = require('node-fetch');
 
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
 
 
 {
@@ -12,31 +16,32 @@ const fetch = require('node-fetch');
 
 let channel;
 let error = null;
-do {
-  error = setTimeout(rabbitmqCon, 3000);
-  console.log("RabbitMQ is down");
-} while (error);
 
-function rabbitmqCon() {
-  let error = null;
-  try {
-    amqp.connect(RABBITMQ, function (error0, connection) {
-      if (error0) {
-        throw error0;
-      }
-      connection.createChannel(function (error1, getChannel) {
-        if (error1) {
-          throw error1;
+code();
+async function code() {
+  do {
+     try {
+      amqp.connect(RABBITMQ, function (error0, connection) {
+        console.log("Connected to the rabbitMQ");
+        if (error0) {
+          throw error0;
         }
-        channel = getChannel;
-    
-        setInterval(SendHeartBeat, 1000);
+        connection.createChannel(function (error1, getChannel) {
+          if (error1) {
+            throw error1;
+          }
+          channel = getChannel;
+      
+          setInterval(SendHeartBeat, 1000);
+        });
       });
-    });
-  } catch (errors) {
-    error = errors;
-  }
-  return error
+    } catch (errors) {
+      error = errors;
+      
+    }
+    console.log("RabbitMQ is down");
+    await sleep(3000);
+  } while (error);
 }
 
 async function SendHeartBeat() {
@@ -49,7 +54,7 @@ async function SendHeartBeat() {
       clearInterval();
     }
   });
-  } catch (error) {
+  } catch (errors) {
     console.log("Service is down");
     clearInterval();
   }
