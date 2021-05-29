@@ -31,7 +31,6 @@ class EventController extends Controller
     ]);
     $event->save();
     if ($this->sendXMLtoUUID($event, "create")) {
-      throw new Exception("good");
       return response()->json('Event created!');
     }
     return response()->json('Event creation failed!');
