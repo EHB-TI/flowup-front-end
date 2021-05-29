@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<eventSubscribe>
+    <header>
+        <UUID></UUID>
+        <method></method>
+        <origin>FrontEnd</origin>
+        <version></version>
+        <sourceEntityId></sourceEntityId>
+        <timestamp></timestamp>
+    </header>
+    <body>
+        <eventUUID></eventUUID>
+        <eventSourceEntityId></eventSourceEntityId>
+        <attendeeUUID></attendeeUUID>
+        <attendeeSourceEntityId></attendeeSourceEntityId>
+    </body>
+</eventSubscribe>

@@ -6,11 +6,17 @@ use App\Models\EventSubscriber;
 use App\Models\Event;
 use App\Models\User;
 
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class EventSubscriberController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -47,7 +53,11 @@ class EventSubscriberController extends Controller
         ]);
         $eventSubscriber->save();
 
-        return response()->json('EventSubscriber created!');
+        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "subscribe")) {
+            return response()->json('EventSubscriber created!');
+        }
+        return response()->json('EventSubscriber creation failed');
+        
     }
 
     /**
@@ -64,21 +74,14 @@ class EventSubscriberController extends Controller
     public function showAllSubscribers($event_id)
     {
         //
-        $eventSubscribers = EventSubscriber::select('user_id')->where('event_id', '=', $event_id)->get();
-
-        $results = [];
-
-        for($i = 0; $i < count($eventSubscribers); $i++)
-        {
-            $firstName = User::select('firstName')->where('id', '=', $eventSubscribers[$i]->user_id)->first();
-            $lastName = User::select('lastName')->where('id', '=', $eventSubscribers[$i]->user_id)->first();
-
-            $name = $firstName['firstName'] . ' ' . $lastName['lastName'];
-
-            array_push($results, $name);
-        }
-
-        return response($results);
+        //$eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
+        
+        $eventSubscribers = DB::table('users')
+        ->join('event_subscribers', 'users.id', '=','event_subscribers.user_id')
+        ->select('event_subscribers.id','users.firstName', 'users.lastName')
+        ->where('event_id','=',$id)->get();
+        
+        return response()->json($eventSubscribers);
     }
 
 
@@ -106,18 +109,117 @@ class EventSubscriberController extends Controller
         //
     }
 
+    public function checkIfSubscribed(Request $request){
+        
+        $user_id = $request->input('user_id');
+        $event_id = $request->input('event_id');
+        $subscriber = DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->get();
+        error_log($subscriber);
+        if($subscriber->count()==0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
-        $eventSubscriber = EventSubscriber::find($id);
-        $eventSubscriber->delete();
+        $user_id = $request->input('user_id');
+        $event_id = $request->input('event_id');
+        $eventSubscriber= EventSubscriber::where('user_id','=',$user_id)->where('event_id','=',$event_id)->first();
 
-        return response()->json('EventSubscriber deleted');
+
+        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "unsubscribe")) {
+            DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->delete();
+            return response()->json('EventSubscriber deleted');
+        }
+        return response()->json('EventSubscriber deletion failed');
+    }
+
+    public function sendXMLtoUUID(EventSubscriber $eventSubscriber, string $type)
+    {
+        //Geting DateTimes in right format
+        $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
+        $XSDate = $now->format(\DateTime::RFC3339);
+
+        //Seting type to all cap
+        $type = strtoupper($type);
+
+        //XML/XSD paths
+        $xmlPath = "XML-XSD/eventSubscribe.xml";
+        $XSDPath = "XML-XSD/eventSubscribe.xsd";
+
+        //Loading in the XML
+        $xml = new \DOMDocument();
+        $xml->load($xmlPath);
+
+        //Changing Header Value
+        $header = $xml->getElementsByTagName("header")[0];
+
+        $header->getElementsByTagName("method")[0]->nodeValue = $type;
+        $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
+
+        //Changing Body values
+        $body = $xml->getElementsByTagName("body")[0];
+        $body->getElementsByTagName("attendeeSourceEntityId")[0]->nodeValue =   $eventSubscriber->user_id;
+        $body->getElementsByTagName("eventSourceEntityId")[0]->nodeValue =   $eventSubscriber->event_id;
+
+        //Validate XML whit XSD
+        if (!$xml->schemaValidate($XSDPath)) {
+            $error = libxml_get_last_error();
+            error_log($error);
+            return false;
+        }
+
+        //Publish event to event queue
+        error_log($xml->saveXML());
+        $ROUTEKEY = "UUID";
+        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        $channel = $connection->channel();
+
+        $data = new AMQPMessage($xml->saveXML());
+        $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
+        return true;
+    }
+
+    public static function storeRecievedEventSubscribe(\DOMDocument $doc)
+    {
+
+        $body = $doc->getElementsByTagName("body")[0];
+        $eventSubscriber = new EventSubscriber([
+            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0],
+            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]
+        ]);
+        $eventSubscriber->save();
+
+        return $eventSubscriber->id;
+    }
+
+    public static function updateRecievedEventSubscibe(\DOMDocument $doc)
+    {
+        $body = $doc->getElementsByTagName("body")[0];
+
+        $EventSubscriber = EventSubscriber::find($body->getElementsByTagName("sourceEntityId")[0]);
+        $newEventSubscriber = [
+            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0],
+            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]
+        ];
+        $EventSubscriber->update($newEventSubscriber);
+    }
+
+    public static function deleteRecievedEventSubscibe(\DOMDocument $doc)
+    {
+        $header = $doc->getElementsByTagName("header")[0];
+        $EventSubscriber = EventSubscriber::find($header->getElementsByTagName("sourceEntityId")[0]);
+        $EventSubscriber->delete();
     }
 }

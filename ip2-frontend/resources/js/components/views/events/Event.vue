@@ -3,14 +3,14 @@
          <a-layout>
             <a-layout-header style="background:white; height:175px; padding: 10px;">
                 
-                <div>
+                <div style="display:block; width:80%">
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
-                    <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
-                    <b-button class="absolute top-10 right-48" variant="danger" @click="unParticipate()">Unparticipate</b-button>
+                </div>
+                <div style="display:block; float:right; width:20%">
+                    <b-button id="subOrUnSubButton" class="" variant="danger"  @click="subOrUnsub()">Participate</b-button>
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
-                        <b-button class="absolute top-10 right-96" variant="primary">Edit event</b-button>
+                        <b-button v-if="showEditButton" class="" variant="primary">Edit event</b-button>
                     </router-link>
-                   
                 </div>
                
                 <br>
@@ -49,12 +49,12 @@
                 </a-layout-content>
 
                 <a-layout-sider style="background:white; padding:10px; height:700px;">
-                    <div>
+                    <div v-if="showAttendees">
                         <h2>Attendees</h2>
-                        <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
-                            <li v-for="att in attendees" :key="att.id" style="margin-bottom: 5px;">
+                        <ul  style="overflow:hidden; overflow-y:scroll; height:640px;">
+                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
-                                <span>{{ att }}</span>
+                                <span>{{ sub.firstName +' '+ sub.lastName }}</span>
                             </li>
                             <br>
                         </ul>
@@ -77,11 +77,15 @@ export default {
                 event_subscriber: {},
 
                 attendees: {},
+                subscribers: {},
+                showAttendees: false,
+                isSubscribed: false,
+                showEditButton:false,
             }
         },
-        created() {
+        async created() {
             //Fetch the event (by id)
-            this.axios
+            await this.axios
                 .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
                 .then((res) => {
                     this.event = res.data;
@@ -89,7 +93,9 @@ export default {
                 })
                 .catch(function (error) {
                     console.log(error);
-                });;
+                }).then(()=> {
+                    
+                });
 
             //Fetch logged in user
             this.axios
@@ -101,7 +107,6 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 });
-
 
             //All attendees
             this.axios
@@ -115,7 +120,14 @@ export default {
                     console.log(error);
                 });
 
+            //Fetch all attendees
+            this.refreshAttendees();
+
+            //check person is subscribed to event
+            this.checkIfSubscribed();
             
+            //check if person is owner of the event
+            this.checkIfOwnerEvent();           
         },
         methods: {
             getDay(date) {
@@ -172,22 +184,83 @@ export default {
                 return result;
             },
 
-            participate(){
+            refreshAttendees(){
                 axios
                 .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
                 .then((reponse) => {
                     console.log(reponse);
 
 
+                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
+                .then((response) => {
+                    this.subscribers = response.data
+                    this.showAttendees = true;
+                    console.log(this.subscribers)
                 })
-                .catch(function (error){
+                .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            subOrUnsub(){
+                this.checkIfSubscribed()
+                if(this.isSubscribed == 0)
+                {
+                    axios
+                    .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
+                    .then((reponse) => {
+                        console.log(reponse);
+                        //document.getElementById("subOrUnSubButton").textContent="Participate";
+                        this.refreshAttendees(); 
+                    })
+                    .catch(function (error){
+                        console.log(error);
+                    });
+
+                }
+                else
+                {
+                    axios
+                    .post(`http://127.0.0.1:8000/api/unparticipate/`, this.event_subscriber)
+                    .then((reponse) => {
+                        console.log(reponse);
+                        //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
+                        this.refreshAttendees();
+                    })
+                    .catch(function (error){
+                        console.log(error);
+                    });
+                }
+                this.checkIfSubscribed();
+                
             }, 
 
-            unParticipate(){
-                
+            checkIfSubscribed(){
+                axios
+                .post(`http://127.0.0.1:8000/api/checkIfSubscribed/`, this.event_subscriber)
+                .then((response) => {
+                    this.isSubscribed = response.data;
+                    console.log(this.isSubscribed);
+                    var x = document.getElementById("subOrUnSubButton");
+                    if(this.isSubscribed==0){
+                        x.innerHTML="Participate";
+                    }else{
+                        x.innerHTML="UnParticipate";
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            checkIfOwnerEvent(){
+                console.log(this.event.user_id);
+                if(this.event.user_id == this.event_subscriber.user_id){
+                    this.showEditButton=true;
+                }
             }
+            
+            
         }
 }
 </script>
