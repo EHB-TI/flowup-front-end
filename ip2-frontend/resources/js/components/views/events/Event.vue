@@ -51,7 +51,7 @@
                 <a-layout-sider style="background:white; padding:10px; height:700px;">
                     <div v-if="showAttendees">
                         <h2>Attendees</h2>
-                        <ul  style="overflow:hidden; overflow-y:scroll; height:640px;">
+                        <ul  style="overflow:hidden; overflow-y:auto; height:640px;">
                             <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
                                 <span>{{ sub.firstName +' '+ sub.lastName }}</span>

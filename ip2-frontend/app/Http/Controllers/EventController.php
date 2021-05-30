@@ -76,9 +76,11 @@ class EventController extends Controller
   public function destroy($id)
   {
     $event = Event::find($id);
+    $eventsubscribers = EventSubscriber::where('event_id', '=', $id)->get();
     
     if ($this->sendXMLtoUUID($event, "delete")) {
       $event->delete();
+      $eventsubscribers->delete();
       return response()->json('Event deleted');
     }
     
@@ -98,7 +100,10 @@ class EventController extends Controller
   public function checkName(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required|max:30|not_regex:/^.+$/i'
+      'name' => 'required|min:3|max:30|regex:/^[a-zA-Z0-9_.-]*$/'
+      //pl : any kind of letter from any language
+      //s : space
+
     ]);
   }
 

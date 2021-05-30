@@ -2,7 +2,7 @@
         <a-layout>
                 <a-layout-content style="background: white; padding: 15px;">
                 <div>
-                    <h2>My events</h2>
+                    <h2>My participations</h2>
                          <div class="event" v-for="event in events" :key="event.event_id">
                             <router-link :to="{name: 'event', params: { id: event.event_id}}">
                                 <b-card class="event-card">

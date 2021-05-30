@@ -14,14 +14,20 @@
                             banner
                             style="margin-bottom:8px;" />
                         <a-alert
-                            v-if="errorName.size"
+                            v-if="errorName.max_size"
                             message="The name field must not be greater than 30 chararcters."
                             type="error"
                             banner
                             style="margin-bottom:8px;" />
                         <a-alert
                             v-if="errorName.regex"
-                            message="The name format is invalid."
+                            message="The name must only contain letters, numbers, dashes and underscores."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
+                        <a-alert
+                            v-if="errorName.min_size"
+                            message="The name must be at least 3 characters."
                             type="error"
                             banner
                             style="margin-bottom:8px;" />
@@ -233,8 +239,9 @@ export default {
             errors: new Errors(),
             errorName: {
                 required: false,
-                size: false,
-                regex: false
+                max_size: false,
+                regex: false,
+                min_size: false
             },
             errorDescription: false,
             errorLocation: false,
@@ -271,7 +278,6 @@ export default {
 
         //Errorhandling
         checkName() {
-            let response = "";
             this.axios
                 .post('http://127.0.0.1:8000/api/checkName', this.event)
                  .then(res => (
@@ -291,18 +297,27 @@ export default {
                         this.errorName.required = true;
                         this.errorName.size = false;
                         this.errorName.regex= false;
+                        this.errorName.min_size = false;
                     } else if(err.response.data.errors['name'][0] === "The name must not be greater than 30 characters.")
                     {
                         this.errorName.size = true;
                         this.errorName.required = false;
                         this.errorName.regex= false;
+                        this.errorName.min_size = false;
                     } else if(err.response.data.errors['name'][0] === "The name format is invalid.")
                     {
                         this.errorName.size = false;
                         this.errorName.required = false;
                         this.errorName.regex= true;
-                    }
-                        
+                        this.errorName.min_size = false;
+
+                    } else if(err.response.data.errors['name'][0] === "The name must be at least 3 characters.")
+                    {
+                        this.errorName.size = false;
+                        this.errorName.required = false;
+                        this.errorName.regex= false;
+                        this.errorName.min_size = true;
+                    }  
                 })
                 .finally( () => this.loading = false)
         },
@@ -383,10 +398,6 @@ export default {
                         this.errorDate = true;
                         this.errorEndDateIsNotGreater=false;
                     }
-                    
-
-
-       
                 })
                 .finally( () => this.loading = false)
         },

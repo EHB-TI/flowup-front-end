@@ -3,11 +3,11 @@
 		class="fixed flex flex-col items-center bg-red-500 text-gray-700 shadow h-full">
 		<!-- Side Nav Bar-->
 
-		<div class="h-16 flex items-center w-full">
-			<a class="h-6 w-6 mx-auto" href="">
+		<div class="h-20 flex items-center w-full">
+			<a class="h-7 w-10 mx-auto" href="">
 				<img
-					class="h-6 w-6 mx-auto"
-					src="" />
+					class="h-7 w-10 mx-auto"
+					src="/images/desiderius_logo_nbg_red.png" />
 			</a>
 		</div>  
 
