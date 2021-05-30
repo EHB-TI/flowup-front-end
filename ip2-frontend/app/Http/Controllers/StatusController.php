@@ -40,7 +40,7 @@ class StatusController extends Controller
 
     //Loading the XML
     $xml = new \DOMDocument();
-    $xml->loadXML($xmlPath);
+    $xml->load($xmlPath);
 
     //Change Header values
     $header = $xml->getElementsByTagName("header")[0];
