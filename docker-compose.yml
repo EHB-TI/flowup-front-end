@@ -36,6 +36,25 @@ services:
     networks:
       - app-network
 
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ip2_frontend
+      MYSQL_ROOT_PASSWORD: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./ip2-frontend/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+
   #Heartbeat service
   heartbeat:
     build:
@@ -53,3 +72,8 @@ services:
 networks:
   app-network:
     driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local

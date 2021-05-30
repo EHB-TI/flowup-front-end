@@ -59,7 +59,6 @@ class StatusController extends Controller
     }
 
     //Return the message
-    error_log($xml->saveXML());
     return response()->json([
       'msg' => $xml->saveXML(),
       'error' => $error,
