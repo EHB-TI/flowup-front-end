@@ -39,7 +39,7 @@
                     </b-card>
                 </div>
             </a-layout-header>
-
+            <b-button class="absolute top-10 right-48" variant="danger" @click="deleteEvent()">delete</b-button>
             <a-layout>
                 <a-layout-content style="background: white; padding:10px; height:700px;">
                     <div class="">

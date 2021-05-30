@@ -1,1 +1,17 @@
 Heartbeat/node_modules/*
+node_modules/
+Hearthbeat/node_modules/
+ip2-frontend/public/hot
+ip2-frontend/public/storage
+ip2-frontend/storage/*.key
+ip2-frontend/vendor/*
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+!ip2-frontend/vendor/vladimir-yuldashev/
+vendor/*

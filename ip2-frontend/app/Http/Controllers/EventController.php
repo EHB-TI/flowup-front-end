@@ -51,9 +51,8 @@ class EventController extends Controller
   public function update($id, Request $request)
   {
     $event = Event::find($id);
-
+    $event->update($request->all());
     if ($this->sendXMLtoUUID($event, "update")) {
-      $event->update($request->all());
       return response()->json('Event updated!');
     }
     return response()->json('Event update failed!');
