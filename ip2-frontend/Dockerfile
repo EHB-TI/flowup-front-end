@@ -3,8 +3,13 @@ FROM php:8-fpm
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /var/www/
 
+RUN pwd
+RUN ls -a
 # Set working directory
 WORKDIR /var/www
+
+RUN pwd
+RUN ls -a
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -31,8 +36,9 @@ RUN docker-php-ext-install gd
 
 
 # Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install
+#RUN rm -rf ./vendor/vladimir-yuldashev
 
 # Add user for laravel application
 RUN groupadd -g 1000 www
