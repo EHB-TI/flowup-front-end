@@ -34,9 +34,11 @@ Route::post('checkName', \App\Http\Controllers\EventController::class . '@checkN
 Route::post('checkDescription', \App\Http\Controllers\EventController::class . '@checkDescription');
 Route::post('checkLocation', \App\Http\Controllers\EventController::class . '@checkLocation');
 Route::post('checkDate', \App\Http\Controllers\EventController::class . '@checkDate');
-
-
 Route::post('participate', \App\Http\Controllers\EventSubscriberController::class . '@store');
+Route::post('unparticipate', \App\Http\Controllers\EventSubscriberController::class . '@destroy');
+Route::post('checkIfSubscribed', \App\Http\Controllers\EventSubscriberController::class . '@checkIfSubscribed');
+
+
 
 
 Route::get('showByUser/{id}', \App\Http\Controllers\EventController::class . '@showByUser');

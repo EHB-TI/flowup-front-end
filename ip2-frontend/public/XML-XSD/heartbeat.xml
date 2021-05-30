@@ -1,14 +1,14 @@
-<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<?xml version="1.0" encoding="utf-8"?>
     
         <heartbeat>
             <header>
-              <code></code>
+              <code>2000</code>
               <origin>FrontEnd</origin>
               <timestamp></timestamp>
             </header>
             <body>
-              <nameService></nameService>
+              <nameService>Website</nameService>
               <CPUload></CPUload>
-              <RAMload>e</RAMload>
+              <RAMload></RAMload>
             </body>
         </heartbeat>

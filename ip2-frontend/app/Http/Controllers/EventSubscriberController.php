@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\EventSubscriber;
 use App\Models\Event;
+
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use App\Models\User
+use Illuminate\Support\Facades\DB;
 
 class EventSubscriberController extends Controller
 {
@@ -65,7 +68,13 @@ class EventSubscriberController extends Controller
     public function show($id)
     {
         //
-        $eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
+        //$eventSubscribers = EventSubscriber::Where('event_id', '=', $id)->get();
+        
+        $eventSubscribers = DB::table('users')
+        ->join('event_subscribers', 'users.id', '=','event_subscribers.user_id')
+        ->select('event_subscribers.id','users.firstName', 'users.lastName')
+        ->where('event_id','=',$id)->get();
+        
         return response()->json($eventSubscribers);
     }
 
@@ -94,13 +103,29 @@ class EventSubscriberController extends Controller
         //
     }
 
+    public function checkIfSubscribed(Request $request){
+        
+        $user_id = $request->input('user_id');
+        $event_id = $request->input('event_id');
+        $subscriber = DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->get();
+        error_log($subscriber);
+        if($subscriber->count()==0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\EventSubscriber  $eventSubscriber
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
         $eventSubscriber = EventSubscriber::find($id);

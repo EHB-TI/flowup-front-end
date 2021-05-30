@@ -134,7 +134,7 @@ import moment from 'moment'
         created() {
             //When component is created -> fetch event based on id given in routing params
             this.axios
-                .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+                .get(`http://localhost:80/api/events/${this.$route.params.id}`)
                 .then((res) => {
                     this.event = res.data;
                 });
@@ -143,7 +143,7 @@ import moment from 'moment'
             editEvent() {
                 //Edit an event based on filled in event then redirects to homepage
                 this.axios
-                    .patch(`http://localhost:8000/api/events/${this.$route.params.id}`, this.event)
+                    .patch(`http://localhost:80/api/events/${this.$route.params.id}`, this.event)
                     .then((res) => {
                         this.$router.push({ name: 'home' });
                     });
@@ -154,7 +154,7 @@ import moment from 'moment'
             checkDate() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDate', this.event)
+                .post('http://localhost:80/api/checkDate', this.event)
                  .then(res => (
                     // this.showLocation = false,
                     // this.showEnd = true,

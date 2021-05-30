@@ -13,11 +13,11 @@ use Exception;
 class EventController extends Controller
 {
   //
-  public function index()
-  {
-    $events = Event::orderBy('startEvent', 'desc')->paginate(25)->toArray();
-    return array_reverse($events);
-  }
+    public function index()
+    {
+        $events = Event::where('endEvent','>=',date('Y-m-d'))->orderBy('startEvent', 'desc')->paginate(25)->toArray();
+        return array_reverse($events);
+    }
 
   public function store(Request $request)
   {
@@ -203,4 +203,5 @@ class EventController extends Controller
     $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $event->delete();
   }
+
 }
