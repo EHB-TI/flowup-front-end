@@ -50,4 +50,4 @@ USER www
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80
-RUN php artisan rabbitmq:consume > loggs.txt & php-fpm
+CMD ["php artisan rabbitmq:consume > loggs.txt & php-fpm"]
