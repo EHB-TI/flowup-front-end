@@ -15,3 +15,5 @@ npm-debug.log
 yarn-error.log
 !ip2-frontend/vendor/vladimir-yuldashev/
 vendor/*
+data/certbot/www/*
+data/certbot/conf/*
