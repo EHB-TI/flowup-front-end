@@ -65,9 +65,8 @@ class EventController extends Controller
   public function update($id, Request $request)
   {
     $event = Event::find($id);
-
+    $event->update($request->all());
     if ($this->sendXMLtoUUID($event, "update")) {
-      $event->update($request->all());
       return response()->json('Event updated!');
     }
     return response()->json('Event update failed!');
@@ -159,6 +158,7 @@ class EventController extends Controller
     $body->getElementsByTagName("location")[0]->nodeValue = $event->location;
     $body->getElementsByTagName("description")[0]->nodeValue = $event->description;
 
+    error_log($xml->saveXML());
     //Validate XML whit XSD
     if (!$xml->schemaValidate($XSDPath)) {
       $error = libxml_get_last_error();
@@ -167,7 +167,7 @@ class EventController extends Controller
     }
 
     //Publish event to event queue
-    error_log($xml->saveXML());
+    
     $ROUTEKEY = "UUID";
     $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
     $channel = $connection->channel();
@@ -224,4 +224,3 @@ class EventController extends Controller
     $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $event->delete();
   }
-}

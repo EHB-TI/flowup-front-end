@@ -59,7 +59,7 @@ export default {
     },
     created(){
             this.axios
-            .get(`http://127.0.0.1:8000/api/users/5`)
+            .get(`http://localhost:80/api/users/5`)
             .then((response) => {
                 // handle success
                 this.user = response.data;
@@ -72,7 +72,7 @@ export default {
 
             //Show events 
             this.axios
-            .get(`http://127.0.0.1:8000/api/showByUser/5`)
+            .get(`http://localhost:80/api/showByUser/5`)
             .then((response) => {
                 // handle success
                 this.myEvents = response.data;
