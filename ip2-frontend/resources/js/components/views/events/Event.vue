@@ -2,10 +2,10 @@
     <div>
          <a-layout>
             <a-layout-header style="background:white; height:175px; padding: 10px;">             
-                <div style="display:block; width:88%">
+                <div style="display:block; width:83%">
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
                 </div>
-                <div style="display:block; float:right; width:12%">
+                <div style="display:block; float:right; width:17%">
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
                         <b-button v-if="showEditButton" class="" variant="primary">Edit event</b-button>
                     </router-link>

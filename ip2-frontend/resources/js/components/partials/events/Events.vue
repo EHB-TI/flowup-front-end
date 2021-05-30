@@ -135,39 +135,12 @@ export default {
     border-radius: 0 0 15px 15px;
 }
 
-
-/* .date {
-    display: flex;
-    flex-direction: column;
-    background-color: #ffdada;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    padding:25px;
-}
-
-.date-day {
-    color: #dd3030;
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1;
-}
-
-.date-month {
-    color: #dd3030;
-    line-height: 1;
-    font-size: 1rem;
-    text-transform: uppercase;
-} */
-
 .description {
     height: 100px;
     width: 250px;
 }
 
 .title {
-    width: 250px;
+    width: 240px;
 }
 </style>
