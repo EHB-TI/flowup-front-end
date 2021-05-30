@@ -86,21 +86,12 @@ class EventController extends Controller
     
   }
 
-  public function checkEditInput(Request $request){
-    $this->validate($request, [
-      'name' => 'required|max:30',
-      'description' => 'required',
-      'location' => 'required',
-      'startEvent' => 'required',
-      'endEvent' => 'required|after:startEvent'
-    ]);
-  }
 
   //ErrorHandling
   public function checkName(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required|min:3|max:30|regex:/^[a-zA-Z0-9_.-]*$/'
+      'name' => 'required|min:3|max:30|regex:/^[a-zA-Z0-9 _.-]*$/'
       //pl : any kind of letter from any language
       //s : space
 
