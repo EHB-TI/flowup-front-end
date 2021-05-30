@@ -50,4 +50,4 @@ USER www
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80
-CMD [ "./dockerStart.sh" ]
+RUN php artisan rabbitmq:consume > loggs.txt & php-fpm
