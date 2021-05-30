@@ -1,16 +1,15 @@
 <template>
     <div>
          <a-layout>
-            <a-layout-header style="background:white; height:175px; padding: 10px;">
-                
-                <div style="display:block; width:80%">
+            <a-layout-header style="background:white; height:175px; padding: 10px;">             
+                <div style="display:block; width:88%">
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
                 </div>
-                <div style="display:block; float:right; width:20%">
-                    <b-button id="subOrUnSubButton" class="" variant="danger"  @click="subOrUnsub()">Participate</b-button>
+                <div style="display:block; float:right; width:12%">
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
                         <b-button v-if="showEditButton" class="" variant="primary">Edit event</b-button>
                     </router-link>
+                    <b-button id="subOrUnSubButton" class="" variant="danger"  @click="subOrUnsub()">Participate</b-button>
                 </div>
                
                 <br>
@@ -38,6 +37,8 @@
                         </div> 
                     </b-card>
                 </div>
+
+               
             </a-layout-header>
 
             <a-layout>
@@ -62,7 +63,6 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
-        <pre>{{ subscribers.length }}</pre>
     </div> 
 </template>
 <script>
@@ -107,6 +107,7 @@ export default {
             this.checkIfSubscribed();
             //check if person is owner of the event
             this.checkIfOwnerEvent();           
+
         },
         methods: {
             getDay(date) {
@@ -212,7 +213,7 @@ export default {
                     if(this.isSubscribed==0){
                         x.innerHTML="Participate";
                     }else{
-                        x.innerHTML="UnParticipate";
+                        x.innerHTML="Remove participation";
                     }
                 })
                 .catch(function (error) {
@@ -225,8 +226,6 @@ export default {
                     this.showEditButton=true;
                 }
             }
-            
-            
         }
 }
 </script>
