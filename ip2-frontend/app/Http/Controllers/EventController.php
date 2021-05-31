@@ -23,15 +23,7 @@ class EventController extends Controller
 
   public function store(Request $request)
   {
-    $event = new Event([
-      'name' => $request->input('name'),
-      'user_id' => $request->input('user_id'),
-      'startEvent' => $request->input('startEvent'),
-      'endEvent' => $request->input('endEvent'),
-      'description' => $request->input('description'),
-      'location' => $request->input('location')
-    ]);
-    $event->save();
+    $event = $this->saveEvent($request);
     if ($this->sendXMLtoUUID($event, "create")) {
       return response()->json('Event created!');
     }
@@ -64,8 +56,7 @@ class EventController extends Controller
 
   public function update($id, Request $request)
   {
-    $event = Event::find($id);
-    $event->update($request->all());
+    $event = $this->editEvent($id, $request);
     if ($this->sendXMLtoUUID($event, "update")) {
       return response()->json('Event updated!');
     }
@@ -74,18 +65,11 @@ class EventController extends Controller
 
   public static function destroy($id)
   {
-    $event = Event::find($id);
-    $eventsubscribers = EventSubscriber::where('event_id', '=', $id)->get();
-    
-    if (EventController::sendXMLtoUUID($event, "delete")) {
-      foreach ($eventsubscribers as $eventsubscriber) {
-        EventSubscriberController::deletion($eventsubscriber->id);
-      }
-      
-      $event->delete();
+    $event = $this->deleteEvent($id);
+
+    if ($this->sendXMLtoUUID($event, "delete")) {
       return response()->json('Event deleted');
     }
-    
   }
 
 
@@ -227,4 +211,32 @@ class EventController extends Controller
     $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $event->delete();
   }
+  public static function saveEvent(Request $request)
+  {
+    $event = new Event([
+      'name' => $request->input('name'),
+      'user_id' => $request->input('user_id'),
+      'startEvent' => $request->input('startEvent'),
+      'endEvent' => $request->input('endEvent'),
+      'description' => $request->input('description'),
+      'location' => $request->input('location')
+    ]);
+    $event->save();
+    return $event;
+  }
+
+  public static function editEvent($id, Request $request)
+  {
+    $event = Event::find($id);
+    $event->update($request->all());
+    return $event;
+  }
+
+  public static function deleteEvent($id)
+  {
+    $event = Event::find($id);
+    $event->delete();
+    return $event;
+  }
 }
+
