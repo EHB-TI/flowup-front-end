@@ -38,9 +38,6 @@ COPY . /var/www
 
 # Install composer
 RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install
-RUN rm -rf vendor/vladimir-yuldashev
-COPY vendor/vladimir-yuldashev /var/www/vendor/
 
 # Copy existing application directory permissions
 COPY --chown=www:www . /var/www
@@ -50,7 +47,7 @@ USER www
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80
-RUN chmod +x dockerStart
-ENTRYPOINT [ "./dockerStart" ]
+RUN chmod +x dockerStart.sh
+ENTRYPOINT [ "./dockerStart.sh" ]
 
 #ENTRYPOINT [ "/bin/bash" ]
