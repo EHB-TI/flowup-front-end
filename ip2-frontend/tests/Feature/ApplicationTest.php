@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\EventController;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Request;
 use Tests\TestCase;
 
 use function PHPUnit\Framework\assertTrue;
@@ -25,6 +27,7 @@ class ApplicationTest extends TestCase
         $user = User::factory()->create();
         $date = new \DateTime("now");
         $name = "Test event";
+
         $testEvent = [
             'name' => "Test event",
             'user_id' => $user->id,
@@ -34,8 +37,10 @@ class ApplicationTest extends TestCase
             'description' => "Leuk event",
         ];
 
-        $response = $this->post('/api/events', $testEvent);
-        $response->assertStatus(200);
+        $request = new Request($testEvent);
+        
+
+        EventController::saveEvent($request);
 
         $event = Event::find(1);
 
@@ -53,8 +58,9 @@ class ApplicationTest extends TestCase
         $testEvent = [
             'name' => $name
         ];
-        $response = $this->patch("/api/events/$event->id", $testEvent);
-        $response->assertStatus(200);
+        $request = new Request($testEvent);
+        
+        EventController::editEvent($event->id, $request);
 
         $event = Event::find($event->id);
         assertTrue($name == $event->name);
@@ -70,9 +76,7 @@ class ApplicationTest extends TestCase
         $event = Event::factory()->create(["user_id" => $user->id]);
         $name = "Edited event";
 
-        $response = $this->delete("/api/events/$event->id");
-        $response->assertStatus(200);
-
+        EventController::deleteEvent($event->id);
         $event = Event::find($event->id);
         assertTrue(null == $event);
 
