@@ -37,14 +37,14 @@ export default {
     },
     created() {
             this.axios
-            .get('http://localhost:80/api/events')
+            .get('http://10.3.56.3:80/api/events')
             .then(response => {
                 this.events = response.data;
             });
     },
     methods: {
          getResults(page = 1) {
-			axios.get('http://localhost:80/api/events?page=' + page)
+			axios.get('http://10.3.56.3:80/api/events?page=' + page)
 				.then(response => {
 					this.events = response.data;
 				});

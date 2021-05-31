@@ -39,7 +39,7 @@ export default {
         async created() {
             //fetch logged in user
             await this.axios
-                .get(`http://localhost:80/api/users/1`)
+                .get(`http://10.3.56.3:80/api/users/1`)
                 .then((response) => {
                     this.user = response.data
                     console.log(this.user); 
@@ -50,7 +50,7 @@ export default {
                 });
             //fetch events logged in user attends
             this.axios
-                .get(`http://localhost:80/api/showEventsYouAttend/${this.user.id}`)
+                .get(`http://10.3.56.3:80/api/showEventsYouAttend/${this.user.id}`)
                 .then((response) => {
                     this.events = response.data
                     console.log(this.events);
