@@ -23,7 +23,7 @@ class EventController extends Controller
 
   public function store(Request $request)
   {
-    $event = $this->saveEvent($request);
+    $event = EventController::saveEvent($request);
     if ($this->sendXMLtoUUID($event, "create")) {
       return response()->json('Event created!');
     }
@@ -56,7 +56,7 @@ class EventController extends Controller
 
   public function update($id, Request $request)
   {
-    $event = $this->editEvent($id, $request);
+    $event = EventController::editEvent($id, $request);
     if ($this->sendXMLtoUUID($event, "update")) {
       return response()->json('Event updated!');
     }
@@ -65,9 +65,9 @@ class EventController extends Controller
 
   public static function destroy($id)
   {
-    $event = $this->deleteEvent($id);
+    $event = EventController::deleteEvent($id);
 
-    if ($this->sendXMLtoUUID($event, "delete")) {
+    if (EventController::sendXMLtoUUID($event, "delete")) {
       return response()->json('Event deleted');
     }
   }
