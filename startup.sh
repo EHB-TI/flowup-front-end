@@ -2,6 +2,7 @@
 cp /home/frontend/secrets/.env /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/.env
 cd ip2-frontend/
 composer install
+npm i
 npm run dev
 cd ..
 rm -rf /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/vendor/vladimir-yuldashev
