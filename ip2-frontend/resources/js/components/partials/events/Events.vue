@@ -126,8 +126,8 @@ export default {
 }
 
 .date {
-    width: 80px;
-    height: 80px;
+    width: 82px;
+    height: 82px;
     border-radius: 15px;
     top: -15px;
     right: 10px;
