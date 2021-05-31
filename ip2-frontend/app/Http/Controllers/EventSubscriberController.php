@@ -136,6 +136,19 @@ class EventSubscriberController extends Controller
         return response()->json('EventSubscriber deletion failed');
     }
 
+    public static function deletion($id)
+    {
+
+        $eventSubscriber= EventSubscriber::find($id);
+
+
+        if (EventSubscriberController::sendXMLtoUUID($eventSubscriber, "unsubscribe")) {
+            $eventSubscriber->delete();
+            return response()->json('EventSubscriber deleted');
+        }
+        return response()->json('EventSubscriber deletion failed');
+    }
+
     public function sendXMLtoUUID(EventSubscriber $eventSubscriber, string $type)
     {
         //Geting DateTimes in right format
@@ -158,6 +171,7 @@ class EventSubscriberController extends Controller
 
         $header->getElementsByTagName("method")[0]->nodeValue = $type;
         $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
+        $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $eventSubscriber->id;
 
         //Changing Body values
         $body = $xml->getElementsByTagName("body")[0];

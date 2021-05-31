@@ -53,6 +53,6 @@ Route::get('showEventsYouAttend/{id}', \App\Http\Controllers\EventController::cl
 //
 
 //StatusController
-Route::get('/status', [StatusController::class . '@GetMssg']);
+Route::get('/status', StatusController::class . '@GetMssg');
 //
 

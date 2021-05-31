@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -131,6 +132,11 @@ class UserController extends Controller
   {
     $header = $doc->getElementsByTagName("header")[0];
     $user = User::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
+
+    $events = Event::where('user_id', '=', $user->id)->get();
+    foreach ($events as $event){
+        EventController::destroy($event->id);
+    }
     $user->delete();
   }
 }

@@ -146,7 +146,7 @@
                 </b-form-group>
 
 
-                <b-button @click="deleteEvent()" type="submit" variant="danger">Delete</b-button>
+                <b-button @click="deleteEvent()" variant="danger">Delete</b-button>
                 <b-button @click="checkEditInput()" variant="primary">Validate</b-button>
                 <b-button type="submit" variant="primary">Submit</b-button>
             </b-form>
@@ -207,7 +207,7 @@ export default {
     created() {
             //When component is created -> fetch event based on id given in routing params
         this.axios
-            .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+            .get(`http://localhost:80/api/events/${this.$route.params.id}`)
             .then((res) => {
                 this.event = res.data;
             });
@@ -216,7 +216,7 @@ export default {
         editEvent() {
             //Edit an event based on filled in event then redirects to homepage
             this.axios
-                .patch(`http://localhost:8000/api/events/${this.$route.params.id}`, this.event)
+                .patch(`http://localhost:80/api/events/${this.$route.params.id}`, this.event)
                 .then((res) => {
                     this.$router.push({ name: 'home' });
                 });
@@ -224,7 +224,7 @@ export default {
 
         deleteEvent() {
             this.axios
-                .delete(`http://127.0.0.1:8000/api/events/${this.$route.params.id}`)
+                .delete(`http://localhost:80/api/events/${this.$route.params.id}`)
                 .then(response => {
                     let i = this.event.map(data => data.id).indexOf(id);
                     this.event.splice(i, 1);
@@ -254,7 +254,7 @@ export default {
         checkName() {
             let response="";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkName', this.event)
+                .post('http://localhost:80/api/checkName', this.event)
                  .then(res => (
                     this.response = res.data
                 ))
@@ -296,7 +296,7 @@ export default {
         checkDescription() {
             let response="";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDescription', this.event)
+                .post('http://localhost:80/api/checkDescription', this.event)
                  .then(res => (
                     this.response = res.data
                 ))
@@ -314,7 +314,7 @@ export default {
         checkLocation() {
             let response="";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkLocation', this.event)
+                .post('http://localhost:80/api/checkLocation', this.event)
                  .then(res => (
                     this.response = res.data
                 ))
@@ -334,7 +334,7 @@ export default {
         checkDate() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDate', this.event)
+                .post('http://localhost:80/api/checkDate', this.event)
                  .then(res => (
                     this.response = res.data
                 ))

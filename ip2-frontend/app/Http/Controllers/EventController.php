@@ -72,14 +72,17 @@ class EventController extends Controller
     return response()->json('Event update failed!');
   }
 
-  public function destroy($id)
+  public static function destroy($id)
   {
     $event = Event::find($id);
     $eventsubscribers = EventSubscriber::where('event_id', '=', $id)->get();
     
-    if ($this->sendXMLtoUUID($event, "delete")) {
+    if (EventController::sendXMLtoUUID($event, "delete")) {
+      foreach ($eventsubscribers as $eventsubscriber) {
+        EventSubscriberController::deletion($eventsubscriber->id);
+      }
+      
       $event->delete();
-      $eventsubscribers->delete();
       return response()->json('Event deleted');
     }
     
@@ -122,7 +125,7 @@ class EventController extends Controller
   //
 
   //RabbitMQ
-  public function sendXMLtoUUID(Event $event, string $type)
+  public static function sendXMLtoUUID(Event $event, string $type)
   {
     //Geting DateTimes in right format
     $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
@@ -224,3 +227,4 @@ class EventController extends Controller
     $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $event->delete();
   }
+}
