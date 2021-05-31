@@ -12,11 +12,10 @@ class ConsumerController extends Controller
 {
     const EVENT = "event";
     const USER = "user";
-    const EVENTSUBSCRIBE = "eventsubcribe";
+    const EVENTSUBSCRIBE = "eventSubscribe";
 
     public static function recievemssg(AMQPMessage $message)
     {
-
         //XSD's paths
         $userXSD = "public/XML-XSD/user.xsd";
         $eventXSD = "public/XML-XSD/event.xsd";
@@ -32,6 +31,7 @@ class ConsumerController extends Controller
             $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
             $channel = $connection->channel();
         } catch (\Exception $e) {
+            error_log("No connection");
         }
 
 
@@ -39,12 +39,10 @@ class ConsumerController extends Controller
         $string = $message->getBody();
 
 
-
         $doc = new \DOMDocument();
         try {
             $doc->loadXML($string);
         } catch (\Exception $e) {
-            error_log($e);
             error_log("Is not a valid XML");
             return;
         }
@@ -66,7 +64,6 @@ class ConsumerController extends Controller
             case "error":
                 return;
         }
-
         if (!$doc->SchemaValidate($XSD)) {
             error_log("foutive xml");
             return;
@@ -75,7 +72,6 @@ class ConsumerController extends Controller
         $header = $doc->getElementsByTagName("header")[0];
         //Ignore own Message
         if ($header->getElementsByTagName("origin")[0]->nodeValue == "FrontEnd") return;
-
         //Check where it comse from
         if ($header->getElementsByTagName("origin")[0]->nodeValue != "UUID") {
             //reciefed from other app
@@ -92,10 +88,9 @@ class ConsumerController extends Controller
             //Got message from UUID
             //No sourceEntityId but filled UUID
             if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
-
                 if ($header->getElementsByTagName("method")[0]->nodeValue == "CREATE" || $header->getElementsByTagName("method")[0]->nodeValue == "SUBSCRIBE") {
 
-
+                    
                     //Message confirming it is not in our DB
                     //Set correct route
                     $ROUTEKEY = "UUID";
@@ -120,7 +115,9 @@ class ConsumerController extends Controller
                 } else if ($header->getElementsByTagName("method")[0]->nodeValue == "UPDATE" || $header->getElementsByTagName("method")[0]->nodeValue == "DELETE" || $header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE") {
                     //Set correct route
                     $ROUTEKEY = $type;
-
+                    if($header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE"){
+                        $ROUTEKEY = ConsumerController::EVENT;
+                    }
                     $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
                     if ($type == ConsumerController::EVENT) $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue = "";
                 }
@@ -157,6 +154,10 @@ class ConsumerController extends Controller
 
                     //Set correct route
                     $ROUTEKEY = $type;
+
+                    if($header->getElementsByTagName("method")[0]->nodeValue == "SUBSCRIBE"){
+                        $ROUTEKEY = ConsumerController::EVENT;
+                    }
                 } else if ($header->getElementsByTagName("method")[0]->nodeValue == "DELETE" || $header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE") {
                     //Message confirming it is not in our DB
 
