@@ -40,7 +40,7 @@ class StatusController extends Controller
 
     //Loading the XML
     $xml = new \DOMDocument();
-    $xml->loadXML($xmlPath);
+    $xml->load($xmlPath);
 
     //Change Header values
     $header = $xml->getElementsByTagName("header")[0];
@@ -59,7 +59,6 @@ class StatusController extends Controller
     }
 
     //Return the message
-    error_log($xml->saveXML());
     return response()->json([
       'msg' => $xml->saveXML(),
       'error' => $error,

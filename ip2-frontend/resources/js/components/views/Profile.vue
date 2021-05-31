@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-layout>
-            <a-layout-header style="background:white; height: 120px; padding: 15px;">
+            <a-layout-header style="background:white; height: 120px;">
                 <a-avatar style="float:left;" :size="86" icon="user" src="https://cdn.dribbble.com/users/986811/screenshots/4601947/argentina_leo_messi.png?compress=1&resize=400x300"/>
                 <h1 style="float:left; padding:15px;">{{ user.firstName }} {{ user.lastName }} <span>(#{{ user.id }})</span></h1>
             </a-layout-header>
@@ -25,8 +25,8 @@
                     <h2>My events</h2>
                          <div class="event" v-for="myEvent in myEvents" :key="myEvent.id">
                             <router-link :to="{name: 'event', params: { id: myEvent.id}}">
-                                <b-card class="event-card">
-                                    <div class="card-heading">
+                                    <b-card class="event-card">
+                                    <div class="card-heading absolute top-3 left-3">
                                         <h3 class="title"> {{ myEvent.name }} </h3>
                                     </div>
 
@@ -59,7 +59,7 @@ export default {
     },
     created(){
             this.axios
-            .get(`http://127.0.0.1:8000/api/users/5`)
+            .get(`${this.$api}/api/users/5`)
             .then((response) => {
                 // handle success
                 this.user = response.data;
@@ -72,7 +72,7 @@ export default {
 
             //Show events 
             this.axios
-            .get(`http://127.0.0.1:8000/api/showByUser/5`)
+            .get(`${this.$api}/api/showByUser/5`)
             .then((response) => {
                 // handle success
                 this.myEvents = response.data;
@@ -176,6 +176,6 @@ export default {
 }
 
 .title {
-    width: 250px;
+    width: 240px;
 }
 </style>

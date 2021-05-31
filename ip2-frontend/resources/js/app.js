@@ -35,9 +35,10 @@ Vue.use(Vue2Editor)
 Vue.use(Antd);
 
 
+Vue.prototype.$api=process.env.MIX_API_CONN
 
 
 const app = new Vue({
     el: '#app',
-    router: new VueRouter(routes)
+    router: new VueRouter(routes),
 });

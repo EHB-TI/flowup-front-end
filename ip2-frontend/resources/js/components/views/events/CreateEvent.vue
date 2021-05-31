@@ -14,8 +14,20 @@
                             banner
                             style="margin-bottom:8px;" />
                         <a-alert
-                            v-if="errorName.size"
+                            v-if="errorName.max_size"
                             message="The name field must not be greater than 30 chararcters."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
+                        <a-alert
+                            v-if="errorName.regex"
+                            message="The name must only contain letters, numbers, dashes and underscores."
+                            type="error"
+                            banner
+                            style="margin-bottom:8px;" />
+                        <a-alert
+                            v-if="errorName.min_size"
+                            message="The name must be at least 3 characters."
                             type="error"
                             banner
                             style="margin-bottom:8px;" />
@@ -72,6 +84,12 @@
                                 type="error"
                                 banner
                                 style="margin-bottom:8px;" />
+                            <a-alert
+                                v-if="errorEndDateIsNotGreater"
+                                message="The end date must be a date after start date."
+                                type="error"
+                                banner
+                                style="margin-bottom:8px;" />
                             <b-form-group>
                                 <b-form-radio-group plain>
                                     <b-form-radio v-model="x" name="oneday-radios" value="one">One day event</b-form-radio>
@@ -90,7 +108,7 @@
                                 @change="onChangeOne"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>
 
                             <h3>Ends at</h3>
                                 <a-time-picker 
@@ -108,14 +126,14 @@
                                 @change="onChangeStart"
                                 format="YYYY-MM-DD HH:mm:ss"
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>                     
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>                     
 
                             <h3>Ends at</h3>
                             <a-date-picker
                                 @change="onChangeEnd"
                                 format="YYYY-MM-DD HH:mm:ss"          
                                 :disabled-date="disabledDate"
-                                :show-time="{ defaultValue: moment('12:00', 'HH:mm:ss') }"/>
+                                :show-time="{ defaultValue: moment('12:00', 'HH:mm') }"/>
                             <b-button @click="checkDate()">Next</b-button> 
                         </div> 
                     </transition>
@@ -221,17 +239,20 @@ export default {
             errors: new Errors(),
             errorName: {
                 required: false,
-                size: false,
+                max_size: false,
+                regex: false,
+                min_size: false
             },
             errorDescription: false,
             errorLocation: false,
-            errorDate: false
+            errorDate: false,
+            errorEndDateIsNotGreater: false,
             //
         }
     },
     created() {
         this.axios
-            .get(`http://127.0.0.1:8000/api/users/1`)
+            .get(`${this.$api}/api/users/1`)
             .then((response) => {
                 // handle success
                 this.user = response.data;
@@ -246,10 +267,8 @@ export default {
     },
     methods: {
         addEvent() {
-            this.user.id = 
-
             this.axios
-                .post('http://127.0.0.1:8000/api/events', this.event)
+                .post(`${this.$api}/api/events`, this.event)
                 .then(response => (
                     this.$router.push({ name: 'home' })
                 ))
@@ -259,9 +278,8 @@ export default {
 
         //Errorhandling
         checkName() {
-            let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkName', this.event)
+                .post(`${this.$api}/api/checkName`, this.event)
                  .then(res => (
                     this.showEnd = false,          
                     this.showName = false,
@@ -278,12 +296,28 @@ export default {
                     {
                         this.errorName.required = true;
                         this.errorName.size = false;
+                        this.errorName.regex= false;
+                        this.errorName.min_size = false;
                     } else if(err.response.data.errors['name'][0] === "The name must not be greater than 30 characters.")
                     {
                         this.errorName.size = true;
                         this.errorName.required = false;
-                    }
-                        
+                        this.errorName.regex= false;
+                        this.errorName.min_size = false;
+                    } else if(err.response.data.errors['name'][0] === "The name format is invalid.")
+                    {
+                        this.errorName.size = false;
+                        this.errorName.required = false;
+                        this.errorName.regex= true;
+                        this.errorName.min_size = false;
+
+                    } else if(err.response.data.errors['name'][0] === "The name must be at least 3 characters.")
+                    {
+                        this.errorName.size = false;
+                        this.errorName.required = false;
+                        this.errorName.regex= false;
+                        this.errorName.min_size = true;
+                    }  
                 })
                 .finally( () => this.loading = false)
         },
@@ -291,7 +325,7 @@ export default {
         checkDescription() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDescription', this.event)
+                .post(`${this.$api}/api/checkDescription`, this.event)
                  .then(res => (
                     this.showEnd = false,
                     this.showDescription = false,
@@ -313,7 +347,7 @@ export default {
         checkLocation() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkLocation', this.event)
+                .post(`${this.$api}/api/checkLocation`, this.event)
                  .then(res => (
                     this.showLocation = false,
                     this.showEnd = true,
@@ -331,11 +365,12 @@ export default {
                 })
                 .finally( () => this.loading = false)
         },
+        
 
         checkDate() {
             let response = "";
             this.axios
-                .post('http://127.0.0.1:8000/api/checkDate', this.event)
+                .post(`${this.$api}/api/checkDate`, this.event)
                  .then(res => (
                     // this.showLocation = false,
                     // this.showEnd = true,
@@ -353,9 +388,16 @@ export default {
                     console.log(err.response.data.errors['startEvent']);
                     console.log(err.response.data.errors['endEvent']);
 
-
-                    this.errorDate = true;
-       
+                    if(err.response.data.errors['endEvent'][0]==="The end event must be a date after start event.")
+                    {
+                        this.errorEndDateIsNotGreater = true;
+                        this.errorDate = false;
+                    }
+                    if(err.response.data.errors['endEvent'][0]==="The end event field is required." || err.response.data.errors['startEvent'][0]==="The start event field is required." )
+                    {
+                        this.errorDate = true;
+                        this.errorEndDateIsNotGreater=false;
+                    }
                 })
                 .finally( () => this.loading = false)
         },

@@ -26,25 +26,32 @@
       <a-layout-footer style="background:white; height:65px;" class="mx-auto">
             <pagination :data="events" @pagination-change-page="getResults"></pagination>
       </a-layout-footer>
+      <pre>{{ $api }}</pre>
     </a-layout>
+    
 </template>
 <script>
 export default {
     data() { 
         return {
-            events: {}
+            events: {},
+
+            //api: process.env.MIX_API_CONN,
+
+
         }
     },
+
     created() {
             this.axios
-            .get('http://127.0.0.1:8000/api/events')
+            .get(`${this.$api}/api/events`)
             .then(response => {
                 this.events = response.data;
             });
     },
     methods: {
          getResults(page = 1) {
-			axios.get('http://127.0.0.1:8000/api/events?page=' + page)
+			axios.get(`${this.$api}/api/events?page=` + page)
 				.then(response => {
 					this.events = response.data;
 				});
@@ -135,39 +142,12 @@ export default {
     border-radius: 0 0 15px 15px;
 }
 
-
-/* .date {
-    display: flex;
-    flex-direction: column;
-    background-color: #ffdada;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    padding:25px;
-}
-
-.date-day {
-    color: #dd3030;
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1;
-}
-
-.date-month {
-    color: #dd3030;
-    line-height: 1;
-    font-size: 1rem;
-    text-transform: uppercase;
-} */
-
 .description {
     height: 100px;
     width: 250px;
 }
 
 .title {
-    width: 250px;
+    width: 240px;
 }
 </style>

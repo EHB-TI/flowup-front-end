@@ -1,16 +1,15 @@
 <template>
     <div>
          <a-layout>
-            <a-layout-header style="background:white; height:175px; padding: 10px;">
-                
-                <div>
+            <a-layout-header style="background:white; height:175px; padding: 10px;">             
+                <div style="display:block; width:83%">
                     <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
-                    <b-button class="absolute top-10 right-16" variant="danger" @click="participate()">Participate</b-button>
-                    <b-button class="absolute top-10 right-48" variant="danger" @click="unParticipate()">Unparticipate</b-button>
+                </div>
+                <div style="display:block; float:right; width:17%">
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
-                        <b-button class="absolute top-10 right-96" variant="primary">Edit event</b-button>
+                        <b-button v-if="showEditButton" class="" variant="primary">Edit event</b-button>
                     </router-link>
-                   
+                    <b-button id="subOrUnSubButton" class="" variant="danger"  @click="subOrUnsub()">Participate</b-button>
                 </div>
                
                 <br>
@@ -31,15 +30,17 @@
                  <div style="float:left;">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
-                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startEvent) }}</span>
+                            <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.endEvent) }}</span>
                         </div>
                         <div class="bottom-date absolute inset-x-0 bottom-0 top-7 left-6 right-5 h-8">
                             <span class="text-black font-bold text-l ">{{ getMonth(event.endEvent) }}</span>
                         </div> 
                     </b-card>
                 </div>
+
+               
             </a-layout-header>
-            <b-button class="absolute top-10 right-48" variant="danger" @click="deleteEvent()">delete</b-button>
+
             <a-layout>
                 <a-layout-content style="background: white; padding:10px; height:700px;">
                     <div class="">
@@ -49,12 +50,12 @@
                 </a-layout-content>
 
                 <a-layout-sider style="background:white; padding:10px; height:700px;">
-                    <div>
+                    <div v-if="showAttendees">
                         <h2>Attendees</h2>
-                        <ul style="overflow:hidden; overflow-y:scroll; height:640px;">
-                            <li v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
+                        <ul  style="overflow:hidden; overflow-y:auto; height:640px;">
+                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
                                 <a-avatar shape="circle" size="large" icon="user" />
-                                <span>{{ sub.user_id }}</span>
+                                <span>{{ sub.firstName +' '+ sub.lastName }}</span>
                             </li>
                             <br>
                         </ul>
@@ -62,7 +63,6 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
-        <pre>{{ subscribers.length }}</pre>
     </div> 
 </template>
 <script>
@@ -71,27 +71,29 @@ export default {
             return {
                 event: {},
                 user: {},
-
                 event_subscriber: {},
-
                 subscribers: {},
+                showAttendees: false,
+                isSubscribed: false,
+                showEditButton:false,
             }
         },
-        created() {
+        async created() {
             //Fetch the event (by id)
-            this.axios
-                .get(`http://localhost:8000/api/events/${this.$route.params.id}`)
+            await this.axios
+                .get(`${this.$api}/api/events/${this.$route.params.id}`)
                 .then((res) => {
                     this.event = res.data;
                     this.event_subscriber.event_id = this.event.id;
                 })
                 .catch(function (error) {
                     console.log(error);
-                });;
-
+                }).then(()=> {
+                    
+                });
             //Fetch logged in user
-            this.axios
-                .get(`http://127.0.0.1:8000/api/users/1`)
+            await this.axios
+                .get(`${this.$api}/api/users/1`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -99,36 +101,22 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 });
-
             //Fetch all attendees
-            this.axios
-                .get(`http://127.0.0.1:8000/api/showSubscribers/${this.$route.params.id}`)
-                .then((response) => {
-                    this.subscribers = response.data
-                    console.log(this.subscribers)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });           
+            this.refreshAttendees();
+            //check person is subscribed to event
+            this.checkIfSubscribed();
+            //check if person is owner of the event
+            this.checkIfOwnerEvent();           
+
         },
         methods: {
-            deleteEvent(id) {
-                this.axios
-                    .delete(`http://127.0.0.1:8000/api/events/${this.$route.params.id}`)
-                    .then(response => {
-                        let i = this.event.map(data => data.id).indexOf(id);
-                        this.event.splice(i, 1);
-                    });
-            },
             getDay(date) {
                 var day = date.substring(8,10);
-
                 return day;
             },
             getMonth(date) {
                 var month = date.substring(5,7);
                 
-
                 switch(month) {
                     case "01":
                         return "jan";
@@ -170,35 +158,73 @@ export default {
             },
             getTime(time){
                 var result = time.substring(11,16);
-
                 return result;
             },
-
-            participate(){
+            refreshAttendees(){
                 axios
-                .post(`http://127.0.0.1:8000/api/participate/`, this.event_subscriber)
-                .then((reponse) => {
-                    console.log(reponse);
+                .get(`${this.$api}/api/showSubscribers/${this.$route.params.id}`)
+                .then((response) => {
+                    this.subscribers = response.data
+                    this.showAttendees = true;
+                    console.log(this.subscribers)
                 })
-                .catch(function (error){
+                .catch(function (error) {
                     console.log(error);
                 });
-            }, 
-
-            unParticipate(){
+            },
+            subOrUnsub(){
+                this.checkIfSubscribed()
+                if(this.isSubscribed == 0)
+                {
+                    axios
+                    .post(`${this.$api}/api/participate/`, this.event_subscriber)
+                    .then((reponse) => {
+                        console.log(reponse);
+                        //document.getElementById("subOrUnSubButton").textContent="Participate";
+                        this.refreshAttendees(); 
+                    })
+                    .catch(function (error){
+                        console.log(error);
+                    });
+                }
+                else
+                {
+                    axios
+                    .post(`${this.$api}/api/unparticipate/`, this.event_subscriber)
+                    .then((reponse) => {
+                        console.log(reponse);
+                        //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
+                        this.refreshAttendees();
+                    })
+                    .catch(function (error){
+                        console.log(error);
+                    });
+                }
+                this.checkIfSubscribed();
                 
-                // for(var i = 0;i < this.subscribers.length;i++)
-                // {
-                //     // if(this.user.id === this.subscribers[i].id)
-                //     // {
-                //     //     console.log("EXISTS");
-                //     // } else {
-                //     //     console.log("Does Not exist");
-                //     // }
-
-                //     console.log(this.subscribers[i].id)
-                //     console.log(this.user.id)
-                // }
+            }, 
+            checkIfSubscribed(){
+                axios
+                .post(`${this.$api}/api/checkIfSubscribed/`, this.event_subscriber)
+                .then((response) => {
+                    this.isSubscribed = response.data;
+                    console.log(this.isSubscribed);
+                    var x = document.getElementById("subOrUnSubButton");
+                    if(this.isSubscribed==0){
+                        x.innerHTML="Participate";
+                    }else{
+                        x.innerHTML="Remove participation";
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            checkIfOwnerEvent(){
+                console.log(this.event.user_id);
+                if(this.event.user_id == this.event_subscriber.user_id){
+                    this.showEditButton=true;
+                }
             }
         }
 }
@@ -210,11 +236,9 @@ export default {
     border-radius: 15px;
     border: solid 1px black;
 }
-
 .top-date {
     border-radius: 15px 15px 0 0;
 }
-
 .bottom-date {
     border-radius: 0 0 15px 15px;
 }
