@@ -81,11 +81,7 @@ export default {
         async created() {
             //Fetch the event (by id)
             await this.axios
-<<<<<<< HEAD
-                .get(`http://10.3.56.3:80/api/events/${this.$route.params.id}`)
-=======
                 .get(`${this.$api}/api/events/${this.$route.params.id}`)
->>>>>>> origin/VueJS_env_File
                 .then((res) => {
                     this.event = res.data;
                     this.event_subscriber.event_id = this.event.id;
@@ -97,11 +93,7 @@ export default {
                 });
             //Fetch logged in user
             await this.axios
-<<<<<<< HEAD
-                .get(`http://10.3.56.3:80/api/users/1`)
-=======
                 .get(`${this.$api}/api/users/1`)
->>>>>>> origin/VueJS_env_File
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -170,11 +162,7 @@ export default {
             },
             refreshAttendees(){
                 axios
-<<<<<<< HEAD
-                .get(`http://10.3.56.3:80/api/showSubscribers/${this.$route.params.id}`)
-=======
                 .get(`${this.$api}/api/showSubscribers/${this.$route.params.id}`)
->>>>>>> origin/VueJS_env_File
                 .then((response) => {
                     this.subscribers = response.data
                     this.showAttendees = true;
@@ -189,11 +177,7 @@ export default {
                 if(this.isSubscribed == 0)
                 {
                     axios
-<<<<<<< HEAD
-                    .post(`http://10.3.56.3:80/api/participate/`, this.event_subscriber)
-=======
                     .post(`${this.$api}/api/participate/`, this.event_subscriber)
->>>>>>> origin/VueJS_env_File
                     .then((reponse) => {
                         console.log(reponse);
                         //document.getElementById("subOrUnSubButton").textContent="Participate";
@@ -206,11 +190,7 @@ export default {
                 else
                 {
                     axios
-<<<<<<< HEAD
-                    .post(`http://10.3.56.3:80/api/unparticipate/`, this.event_subscriber)
-=======
                     .post(`${this.$api}/api/unparticipate/`, this.event_subscriber)
->>>>>>> origin/VueJS_env_File
                     .then((reponse) => {
                         console.log(reponse);
                         //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
@@ -225,11 +205,7 @@ export default {
             }, 
             checkIfSubscribed(){
                 axios
-<<<<<<< HEAD
-                .post(`http://10.3.56.3:80/api/checkIfSubscribed/`, this.event_subscriber)
-=======
                 .post(`${this.$api}/api/checkIfSubscribed/`, this.event_subscriber)
->>>>>>> origin/VueJS_env_File
                 .then((response) => {
                     this.isSubscribed = response.data;
                     console.log(this.isSubscribed);

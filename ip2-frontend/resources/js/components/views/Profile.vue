@@ -59,11 +59,7 @@ export default {
     },
     created(){
             this.axios
-<<<<<<< HEAD
-            .get(`http://10.3.56.3:80/api/users/5`)
-=======
             .get(`${this.$api}/api/users/5`)
->>>>>>> origin/VueJS_env_File
             .then((response) => {
                 // handle success
                 this.user = response.data;
@@ -76,11 +72,7 @@ export default {
 
             //Show events 
             this.axios
-<<<<<<< HEAD
-            .get(`http://10.3.56.3:80/api/showByUser/5`)
-=======
             .get(`${this.$api}/api/showByUser/5`)
->>>>>>> origin/VueJS_env_File
             .then((response) => {
                 // handle success
                 this.myEvents = response.data;

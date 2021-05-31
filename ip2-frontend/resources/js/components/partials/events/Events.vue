@@ -44,22 +44,14 @@ export default {
 
     created() {
             this.axios
-<<<<<<< HEAD
-            .get('http://10.3.56.3:80/api/events')
-=======
             .get(`${this.$api}/api/events`)
->>>>>>> origin/VueJS_env_File
             .then(response => {
                 this.events = response.data;
             });
     },
     methods: {
          getResults(page = 1) {
-<<<<<<< HEAD
-			axios.get('http://10.3.56.3:80/api/events?page=' + page)
-=======
 			axios.get(`${this.$api}/api/events?page=` + page)
->>>>>>> origin/VueJS_env_File
 				.then(response => {
 					this.events = response.data;
 				});
