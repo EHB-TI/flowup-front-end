@@ -207,7 +207,11 @@ export default {
     created() {
             //When component is created -> fetch event based on id given in routing params
         this.axios
+<<<<<<< HEAD
             .get(`http://10.3.56.3:80/api/events/${this.$route.params.id}`)
+=======
+            .get(`${this.$api}/api/events/${this.$route.params.id}`)
+>>>>>>> origin/VueJS_env_File
             .then((res) => {
                 this.event = res.data;
             });
@@ -216,7 +220,11 @@ export default {
         editEvent() {
             //Edit an event based on filled in event then redirects to homepage
             this.axios
+<<<<<<< HEAD
                 .patch(`http://10.3.56.3:80/api/events/${this.$route.params.id}`, this.event)
+=======
+                .patch(`${this.$api}/api/events/${this.$route.params.id}`, this.event)
+>>>>>>> origin/VueJS_env_File
                 .then((res) => {
                     this.$router.push({ name: 'home' });
                 });
@@ -224,7 +232,11 @@ export default {
 
         deleteEvent() {
             this.axios
+<<<<<<< HEAD
                 .delete(`http://10.3.56.3:80/api/events/${this.$route.params.id}`)
+=======
+                .delete(`${this.$api}/api/events/${this.$route.params.id}`)
+>>>>>>> origin/VueJS_env_File
                 .then(response => {
                     let i = this.event.map(data => data.id).indexOf(id);
                     this.event.splice(i, 1);
@@ -254,7 +266,11 @@ export default {
         checkName() {
             let response="";
             this.axios
+<<<<<<< HEAD
                 .post('http://10.3.56.3:80/api/checkName', this.event)
+=======
+                .post('${this.$api}/api/checkName', this.event)
+>>>>>>> origin/VueJS_env_File
                  .then(res => (
                     this.response = res.data
                 ))
@@ -296,7 +312,11 @@ export default {
         checkDescription() {
             let response="";
             this.axios
+<<<<<<< HEAD
                 .post('http://10.3.56.3:80/api/checkDescription', this.event)
+=======
+                .post('${this.$api}/api/checkDescription', this.event)
+>>>>>>> origin/VueJS_env_File
                  .then(res => (
                     this.response = res.data
                 ))
@@ -314,7 +334,11 @@ export default {
         checkLocation() {
             let response="";
             this.axios
+<<<<<<< HEAD
                 .post('http://10.3.56.3:80/api/checkLocation', this.event)
+=======
+                .post('${this.$api}/api/checkLocation', this.event)
+>>>>>>> origin/VueJS_env_File
                  .then(res => (
                     this.response = res.data
                 ))
@@ -334,7 +358,11 @@ export default {
         checkDate() {
             let response = "";
             this.axios
+<<<<<<< HEAD
                 .post('http://10.3.56.3:80/api/checkDate', this.event)
+=======
+                .post('${this.$api}/api/checkDate', this.event)
+>>>>>>> origin/VueJS_env_File
                  .then(res => (
                     this.response = res.data
                 ))

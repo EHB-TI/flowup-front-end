@@ -26,25 +26,40 @@
       <a-layout-footer style="background:white; height:65px;" class="mx-auto">
             <pagination :data="events" @pagination-change-page="getResults"></pagination>
       </a-layout-footer>
+      <pre>{{ $api }}</pre>
     </a-layout>
+    
 </template>
 <script>
 export default {
     data() { 
         return {
-            events: {}
+            events: {},
+
+            //api: process.env.MIX_API_CONN,
+
+
         }
     },
+
     created() {
             this.axios
+<<<<<<< HEAD
             .get('http://10.3.56.3:80/api/events')
+=======
+            .get(`${this.$api}/api/events`)
+>>>>>>> origin/VueJS_env_File
             .then(response => {
                 this.events = response.data;
             });
     },
     methods: {
          getResults(page = 1) {
+<<<<<<< HEAD
 			axios.get('http://10.3.56.3:80/api/events?page=' + page)
+=======
+			axios.get(`${this.$api}/api/events?page=` + page)
+>>>>>>> origin/VueJS_env_File
 				.then(response => {
 					this.events = response.data;
 				});

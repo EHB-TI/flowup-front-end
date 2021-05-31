@@ -39,7 +39,11 @@ export default {
         async created() {
             //fetch logged in user
             await this.axios
+<<<<<<< HEAD
                 .get(`http://10.3.56.3:80/api/users/1`)
+=======
+                .get(`${this.$api}/api/users/1`)
+>>>>>>> origin/VueJS_env_File
                 .then((response) => {
                     this.user = response.data
                     console.log(this.user); 
@@ -50,7 +54,11 @@ export default {
                 });
             //fetch events logged in user attends
             this.axios
+<<<<<<< HEAD
                 .get(`http://10.3.56.3:80/api/showEventsYouAttend/${this.user.id}`)
+=======
+                .get(`${this.$api}/api/showEventsYouAttend/${this.user.id}`)
+>>>>>>> origin/VueJS_env_File
                 .then((response) => {
                     this.events = response.data
                     console.log(this.events);
