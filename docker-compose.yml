@@ -6,7 +6,7 @@ services:
     build:
       context: ./ip2-frontend
       dockerfile: Dockerfile
-    image: app
+    image: digitalocean.com/php
     container_name: app
     restart: unless-stopped
     stdin_open: true
@@ -22,7 +22,7 @@ services:
       - app-network
 
   #Nginx Service
-  nginx:
+  webserver:
     image: nginx:alpine
     container_name: webserver
     restart: unless-stopped
