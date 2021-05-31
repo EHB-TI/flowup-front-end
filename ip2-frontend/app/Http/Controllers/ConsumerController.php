@@ -10,6 +10,61 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class ConsumerController extends Controller
 {
+
+    public static function errorLoggingToMonitoring($errorCode)
+    {
+
+        //Get current time
+        $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
+        $XSDate = $now->format(\DateTime::RFC3339);
+
+        //XML/XSD paths
+        $xmlPath = "public/XML-XSD/error.xml";
+        $XSDPath = "public/XML-XSD/error.xsd";
+
+        //Loading in the XML
+        $xml = new \DOMDocument();
+        $xml->load($xmlPath);
+        
+        //Changing Header Value
+        $header = $xml->getElementsByTagName("header")[0];
+
+        $header->getElementsByTagName("code")[0]->nodeValue = $errorCode;
+        $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
+        
+        $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
+
+        //Changing Body values
+        $body = $xml->getElementsByTagName("body")[0];
+
+        $body->getElementsByTagName("objectUUID")[0]->nodeValue = "";
+        $body->getElementsByTagName("objectSourceId")[0]->nodeValue = "";
+        $body->getElementsByTagName("objectOrigin")[0]->nodeValue = "";
+        $body->getElementsByTagName("description")[0]->nodeValue = "";
+
+        error_log($xml->saveXML());
+        //Validate XML whit XSD
+        if (!$xml->schemaValidate($XSDPath)) {
+        $error = libxml_get_last_error();
+        error_log($error);
+        return false;
+        }
+
+        //Publish event to event queue
+
+        $ROUTEKEY = "logging";
+        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        $channel = $connection->channel();
+
+        $data = new AMQPMessage($xml->saveXML());
+        $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
+        return true;
+    }
+
+
+
+
+
     const EVENT = "event";
     const USER = "user";
     const EVENTSUBSCRIBE = "eventSubscribe";
@@ -192,4 +247,8 @@ class ConsumerController extends Controller
             $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
         }
     }
+
+    
+
+
 }
