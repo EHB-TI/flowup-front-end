@@ -3,9 +3,9 @@
 name: CI
 on:
   push:
-    branches: [ certbot-vm ]
+    branches: [ main ]
   pull_request:
-    branches: [ certbot-vm ]
+    branches: [ main ]
     
 jobs:
   # laravel:

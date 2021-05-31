@@ -20,27 +20,27 @@ fi
 
 echo "### Copying recommended TLS parameters ..."
 mkdir -p "$data_path/conf"
-cp /home/frontend/secrets/options-ssl-nginx.conf "$data_path/conf/options-ssl-nginx.conf"
-cp /home/frontend/secrets/ssl-dhparams.pem "$data_path/conf/ssl-dhparams.pem"
+# cp /home/frontend/secrets/options-ssl-nginx.conf "$data_path/conf/options-ssl-nginx.conf"
+# cp /home/frontend/secrets/ssl-dhparams.pem "$data_path/conf/ssl-dhparams.pem"
 
-cp /home/frontend/secrets/.env /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/.env
-cd ip2-frontend/
-composer install
-npm i
-npm run dev
-cd ..
-rm -rf /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/vendor/vladimir-yuldashev
-cp -r /home/frontend/vlad/vladimir-yuldashev /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/vendor/
-chmod -R +x /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end
+# cp /home/frontend/secrets/.env /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/.env
+# cd ip2-frontend/
+# composer install
+# npm i
+# npm run dev
+# cd ..
+# rm -rf /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/vendor/vladimir-yuldashev
+# cp -r /home/frontend/vlad/vladimir-yuldashev /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/vendor/
+# chmod -R +x /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end
 
-# DONT UNCOMMENT IF ABOVE WORKS
-# if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
-#   echo "### Downloading recommended TLS parameters ..."
-#   mkdir -p "$data_path/conf"
-#   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "$data_path/conf/options-ssl-nginx.conf"
-#   curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "$data_path/conf/ssl-dhparams.pem"
-#   echo
-# fi
+DONT UNCOMMENT IF ABOVE WORKS
+if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
+  echo "### Downloading recommended TLS parameters ..."
+  mkdir -p "$data_path/conf"
+  curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "$data_path/conf/options-ssl-nginx.conf"
+  curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "$data_path/conf/ssl-dhparams.pem"
+  echo
+fi
 
 echo "### Creating dummy certificate for $domains ..."
 path="/etc/letsencrypt/live/$domains"
