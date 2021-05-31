@@ -50,5 +50,7 @@ USER www
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80
-RUN ["chmod", "+x", "/var/www/dockerStart.sh"]
+RUN chmod +x /var/www/dockerStart.sh
 ENTRYPOINT [ "/var/www/dockerStart.sh" ]
+
+#ENTRYPOINT [ "/bin/bash" ]
