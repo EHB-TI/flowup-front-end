@@ -45,7 +45,7 @@ COPY --chown=www:www . /var/www
 # Change current user to www
 USER www
 
-# Expose port 80 and start php-fpm server
+# Expose port 8080 and start php-fpm server
 EXPOSE 8080
 RUN chmod +x dockerStart.sh
 ENTRYPOINT [ "./dockerStart.sh" ]
