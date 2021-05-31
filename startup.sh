@@ -1,5 +1,7 @@
 #!/bin/sh
 cp /home/frontend/secrets/.env /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/.env
+cp /home/frontend/secrets/fullchain.pem /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/letsencrypt/fullchain.pem
+cp /home/frontend/secrets/privkey.pem /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-end/ip2-frontend/letsencrypt/privkey.pem
 cd ip2-frontend/
 composer install
 npm i
