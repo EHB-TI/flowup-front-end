@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -23,6 +24,7 @@ class EventController extends Controller
 
   public function store(Request $request)
   {
+    $request->user_id = Auth::id();
     $event = EventController::saveEvent($request);
     if ($this->sendXMLtoUUID($event, "create")) {
       return response()->json('Event created!');
