@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             [
                 'firstName' => "license",
                 'lastName' => "testc",
-                'email' => "admin@ehb.be",
+                'email' => "license.testc@desideriushogeschool.be",
                 'password' => Hash::make("2000-12-11license.testc@desideriushogeschool.be"),
                 'birthday' => "2000-12-11",
                 'role' => "student",
