@@ -17,6 +17,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::middleware('saml')->group(function () {
         Route::get('/{any}', function () {
             return view('main');
-        })->where('any', '.*');
+        })
+        ->name('dashboard')
+        ->where('any', '.*');
     });
 });

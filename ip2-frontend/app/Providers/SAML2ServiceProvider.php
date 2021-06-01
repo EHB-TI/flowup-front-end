@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
-use Illuminate\Support\Arr;
+use \Illuminate\Http\Request;
 
 class SAML2ServiceProvider extends ServiceProvider
 {
@@ -34,15 +34,30 @@ class SAML2ServiceProvider extends ServiceProvider
             // Add your own code preventing reuse of a $messageId to stop replay attacks
 
             $samlUser = $event->getSaml2User();
-            $attributes = $samlUser ->getAttributes();
+            $attributes = $samlUser->getAttributes();
             $email_var = $attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0];
-            $email = explode("@", $email_var)[0]."@desideriushogeschool.be";
+            $email = explode("@", $email_var)[0] . "@desideriushogeschool.be";
 
             // $laravelUser = //find user by ID or attribute
             //if it does not exist create it and go on  or show an error message
-            
+
             $user = User::where('email', $email)->first();
-            Auth::login($user);
+
+            $credentials = [
+                'email' => $user->email,
+                'password' => $user->birthday . $user->email
+            ];
+
+            if (Auth::attempt($credentials)) {
+                $request = new \Illuminate\Http\Request();
+                $request->session()->regenerate();
+
+                return redirect()->intended('dashboard');
+            }
+
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ]);
         });
 
         Event::listen('Aacotroneo\Saml2\Events\Saml2LogoutEvent', function ($event) {
