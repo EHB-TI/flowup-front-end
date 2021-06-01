@@ -37,7 +37,8 @@ class SAML2ServiceProvider extends ServiceProvider
             $attributes = $user->getAttributes();
             $email_weird = $attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0];
 
-            $email = explode('"', $email_weird)[1];
+            var_dump(explode('"', $email_weird));
+            $email = "";
 
             // $laravelUser = //find user by ID or attribute
             //if it does not exist create it and go on  or show an error message
