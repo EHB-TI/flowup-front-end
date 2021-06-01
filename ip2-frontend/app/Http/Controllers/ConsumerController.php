@@ -16,7 +16,7 @@ class ConsumerController extends Controller
     const ERROR = "error";
 
      //XSD's paths
-     const USERXSD = "XML-XSD/user.xsd";
+     const USERXSD = "public/XML-XSD/user.xsd";
      const EVENTXSD = "XML-XSD/event.xsd";
      const EVENTSUBSCRIBEXSD = "XML-XSD/eventSubscribe.xsd";
      const ERRORXSD = "XML-XSD/error.xsd";
