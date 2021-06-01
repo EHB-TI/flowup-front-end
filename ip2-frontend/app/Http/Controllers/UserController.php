@@ -6,7 +6,6 @@ use App\Models\Event;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use DOMDocument;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
@@ -98,12 +97,10 @@ class UserController extends Controller
     {
 
         $body = $doc->getElementsByTagName("body")[0];
-        $new_password = $body->getElementsByTagName("birthday")[0]->nodeValue.$body->getElementsByTagName("email")[0]->nodeValue;
         $user = new User([
             'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue,
-            'name' => $body->getElementsByTagName("lastname")[0]->nodeValue,
+            'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
             'email' => $body->getElementsByTagName("email")[0]->nodeValue,
-            'password' => Hash::make($new_password),
             'birthday' => $body->getElementsByTagName("birthday")[0]->nodeValue,
             'role' => $body->getElementsByTagName("role")[0]->nodeValue,
             'study' => $body->getElementsByTagName("study")[0]->nodeValue,
@@ -120,12 +117,10 @@ class UserController extends Controller
         $body = $doc->getElementsByTagName("body")[0];
         $header = $doc->getElementsByTagName("header")[0];
         $user = User::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
-        $new_password = $body->getElementsByTagName("birthday")[0]->nodeValue.$body->getElementsByTagName("email")[0]->nodeValue;
         $newUser = [
             'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue,
-            'name' => $body->getElementsByTagName("lastname")[0]->nodeValue,
+            'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
             'email' => $body->getElementsByTagName("email")[0]->nodeValue,
-            'password' => Hash::make($new_password),
             'birthday' => $body->getElementsByTagName("birthday")[0]->nodeValue,
             'role' => $body->getElementsByTagName("role")[0]->nodeValue,
             'study' => $body->getElementsByTagName("study")[0]->nodeValue,

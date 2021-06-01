@@ -69,7 +69,7 @@ class EventSubscriberController extends Controller
     {
         $eventSubscribers = DB::table('users')
         ->join('event_subscribers', 'users.id', '=','event_subscribers.user_id')
-        ->select('event_subscribers.id','users.firstName', 'users.name')
+        ->select('event_subscribers.id','users.firstName', 'users.lastName')
         ->where('event_id','=',$id)->get();
         
         return response()->json($eventSubscribers);
