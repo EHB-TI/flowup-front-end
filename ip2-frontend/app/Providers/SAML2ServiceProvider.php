@@ -3,14 +3,12 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Aacotroneo\Saml2\Http\Controllers\Saml2Controller;
-use Aacotroneo\Saml2\Events\Saml2Event;
 use Aacotroneo\Saml2\Events\Saml2LoginEvent;
 use Illuminate\Support\Facades\Event;
-use Aacotroneo\Saml2\saml2User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use Illuminate\Support\Arr;
 
 class SAML2ServiceProvider extends ServiceProvider
 {
@@ -38,13 +36,12 @@ class SAML2ServiceProvider extends ServiceProvider
             $user = $event->getSaml2User();
             $userData = [
                 'id' => $user->getUserId(),
-                'attributes' => $user->getAttributes(),
+                'email' => $user->getAttribute('email'),
                 'assertion' => $user->getRawSamlAssertion()
             ];
                 $laravelUser = //find user by ID or attribute
                 //if it does not exist create it and go on  or show an error message
-                $laravelUser = new User();
-                $laravelUser->
+                $laravelUser = User::where('email', Arr::get($userData, 'email'));
                 Auth::login($laravelUser);
         });
 
