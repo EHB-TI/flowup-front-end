@@ -1,11 +1,11 @@
-<template>
-    <div>
+<template style="background:white;">
+    <div style="background:white;">
          <a-layout>
-            <a-layout-header style="background:white; height:175px; padding: 10px;">             
-                <div style="display:block; width:83%">
-                    <h1 class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
+            <a-layout-header class="header" style="background:white;">             
+                <div  style="display:block; width:83%">
+                    <h1 id="titelevent" class="absolute top-6 left-26" style=""> {{ event.name }} <span>(#{{ event.user_id }})</span></h1>
                 </div>
-                <div style="display:block; float:right; width:17%">
+                 <div id="buttons">
                     <router-link :to="{name: 'edit', params: { id: event.id}}">
                         <b-button v-if="showEditButton" class="" variant="primary">Edit event</b-button>
                     </router-link>
@@ -13,7 +13,7 @@
                 </div>
                
                 <br>
-                <div style="float:left;">
+                <div class="datecard">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
                             <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startEvent) }}</span>
@@ -24,10 +24,10 @@
                     </b-card>
                 </div>
                 <div style="float:left; padding:10px;">
-                    <h1> {{ getTime(event.startEvent) }} - {{ getTime(event.endEvent) }}</h1>
+                    <h1 id="time" > {{ getTime(event.startEvent) }} - {{ getTime(event.endEvent) }}</h1>
                 </div>
 
-                 <div style="float:left;">
+                 <div class="datecard">
                     <b-card class="date">
                         <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
                             <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.endEvent) }}</span>
@@ -37,12 +37,13 @@
                         </div> 
                     </b-card>
                 </div>
-
+               
                
             </a-layout-header>
+            
 
-            <a-layout>
-                <a-layout-content style="background: white; padding:10px; height:700px;">
+            <a-layout id="aboutpart">
+                <a-layout-content id="content">
                     <div class="">
                         <h2>About</h2>
                         <p> {{ event.description }} </p>
@@ -242,4 +243,64 @@ export default {
 .bottom-date {
     border-radius: 0 0 15px 15px;
 }
+.header{
+    height:175px; 
+    padding: 10px;
+}
+#buttons{ 
+    float:right; 
+    width:17%;
+}
+.datecard{
+    float: left;
+}
+
+#content{
+    background: white;
+    padding:10px;
+    height:700px;
+}
+
+
+@media screen and (max-width: 660px) {
+    #time
+    {
+        font-size: 5vw;
+        float: left;
+    }
+    .header
+    {
+        width: 220px;
+    }
+    #aboutpart
+    {
+        display: block;
+        float: left;
+    }
+    .header
+    {
+        height:300px; 
+        padding: 10px;
+        padding-bottom: 20px;
+    }
+ 
+    .datecard
+    {
+        float: left;
+    }
+    #titelevent{
+        height: 60px;
+    }
+    #content{
+        padding-top: 20px;
+    }
+  
+  
+  
+
+}
+  
+
+    
+
 </style>

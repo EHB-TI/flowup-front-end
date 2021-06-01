@@ -1,22 +1,22 @@
 <template>
     <div>
         <a-layout>
-            <a-layout-header style="background:white; height: 120px;">
+            <a-layout-header id="info" style="background:white;">
                 <a-avatar style="float:left;" :size="86" icon="user" src="https://cdn.dribbble.com/users/986811/screenshots/4601947/argentina_leo_messi.png?compress=1&resize=400x300"/>
-                <h1 style="float:left; padding:15px;">{{ user.firstName }} {{ user.lastName }} <span>(#{{ user.id }})</span></h1>
+                <h1 id="username" style="float:left;">{{ user.firstName }} {{ user.lastName }} <span>(#{{ user.id }})</span></h1>
             </a-layout-header>
             <a-layout>
-                <a-layout-content style="background: white; padding: 15px;">
+                <a-layout-content style="background: white;" class="content">
                     <h3>Your information</h3>
                     <a-descriptions bordered>
-                        <a-descriptions-item label="Email">
-                            {{ user.email }}
+                        <a-descriptions-item  label="Email">
+                            <p id="item">{{ user.email }}</p>
                         </a-descriptions-item>
                         <a-descriptions-item label="Birthday">
-                            {{ user.birthday }}
+                            <p >{{ user.birthday }}</p>
                         </a-descriptions-item>
                         <a-descriptions-item label="Study">
-                            {{ user.study }}
+                            <p>{{ user.study }}</p>
                         </a-descriptions-item>
                     </a-descriptions>
                 
@@ -177,5 +177,60 @@ export default {
 
 .title {
     width: 240px;
+}
+.content{
+    padding:15px;
+}
+
+#info{
+    height: 120px;
+}
+#username{
+    padding:15px;
+}
+
+@media screen and (max-width: 480px) {
+  .event-card {
+    width: 220px;
+    height: 200px;
+  }
+  .title{
+    width: 110px;
+  }
+  #info{
+    height: 260px;
+  }
+  #username{
+      padding: 0px;
+  }
+  .content{
+      padding: 0px;
+  }
+  #item{
+      width: 40px;
+  }
+  
+  
+}
+
+@media screen and (max-width: 300px) {
+  .event-card {
+    width: 160px;
+    height: 260px;
+    margin-top:30px
+  }
+  .title{
+    margin-top: 60px;
+    width: 110px;
+  }
+  #info{
+    height: 260px;
+  }
+  #username{
+      padding: 0px;
+  }
+  .content{
+    padding: 0px;
+  }
 }
 </style>

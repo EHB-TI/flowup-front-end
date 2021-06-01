@@ -2,10 +2,7 @@
 
 namespace VladimirYuldashev\LaravelQueueRabbitMQ;
 
-use App\Http\Controllers\ConsumerController;
 use Exception;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\EventController;
 use Illuminate\Container\Container;
 use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
@@ -77,19 +74,7 @@ class Consumer extends Worker
         /** @var RabbitMQQueue $connection */
         $connection = $this->manager->connection($connectionName);
 
-        //declare channel
         $this->channel = $connection->getChannel();
-
-        //declare exchange
-        $this->channel->exchange_declare('direct_logs', 'direct', false, false, false);
-
-        //decleare queue with durable feature
-        $this->channel->queue_declare("frontend", false, true, false, false);
-
-        //bind queue to routing user, event and frontend_error
-        $this->channel->queue_bind($queue, 'direct_logs', 'user');
-        $this->channel->queue_bind($queue, 'direct_logs', 'event');
-        $this->channel->queue_bind($queue, 'direct_logs', 'FrontEnd');
 
         $this->channel->basic_qos(
             $this->prefetchSize,
@@ -97,7 +82,8 @@ class Consumer extends Worker
             null
         );
 
-        //uses a basic cosnsume on the specified queue
+        $jobClass = $connection->getJobClass();
+
         $this->channel->basic_consume(
             $queue,
             $this->consumerTag,
@@ -105,18 +91,29 @@ class Consumer extends Worker
             false,
             false,
             false,
-            function (AMQPMessage $message) {
+            function (AMQPMessage $message) use ($connection, $options, $connectionName, $queue, $jobClass, &$jobsProcessed): void {
+                $job = new $jobClass(
+                    $this->container,
+                    $connection,
+                    $message,
+                    $connectionName,
+                    $queue
+                );
 
-                //show the message body
-                error_log($message->getBody());
-                error_log("--------------------------------------------------------------");
-                try{
-                    ConsumerController::recievemssg($message);
-                }catch(Exception $e){
-                    error_log($e);
+                $this->currentJob = $job;
+
+                if ($this->supportsAsyncSignals()) {
+                    $this->registerTimeoutHandler($job, $options);
                 }
-                
+
+                $jobsProcessed++;
+
+                $this->runJob($job, $connectionName, $options);
+
+                if ($this->supportsAsyncSignals()) {
+                    $this->resetTimeoutHandler();
                 }
+            }
         );
 
         while ($this->channel->is_consuming()) {

@@ -157,4 +157,25 @@ export default {
 .title {
     width: 240px;
 }
+
+@media screen and (max-width: 480px) {
+  .event-card {
+    width: 220px;
+    height: 200px;
+  }
+  .title{
+    width: 100px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .event-card {
+    width: 160px;
+    height: 260px;
+  }
+  .title{
+    margin-top: 60px;
+    width: 100px;
+  }
+}
 </style>

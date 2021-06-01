@@ -5,12 +5,12 @@
             <div class="event static" v-for="event in events.data" :key="event.id">
                 <router-link :to="{name: 'event', params: { id: event.id}}">
                     <b-card class="event-card ">
-                        <div class="card-heading absolute top-3 left-3">
-                            <h3 class="title"> {{ event.name }} </h3>
+                        <div id="eventname" class="card-heading absolute top-3 left-3">
+                            <h3 id="title" class="title"> {{ event.name }} </h3>
                         </div>
                         
 
-                        <div class="absolute date">
+                        <div id="dateemblem" class="absolute date">
                             <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
                                 <span class="text-white font-bold text-2xl absolute top-2 left-6 right-6">{{ getDay(event.startEvent) }}</span>
                             </div>
@@ -48,6 +48,7 @@ export default {
             .then(response => {
                 this.events = response.data;
             });
+           
     },
     methods: {
          getResults(page = 1) {
@@ -102,11 +103,15 @@ export default {
                     return "dec";
                     break;                      
             }
-        }
+        },
     }
 }
 </script>
 <style scoped>
+
+* {
+  box-sizing: border-box;
+}
 .event {
     float: left;
 }
@@ -149,5 +154,26 @@ export default {
 
 .title {
     width: 240px;
+}
+
+@media screen and (max-width: 480px) {
+  .event-card {
+    width: 220px;
+    height: 200px;
+  }
+  .title{
+    width: 100px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .event-card {
+    width: 160px;
+    height: 260px;
+  }
+  .title{
+    margin-top: 60px;
+    width: 100px;
+  }
 }
 </style>
