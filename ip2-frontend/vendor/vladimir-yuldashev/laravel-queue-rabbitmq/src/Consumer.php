@@ -111,6 +111,7 @@ class Consumer extends Worker
                 error_log($message->getBody());
                 error_log("--------------------------------------------------------------");
                 try{
+                    error_log("1");
                     ConsumerController::recievemssg($message);
                 }catch(Exception $e){
                     error_log($e);

@@ -15,27 +15,29 @@ class ConsumerController extends Controller
     const EVENTSUBSCRIBE = "eventSubscribe";
     const ERROR = "error";
 
-     //XSD's paths
-     const USERXSD = "public/XML-XSD/user.xsd";
-     const EVENTXSD = "XML-XSD/event.xsd";
-     const EVENTSUBSCRIBEXSD = "XML-XSD/eventSubscribe.xsd";
-     const ERRORXSD = "XML-XSD/error.xsd";
+    //XSD's paths
+    const USERXSD = "public/XML-XSD/user.xsd";
+    const EVENTXSD = "XML-XSD/event.xsd";
+    const EVENTSUBSCRIBEXSD = "XML-XSD/eventSubscribe.xsd";
+    const ERRORXSD = "XML-XSD/error.xsd";
 
     public static function recievemssg(AMQPMessage $message)
     {
         $message->ack();
         $string = $message->getBody();
-        
-        try{
-        $rabbitMQinfo = ConsumerController::consumerHandeling($string);
-        } catch(\Exception $e){
+
+        try {
+            error_log("2");
+            $rabbitMQinfo = ConsumerController::consumerHandeling($string);
+        } catch (\Exception $e) {
             error_log($e);
         }
-        If($rabbitMQinfo == null){
+        if ($rabbitMQinfo == null) {
+            error_log("5");
         }
         error_log($rabbitMQinfo["xml"]);
         //Send to RabbitMQ
-        if($rabbitMQinfo != null){
+        if ($rabbitMQinfo != null) {
             ConsumerController::sendXMLToRabbitMQ($rabbitMQinfo["xml"], $rabbitMQinfo["route"]);
         }
     }
@@ -44,7 +46,7 @@ class ConsumerController extends Controller
     public static function errorLoggingToMonitoring($errorInfo)
     {
 
-        
+
         $xml = ConsumerController::errorArrayToXML($errorInfo);
 
         if (!$xml->SchemaValidate(ConsumerController::ERRORXSD)) {
@@ -55,7 +57,7 @@ class ConsumerController extends Controller
                 "objectUUID" => $xml->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
                 "objectSourceId" => "FrontEnd"
             ]);
-            return ["error" => "foutive xml"] ;
+            return ["error" => "foutive xml"];
         }
         ConsumerController::sendXMLtoQueue($xml, "logging");
         return true;
@@ -98,7 +100,7 @@ class ConsumerController extends Controller
                 "objectUUID" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
                 "objectSourceId" => "FrontEnd"
             ]);
-            return ["error" => "foutive xml"] ;
+            return ["error" => "foutive xml"];
         }
 
         //Make connection to RabbitMQ
@@ -110,7 +112,8 @@ class ConsumerController extends Controller
         $channel->basic_publish($data, 'direct_logs', $routkey);
         $connection->close();
     }
-    public static function sendXMLtoQueue(\DOMDocument $doc, $routkey){
+    public static function sendXMLtoQueue(\DOMDocument $doc, $routkey)
+    {
         error_log(env('RABBITMQ_HOST'));
         $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
         $channel = $connection->channel();
@@ -125,6 +128,7 @@ class ConsumerController extends Controller
 
         $doc = new \DOMDocument();
         try {
+            error_log("3");
             $doc->loadXML($xmlstring);
         } catch (\Exception $e) {
             ConsumerController::errorLoggingToMonitoring(["code" => 1000]);
@@ -150,6 +154,7 @@ class ConsumerController extends Controller
                 ConsumerController::sendXMLToRabbitMQ($doc, "logging");
                 return ["xml" => $doc->saveXML()];
         }
+        error_log($XSD);
 
         if (!$doc->SchemaValidate($XSD)) {
             //Send Error to RabbitMQ
@@ -160,7 +165,7 @@ class ConsumerController extends Controller
                 "objectSourceId" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue
             ]);
             error_log("foutive xml");
-            return ["error" => "foutive xml"] ;
+            return ["error" => "foutive xml"];
         }
 
         $header = $doc->getElementsByTagName("header")[0];
@@ -168,6 +173,7 @@ class ConsumerController extends Controller
         if ($header->getElementsByTagName("origin")[0]->nodeValue == "FrontEnd") return;
         //Check where it comse from
         if ($header->getElementsByTagName("origin")[0]->nodeValue != "UUID") {
+            error_log("4.1");
             //reciefed from other app
             $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
             $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
@@ -176,6 +182,7 @@ class ConsumerController extends Controller
             //Send to UUID
             $ROUTEKEY = "UUID";
         } else {
+            error_log("4.2");
             //Got message from UUID
             //No sourceEntityId but filled UUID
             if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
@@ -282,7 +289,7 @@ class ConsumerController extends Controller
             "route" => $ROUTEKEY
         ];
     }
-    
+
     public static function errorArrayToXML($errorInfo)
     {
         $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
@@ -306,9 +313,9 @@ class ConsumerController extends Controller
         //Changing Body values
         $body = $xml->getElementsByTagName("body")[0];
 
-        $body->getElementsByTagName("objectOrigin")[0]->nodeValue = (array_key_exists ("objectOrigin",$errorInfo)) ? $errorInfo["objectOrigin"] : "None";
-        $body->getElementsByTagName("objectSourceId")[0]->nodeValue = (array_key_exists ("objectSourceId",$errorInfo)) ? $errorInfo["objectSourceId"] : "None";
-        $body->getElementsByTagName("objectUUID")[0]->nodeValue = (array_key_exists ("objectUUID",$errorInfo)) ? $errorInfo["objectUUID"] : "None";
+        $body->getElementsByTagName("objectOrigin")[0]->nodeValue = (array_key_exists("objectOrigin", $errorInfo)) ? $errorInfo["objectOrigin"] : "None";
+        $body->getElementsByTagName("objectSourceId")[0]->nodeValue = (array_key_exists("objectSourceId", $errorInfo)) ? $errorInfo["objectSourceId"] : "None";
+        $body->getElementsByTagName("objectUUID")[0]->nodeValue = (array_key_exists("objectUUID", $errorInfo)) ? $errorInfo["objectUUID"] : "None";
 
         switch ($errorInfo["code"]) {
             case "1000":
@@ -334,9 +341,9 @@ class ConsumerController extends Controller
                 break;
             default:
                 throw new \Exception("Invalid error code");
-            break;
+                break;
         }
-        
+
         $body->getElementsByTagName("description")[0]->nodeValue = $description;
 
         //Validate XML whit XSD
