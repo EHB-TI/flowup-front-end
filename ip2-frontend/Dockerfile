@@ -1,4 +1,4 @@
-FROM php:8-fpm
+FROM php:7.4-fpm
 
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /var/www/
@@ -45,11 +45,11 @@ COPY --chown=www:www . /var/www
 # Change current user to www
 USER www
 
-# Expose port 80 and start php-fpm server
-EXPOSE 80
+# Expose port 8080 and start php-fpm server
+#EXPOSE 8080
+# Expose port 4433 and start php-fpm server
+EXPOSE 4433
 RUN chmod +x dockerStart.sh
-# for windows
-CMD [ "./dockerStart.sh" ]
+ENTRYPOINT [ "./dockerStart.sh" ]
 
-# for linux
-#ENTRYPOINT [ "./dockerStart.sh" ]
+#ENTRYPOINT [ "/bin/bash" ]

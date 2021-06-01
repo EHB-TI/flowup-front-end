@@ -42,7 +42,7 @@ async function code() {
 
 async function SendHeartBeat() {
   try {
-    await fetch('http://webserver:80/api/status').then(response => response.json()).then(data => {
+    await fetch('https://frontend.hypere.be:4433/api/status').then(response => response.json()).then(data => {
     if(!data.error || !data){
       channel.sendToQueue(QUEUE, Buffer.from(data.msg))
     }else{

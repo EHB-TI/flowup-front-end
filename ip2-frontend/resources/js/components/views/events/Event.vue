@@ -231,8 +231,8 @@ export default {
 </script>
 <style scoped>
 .date {
-    width: 80px;
-    height: 80px;
+    width: 82px;
+    height: 82px;
     border-radius: 15px;
     border: solid 1px black;
 }
