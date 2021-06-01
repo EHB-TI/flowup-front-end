@@ -34,11 +34,11 @@ class SAML2ServiceProvider extends ServiceProvider
             // Add your own code preventing reuse of a $messageId to stop replay attacks
 
             $user = $event->getSaml2User();
-            var_dump($user);
+            var_dump($user->getAttribute('emailaddress'));
 
             $userData = [
                 'id' => $user->getUserId(),
-                'email' => $user->getAttribute('email'),
+                'email' => $user->getAttribute('emailaddress'),
                 'assertion' => $user->getRawSamlAssertion()
             ];
                 error_log($userData['email']);
