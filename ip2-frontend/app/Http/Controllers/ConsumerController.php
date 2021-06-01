@@ -29,7 +29,7 @@ class ConsumerController extends Controller
         try {
             error_log("2");
             $rabbitMQinfo = ConsumerController::consumerHandeling($string);
-            
+
             if ($rabbitMQinfo == null) {
                 error_log("5");
             }
@@ -183,6 +183,7 @@ class ConsumerController extends Controller
             }
             //Send to UUID
             $ROUTEKEY = "UUID";
+            error_log("4.1.1");
         } else {
             error_log("4.2");
             //Got message from UUID
@@ -285,7 +286,7 @@ class ConsumerController extends Controller
                 $ROUTEKEY = $type;
             }
         }
-
+        error_log($doc->saveXML());
         return [
             "xml" => $doc,
             "route" => $ROUTEKEY
