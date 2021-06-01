@@ -13,38 +13,123 @@ class ConsumerController extends Controller
     const EVENT = "event";
     const USER = "user";
     const EVENTSUBSCRIBE = "eventSubscribe";
+    const ERROR = "error";
+
+     //XSD's paths
+     const USERXSD = "public/XML-XSD/user.xsd";
+     const EVENTXSD = "public/XML-XSD/event.xsd";
+     const EVENTSUBSCRIBEXSD = "public/XML-XSD/eventSubscribe.xsd";
+     const ERRORXSD = "public/XML-XSD/error.xsd";
 
     public static function recievemssg(AMQPMessage $message)
     {
-        //XSD's paths
-        $userXSD = "public/XML-XSD/user.xsd";
-        $eventXSD = "public/XML-XSD/event.xsd";
-        $eventSubscribeXSD = "public/XML-XSD/eventSubscribe.xsd";
+        $message->ack();
+        $string = $message->getBody();
+        
+        try{
+        $rabbitMQinfo = ConsumerController::consumerHandeling($string);
+        } catch(\Exception $e){
+            error_log($e);
+        }
+        If($rabbitMQinfo == null){
+        }
+        error_log($rabbitMQinfo["xml"]);
+        //Send to RabbitMQ
+        if($rabbitMQinfo != null){
+            ConsumerController::sendXMLToRabbitMQ($rabbitMQinfo["xml"], $rabbitMQinfo["route"]);
+        }
+    }
 
 
+    public static function errorLoggingToMonitoring($errorInfo)
+    {
+
+        
+        $xml = ConsumerController::errorArrayToXML($errorInfo);
+
+        if (!$xml->SchemaValidate(ConsumerController::ERRORXSD)) {
+            //Send Error to RabbitMQ
+            ConsumerController::errorLoggingToMonitoring([
+                "code" => 1002,
+                "objectOrigin" => $xml->getElementsByTagName("header")[0]->getElementsByTagName("origin")[0]->nodeValue,
+                "objectUUID" => $xml->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
+                "objectSourceId" => "FrontEnd"
+            ]);
+            return ["error" => "foutive xml"] ;
+        }
+        ConsumerController::sendXMLtoQueue($xml, "logging");
+        return true;
+    }
+
+    public static function sendXMLToRabbitMQ(\DOMDocument $doc, $routkey)
+    {
         //Get current time
         $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
         $XSDate = $now->format(\DateTime::RFC3339);
 
-        //Def RabbitMQ connection
-        try {
-            $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
-            $channel = $connection->channel();
-        } catch (\Exception $e) {
-            error_log("No connection");
+        //Set default header information
+        $header = $doc->getElementsByTagName("header")[0];
+        $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
+        $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
+
+        //Validate XML whit XSD before sending it
+        $type = $doc->documentElement->tagName;
+        $XSD = "";
+        switch ($doc->documentElement->tagName) {
+            case ConsumerController::EVENT:
+                $XSD = ConsumerController::EVENTXSD;
+                break;
+            case ConsumerController::USER:
+                $XSD = ConsumerController::USERXSD;
+                break;
+            case ConsumerController::EVENTSUBSCRIBE:
+                $XSD = ConsumerController::EVENTSUBSCRIBEXSD;
+                break;
+            case ConsumerController::ERROR:
+                $XSD = ConsumerController::ERRORXSD;
+                return ["xml" => $doc->saveXML()];
         }
 
+        if (!$doc->SchemaValidate($XSD)) {
+            //Send Error to RabbitMQ
+            ConsumerController::errorLoggingToMonitoring([
+                "code" => 1002,
+                "objectOrigin" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("origin")[0]->nodeValue,
+                "objectUUID" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
+                "objectSourceId" => "FrontEnd"
+            ]);
+            return ["error" => "foutive xml"] ;
+        }
 
-        $message->ack();
-        $string = $message->getBody();
+        //Make connection to RabbitMQ
+        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        $channel = $connection->channel();
 
+        //Send xml to RabbitMQ
+        $data = new AMQPMessage($doc->saveXML());
+        $channel->basic_publish($data, 'direct_logs', $routkey);
+        $connection->close();
+    }
+    public static function sendXMLtoQueue(\DOMDocument $doc, $routkey){
+        error_log(env('RABBITMQ_HOST'));
+        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        $channel = $connection->channel();
+        $msg = new AMQPMessage($doc->saveXML());
+        //Publish event to logging queue
+        $channel->basic_publish($msg, '', $routkey);
+        $connection->close();
+        return true;
+    }
+    public static function consumerHandeling($xmlstring)
+    {
 
         $doc = new \DOMDocument();
         try {
-            $doc->loadXML($string);
+            $doc->loadXML($xmlstring);
         } catch (\Exception $e) {
+            ConsumerController::errorLoggingToMonitoring(["code" => 1000]);
             error_log("Is not a valid XML");
-            return;
+            return ["error" => "Is not a valid XML"];
         }
 
 
@@ -53,22 +138,31 @@ class ConsumerController extends Controller
         $XSD = "";
         switch ($doc->documentElement->tagName) {
             case ConsumerController::EVENT:
-                $XSD = $eventXSD;
-                break;
-            case ConsumerController::USER:
-                $XSD = $userXSD;
+                $XSD = ConsumerController::EVENTXSD;
                 break;
             case ConsumerController::EVENTSUBSCRIBE:
-                $XSD = $eventSubscribeXSD;
+                $XSD = ConsumerController::EVENTSUBSCRIBEXSD;
+                break;
+            case ConsumerController::USER:
+                $XSD = ConsumerController::USERXSD;
                 break;
             case "error":
-                return;
+                ConsumerController::sendXMLToRabbitMQ($doc, "logging");
+                return ["xml" => $doc->saveXML()];
         }
+
         if (!$doc->SchemaValidate($XSD)) {
+            //Send Error to RabbitMQ
+            ConsumerController::errorLoggingToMonitoring([
+                "code" => 1002,
+                "objectOrigin" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("origin")[0]->nodeValue,
+                "objectUUID" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
+                "objectSourceId" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue
+            ]);
             error_log("foutive xml");
-            return;
+            return ["error" => "foutive xml"] ;
         }
-        
+
         $header = $doc->getElementsByTagName("header")[0];
         //Ignore own Message
         if ($header->getElementsByTagName("origin")[0]->nodeValue == "FrontEnd") return;
@@ -78,19 +172,16 @@ class ConsumerController extends Controller
             $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
             $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
             if ($type == ConsumerController::EVENT) $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue = "";
-            $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
 
             //Send to UUID
             $ROUTEKEY = "UUID";
-            $data = new AMQPMessage($doc->saveXML());
-            $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
         } else {
             //Got message from UUID
             //No sourceEntityId but filled UUID
             if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue == "" && $header->getElementsByTagName("UUID")[0]->nodeValue != "") {
                 if ($header->getElementsByTagName("method")[0]->nodeValue == "CREATE" || $header->getElementsByTagName("method")[0]->nodeValue == "SUBSCRIBE") {
 
-                    
+
                     //Message confirming it is not in our DB
                     //Set correct route
                     $ROUTEKEY = "UUID";
@@ -115,7 +206,7 @@ class ConsumerController extends Controller
                 } else if ($header->getElementsByTagName("method")[0]->nodeValue == "UPDATE" || $header->getElementsByTagName("method")[0]->nodeValue == "DELETE" || $header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE") {
                     //Set correct route
                     $ROUTEKEY = $type;
-                    if($header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE"){
+                    if ($header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE") {
                         $ROUTEKEY = ConsumerController::EVENT;
                     }
                     $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
@@ -155,7 +246,7 @@ class ConsumerController extends Controller
                     //Set correct route
                     $ROUTEKEY = $type;
 
-                    if($header->getElementsByTagName("method")[0]->nodeValue == "SUBSCRIBE"){
+                    if ($header->getElementsByTagName("method")[0]->nodeValue == "SUBSCRIBE") {
                         $ROUTEKEY = ConsumerController::EVENT;
                     }
                 } else if ($header->getElementsByTagName("method")[0]->nodeValue == "DELETE" || $header->getElementsByTagName("method")[0]->nodeValue == "UNSUBSCRIBE") {
@@ -176,7 +267,7 @@ class ConsumerController extends Controller
                             break;
                     }
                     //Dont send if deleted
-                    return;
+                    return ["mssg" => "No xml needs to be sended"];
                 }
             } else if ($header->getElementsByTagName("sourceEntityId")[0]->nodeValue != "" && $header->getElementsByTagName("UUID")[0]->nodeValue == "") {
                 //Delete got saved in UUID Master
@@ -184,12 +275,76 @@ class ConsumerController extends Controller
                 if ($type == ConsumerController::EVENT) $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue = "";
                 $ROUTEKEY = $type;
             }
-
-            //Send to RabbitMQ
-            $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
-            $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
-            $data = new AMQPMessage($doc->saveXML());
-            $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
         }
+
+        return [
+            "xml" => $doc,
+            "route" => $ROUTEKEY
+        ];
+    }
+    
+    public static function errorArrayToXML($errorInfo)
+    {
+        $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
+        $XSDate = $now->format(\DateTime::RFC3339);
+
+        //XML/XSD paths
+        $xmlPath = "XML-XSD/error.xml";
+        $XSDPath = "XML-XSD/error.xsd";
+
+        $description = "";
+
+        //Loading in the XML
+        $xml = new \DOMDocument();
+        $xml->load($xmlPath);
+        //Changing Header Value
+        $header = $xml->getElementsByTagName("header")[0];
+
+        $header->getElementsByTagName("code")[0]->nodeValue = $errorInfo["code"];
+        $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
+
+        //Changing Body values
+        $body = $xml->getElementsByTagName("body")[0];
+
+        $body->getElementsByTagName("objectOrigin")[0]->nodeValue = (array_key_exists ("objectOrigin",$errorInfo)) ? $errorInfo["objectOrigin"] : "None";
+        $body->getElementsByTagName("objectSourceId")[0]->nodeValue = (array_key_exists ("objectSourceId",$errorInfo)) ? $errorInfo["objectSourceId"] : "None";
+        $body->getElementsByTagName("objectUUID")[0]->nodeValue = (array_key_exists ("objectUUID",$errorInfo)) ? $errorInfo["objectUUID"] : "None";
+
+        switch ($errorInfo["code"]) {
+            case "1000":
+                $description = " Incorrect message, couldn't parse XML";
+                break;
+            case "1001":
+                $description = "Incorrect message, object doesn't exists or is empty";
+                break;
+            case "1002":
+                $description = "Incorrect message, incorrect XML";
+                break;
+            case "1003":
+                $description = "Incorrect message, method should be CREATE/SUBSCRIBE/UPDATE/DELETE/UNSUBSCRIBE";
+                break;
+            case "1004":
+                $description = "Incorrect message, sourceEntityId and UUID connot both be empty";
+                break;
+            case "1005":
+                $description = "Incorrect message, sourceEntityId and UUID connot both be filled on delete";
+                break;
+            case "2000":
+                $description = "Something went wrong when adding to the UUID master, DB error:";
+                break;
+            default:
+                throw new \Exception("Invalid error code");
+            break;
+        }
+        
+        $body->getElementsByTagName("description")[0]->nodeValue = $description;
+
+        //Validate XML whit XSD
+        if (!$xml->schemaValidate($XSDPath)) {
+            $error = libxml_get_last_error();
+            error_log($error);
+            return false;
+        }
+        return $xml;
     }
 }

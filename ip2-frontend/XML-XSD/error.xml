@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<errorlogs>
+  <header>
+    <code></code>
+    <origin>FrontEnd</origin>
+    <timestamp></timestamp>
+  </header>
+  <body>
+    <objectUUID></objectUUID>
+    <objectSourceId></objectSourceId>
+    <objectOrigin></objectOrigin>
+    <description></description>
+  </body>
+</errorlogs>

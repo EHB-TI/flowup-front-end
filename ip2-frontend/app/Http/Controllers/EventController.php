@@ -23,15 +23,7 @@ class EventController extends Controller
 
   public function store(Request $request)
   {
-    $event = new Event([
-      'name' => $request->input('name'),
-      'user_id' => $request->input('user_id'),
-      'startEvent' => $request->input('startEvent'),
-      'endEvent' => $request->input('endEvent'),
-      'description' => $request->input('description'),
-      'location' => $request->input('location')
-    ]);
-    $event->save();
+    $event = EventController::saveEvent($request);
     if ($this->sendXMLtoUUID($event, "create")) {
       return response()->json('Event created!');
     }
@@ -64,8 +56,7 @@ class EventController extends Controller
 
   public function update($id, Request $request)
   {
-    $event = Event::find($id);
-    $event->update($request->all());
+    $event = EventController::editEvent($id, $request);
     if ($this->sendXMLtoUUID($event, "update")) {
       return response()->json('Event updated!');
     }
@@ -74,18 +65,11 @@ class EventController extends Controller
 
   public static function destroy($id)
   {
-    $event = Event::find($id);
-    $eventsubscribers = EventSubscriber::where('event_id', '=', $id)->get();
-    
+    $event = EventController::deleteEvent($id);
+
     if (EventController::sendXMLtoUUID($event, "delete")) {
-      foreach ($eventsubscribers as $eventsubscriber) {
-        EventSubscriberController::deletion($eventsubscriber->id);
-      }
-      
-      $event->delete();
       return response()->json('Event deleted');
     }
-    
   }
 
 
@@ -170,25 +154,21 @@ class EventController extends Controller
     }
 
     //Publish event to event queue
+    ConsumerController::sendXMLToRabbitMQ($xml, "UUID");
     
-    $ROUTEKEY = "UUID";
-    $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
-    $channel = $connection->channel();
-
-    $data = new AMQPMessage($xml->saveXML());
-    $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
     return true;
   }
 
   public static function storeRecievedEvent(\DOMDocument $doc)
   {
     $body = $doc->getElementsByTagName("body")[0];
-    $startEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("startEvent")[0]->nodeValue);
-    $endEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("endEvent")[0]->nodeValue);
+    $header = $doc->getElementsByTagName("header")[0];
+    $startEvent = date_create_from_format("Y-m-d\TH:i:s", $body->getElementsByTagName("startEvent")[0]->nodeValue);
+    $endEvent = date_create_from_format("Y-m-d\TH:i:s", $body->getElementsByTagName("endEvent")[0]->nodeValue);
 
     $event = new Event([
       'name' => $body->getElementsByTagName("name")[0]->nodeValue,
-      'user_id' => 9,
+      'user_id' => $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue,
       'startEvent' =>  $startEvent,
       'endEvent' => $endEvent,
       'location' => $body->getElementsByTagName("location")[0]->nodeValue,
@@ -209,10 +189,9 @@ class EventController extends Controller
     $header = $doc->getElementsByTagName("header")[0];
     $startEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("startEvent")[0]->nodeValue);
     $endEvent = date_create_from_format(\DateTime::RFC3339, $body->getElementsByTagName("endEvent")[0]->nodeValue);
-    $event = Event::find($body->getElementsByTagName("sourceEntityId")[0]->nodeValue);
+    $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $updateEvent = [
       'name' => $body->getElementsByTagName("name")[0]->nodeValue,
-      'user_id' => 9,
       'startEvent' =>  $startEvent,
       'endEvent' => $endEvent,
       'location' => $body->getElementsByTagName("location")[0]->nodeValue,
@@ -227,4 +206,32 @@ class EventController extends Controller
     $event = Event::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
     $event->delete();
   }
+  public static function saveEvent(Request $request)
+  {
+    $event = new Event([
+      'name' => $request->input('name'),
+      'user_id' => $request->input('user_id'),
+      'startEvent' => $request->input('startEvent'),
+      'endEvent' => $request->input('endEvent'),
+      'description' => $request->input('description'),
+      'location' => $request->input('location')
+    ]);
+    $event->save();
+    return $event;
+  }
+
+  public static function editEvent($id, Request $request)
+  {
+    $event = Event::find($id);
+    $event->update($request->all());
+    return $event;
+  }
+
+  public static function deleteEvent($id)
+  {
+    $event = Event::find($id);
+    $event->delete();
+    return $event;
+  }
 }
+
