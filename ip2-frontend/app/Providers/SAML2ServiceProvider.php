@@ -39,9 +39,8 @@ class SAML2ServiceProvider extends ServiceProvider
 
             // $laravelUser = //find user by ID or attribute
             //if it does not exist create it and go on  or show an error message
-            var_dump(User::where('email', $email)->first());
             $frontUser = User::where('email', $email)->first();
-            Auth::login($frontUser);
+            Auth::attempt($frontUser);
         });
 
         Event::listen('Aacotroneo\Saml2\Events\Saml2LogoutEvent', function ($event) {
