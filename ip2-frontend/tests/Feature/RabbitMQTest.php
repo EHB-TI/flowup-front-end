@@ -327,8 +327,6 @@ class RabbitMQTest extends TestCase
             "objectSourceId" => 3
         ]);
         $body = $xml->getElementsByTagName("body")[0];
-        error_log($xml->getElementsByTagName("header")[0]->nodeValue);
-        error_log($body->getElementsByTagName("description")[0]->nodeValue."=="."Incorrect message, incorrect XML");
         assertTrue($body->getElementsByTagName("description")[0]->nodeValue == "Incorrect message, incorrect XML");
 
 

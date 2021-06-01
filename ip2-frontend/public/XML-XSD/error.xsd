@@ -2,7 +2,7 @@
 
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element name="error">
+    <xs:element name="errorlogs">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="header">
@@ -32,7 +32,7 @@
                             <xs:element name="objectUUID">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:pattern value="[0-9A-Fa-f]{8}-?([0-9A-Fa-f]{4}-?){3}[0-9A-Fa-f]{12}|" />
+                                        <xs:pattern value="([0-9A-Fa-f]{8}-?([0-9A-Fa-f]{4}-?){3}[0-9A-Fa-f]{12}|None)" />
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>

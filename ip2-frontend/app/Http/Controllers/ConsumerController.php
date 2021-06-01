@@ -13,6 +13,13 @@ class ConsumerController extends Controller
     const EVENT = "event";
     const USER = "user";
     const EVENTSUBSCRIBE = "eventSubscribe";
+    const ERROR = "error";
+
+     //XSD's paths
+     const USERXSD = "public/XML-XSD/user.xsd";
+     const EVENTXSD = "public/XML-XSD/event.xsd";
+     const EVENTSUBSCRIBEXSD = "public/XML-XSD/eventSubscribe.xsd";
+     const ERRORXSD = "public/XML-XSD/error.xsd";
 
     public static function recievemssg(AMQPMessage $message)
     {
@@ -39,8 +46,18 @@ class ConsumerController extends Controller
 
         
         $xml = ConsumerController::errorArrayToXML($errorInfo);
-        //Publish event to event queue
-        ConsumerController::sendXMLToRabbitMQ($xml, "logging");
+
+        if (!$xml->SchemaValidate(ConsumerController::ERRORXSD)) {
+            //Send Error to RabbitMQ
+            ConsumerController::errorLoggingToMonitoring([
+                "code" => 1002,
+                "objectOrigin" => $xml->getElementsByTagName("header")[0]->getElementsByTagName("origin")[0]->nodeValue,
+                "objectUUID" => $xml->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
+                "objectSourceId" => "FrontEnd"
+            ]);
+            return ["error" => "foutive xml"] ;
+        }
+        ConsumerController::sendXMLtoQueue($xml, "logging");
         return true;
     }
 
@@ -55,6 +72,35 @@ class ConsumerController extends Controller
         $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
         $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
 
+        //Validate XML whit XSD before sending it
+        $type = $doc->documentElement->tagName;
+        $XSD = "";
+        switch ($doc->documentElement->tagName) {
+            case ConsumerController::EVENT:
+                $XSD = ConsumerController::EVENTXSD;
+                break;
+            case ConsumerController::USER:
+                $XSD = ConsumerController::USERXSD;
+                break;
+            case ConsumerController::EVENTSUBSCRIBE:
+                $XSD = ConsumerController::EVENTSUBSCRIBEXSD;
+                break;
+            case ConsumerController::ERROR:
+                $XSD = ConsumerController::ERRORXSD;
+                return ["xml" => $doc->saveXML()];
+        }
+
+        if (!$doc->SchemaValidate($XSD)) {
+            //Send Error to RabbitMQ
+            ConsumerController::errorLoggingToMonitoring([
+                "code" => 1002,
+                "objectOrigin" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("origin")[0]->nodeValue,
+                "objectUUID" => $doc->getElementsByTagName("header")[0]->getElementsByTagName("UUID")[0]->nodeValue,
+                "objectSourceId" => "FrontEnd"
+            ]);
+            return ["error" => "foutive xml"] ;
+        }
+
         //Make connection to RabbitMQ
         $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
         $channel = $connection->channel();
@@ -62,14 +108,20 @@ class ConsumerController extends Controller
         //Send xml to RabbitMQ
         $data = new AMQPMessage($doc->saveXML());
         $channel->basic_publish($data, 'direct_logs', $routkey);
+        $connection->close();
     }
-
+    public static function sendXMLtoQueue(\DOMDocument $doc, $routkey){
+        error_log(env('RABBITMQ_HOST'));
+        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        $channel = $connection->channel();
+        $msg = new AMQPMessage($doc->saveXML());
+        //Publish event to logging queue
+        $channel->basic_publish($msg, '', $routkey);
+        $connection->close();
+        return true;
+    }
     public static function consumerHandeling($xmlstring)
     {
-        //XSD's paths
-        $userXSD = "public/XML-XSD/user.xsd";
-        $eventXSD = "public/XML-XSD/event.xsd";
-        $eventSubscribeXSD = "public/XML-XSD/eventSubscribe.xsd";
 
         $doc = new \DOMDocument();
         try {
@@ -86,17 +138,17 @@ class ConsumerController extends Controller
         $XSD = "";
         switch ($doc->documentElement->tagName) {
             case ConsumerController::EVENT:
-                $XSD = $eventXSD;
-                break;
-            case ConsumerController::USER:
-                $XSD = $userXSD;
+                $XSD = ConsumerController::EVENTXSD;
                 break;
             case ConsumerController::EVENTSUBSCRIBE:
-                $XSD = $eventSubscribeXSD;
+                $XSD = ConsumerController::EVENTSUBSCRIBEXSD;
+                break;
+            case ConsumerController::USER:
+                $XSD = ConsumerController::USERXSD;
                 break;
             case "error":
                 ConsumerController::sendXMLToRabbitMQ($doc, "logging");
-                return ["xml" => $doc->saveXML];
+                return ["xml" => $doc->saveXML()];
         }
 
         if (!$doc->SchemaValidate($XSD)) {
@@ -237,15 +289,14 @@ class ConsumerController extends Controller
         $XSDate = $now->format(\DateTime::RFC3339);
 
         //XML/XSD paths
-        $xmlPath = "public/XML-XSD/error.xml";
-        $XSDPath = "public/XML-XSD/error.xsd";
+        $xmlPath = "XML-XSD/error.xml";
+        $XSDPath = "XML-XSD/error.xsd";
 
         $description = "";
 
         //Loading in the XML
         $xml = new \DOMDocument();
         $xml->load($xmlPath);
-
         //Changing Header Value
         $header = $xml->getElementsByTagName("header")[0];
 
@@ -255,9 +306,9 @@ class ConsumerController extends Controller
         //Changing Body values
         $body = $xml->getElementsByTagName("body")[0];
 
-        if(array_key_exists ("objectUUID",$errorInfo)) $body->getElementsByTagName("objectUUID")[0]->nodeValue = $errorInfo["objectUUID"];
-        if(array_key_exists ("objectSourceId",$errorInfo)) $body->getElementsByTagName("objectSourceId")[0]->nodeValue = $errorInfo["objectSourceId"];
         $body->getElementsByTagName("objectOrigin")[0]->nodeValue = (array_key_exists ("objectOrigin",$errorInfo)) ? $errorInfo["objectOrigin"] : "None";
+        $body->getElementsByTagName("objectSourceId")[0]->nodeValue = (array_key_exists ("objectSourceId",$errorInfo)) ? $errorInfo["objectSourceId"] : "None";
+        $body->getElementsByTagName("objectUUID")[0]->nodeValue = (array_key_exists ("objectUUID",$errorInfo)) ? $errorInfo["objectUUID"] : "None";
 
         switch ($errorInfo["code"]) {
             case "1000":
@@ -285,6 +336,7 @@ class ConsumerController extends Controller
                 throw new \Exception("Invalid error code");
             break;
         }
+        
         $body->getElementsByTagName("description")[0]->nodeValue = $description;
 
         //Validate XML whit XSD

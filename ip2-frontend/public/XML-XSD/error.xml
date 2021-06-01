@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<error>
+<errorlogs>
   <header>
     <code></code>
     <origin>FrontEnd</origin>
@@ -12,4 +12,4 @@
     <objectOrigin></objectOrigin>
     <description></description>
   </body>
-</error>
+</errorlogs>
