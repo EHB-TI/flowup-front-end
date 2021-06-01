@@ -151,10 +151,6 @@ class EventSubscriberController extends Controller
 
     public function sendXMLtoUUID(EventSubscriber $eventSubscriber, string $type)
     {
-        //Geting DateTimes in right format
-        $now =  new DateTime("now", new DateTimeZone("Europe/Brussels"));
-        $XSDate = $now->format(\DateTime::RFC3339);
-
         //Seting type to all cap
         $type = strtoupper($type);
 
@@ -170,7 +166,6 @@ class EventSubscriberController extends Controller
         $header = $xml->getElementsByTagName("header")[0];
 
         $header->getElementsByTagName("method")[0]->nodeValue = $type;
-        $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
         $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $eventSubscriber->id;
 
         //Changing Body values
@@ -186,13 +181,7 @@ class EventSubscriberController extends Controller
         }
 
         //Publish event to event queue
-        error_log($xml->saveXML());
-        $ROUTEKEY = "UUID";
-        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
-        $channel = $connection->channel();
-
-        $data = new AMQPMessage($xml->saveXML());
-        $channel->basic_publish($data, 'direct_logs', $ROUTEKEY);
+        ConsumerController::sendXMLToRabbitMQ($xml, "UUID");
         return true;
     }
 
@@ -201,8 +190,8 @@ class EventSubscriberController extends Controller
 
         $body = $doc->getElementsByTagName("body")[0];
         $eventSubscriber = new EventSubscriber([
-            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0],
-            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]
+            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0]->nodeValue,
+            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]->nodeValue
         ]);
         $eventSubscriber->save();
 
@@ -215,8 +204,8 @@ class EventSubscriberController extends Controller
 
         $EventSubscriber = EventSubscriber::find($body->getElementsByTagName("sourceEntityId")[0]);
         $newEventSubscriber = [
-            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0],
-            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]
+            'user_id' => $body->getElementsByTagName("attendeeSourceEntityId")[0]->nodeValue,
+            'event_id' => $body->getElementsByTagName("eventSourceEntityId")[0]->nodeValue
         ];
         $EventSubscriber->update($newEventSubscriber);
     }
@@ -224,7 +213,7 @@ class EventSubscriberController extends Controller
     public static function deleteRecievedEventSubscibe(\DOMDocument $doc)
     {
         $header = $doc->getElementsByTagName("header")[0];
-        $EventSubscriber = EventSubscriber::find($header->getElementsByTagName("sourceEntityId")[0]);
+        $EventSubscriber = EventSubscriber::find($header->getElementsByTagName("sourceEntityId")[0]->nodeValue);
         $EventSubscriber->delete();
     }
 }
