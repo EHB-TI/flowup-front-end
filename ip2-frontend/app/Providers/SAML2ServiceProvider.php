@@ -33,17 +33,16 @@ class SAML2ServiceProvider extends ServiceProvider
             $messageId = $event->getSaml2Auth()->getLastMessageId();
             // Add your own code preventing reuse of a $messageId to stop replay attacks
 
-            $user = $event->getSaml2User();
-            $attributes = $user->getAttributes();
+            $samlUser = $event->getSaml2User();
+            $attributes = $samlUser ->getAttributes();
             $email_var = $attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0];
             $email = explode("@", $email_var)[0]."@desideriushogeschool.be";
 
             // $laravelUser = //find user by ID or attribute
             //if it does not exist create it and go on  or show an error message
             
-            $frontUser = User::where('email', $email)->first();
-            $frontUserId = $frontUser->id;
-            Auth::loginUsingId($frontUserId);
+            $user = User::where('email', $email)->first();
+            Auth::login($user);
         });
 
         Event::listen('Aacotroneo\Saml2\Events\Saml2LogoutEvent', function ($event) {
