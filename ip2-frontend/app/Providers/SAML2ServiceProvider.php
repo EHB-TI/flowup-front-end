@@ -43,7 +43,7 @@ class SAML2ServiceProvider extends ServiceProvider
 
             $user = User::where('email', $email)->first();
 
-            if (!empty($user->id)) {
+            if (Auth::login($user)) {
                 $request = new \Illuminate\Http\Request();
                 $request->session()->regenerate();
 
