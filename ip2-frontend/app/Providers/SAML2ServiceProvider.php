@@ -39,7 +39,10 @@ class SAML2ServiceProvider extends ServiceProvider
 
             // $laravelUser = //find user by ID or attribute
             //if it does not exist create it and go on  or show an error message
-            $frontUserId = User::where('email', $email)->first()->id;
+            $frontUserId = User::where('email', $email)->first();
+            var_dump(User::where('email', $email));
+            var_dump($frontUserId);
+            var_dump($frontUserId->id);
             Auth::loginUsingId($frontUserId);
         });
 
