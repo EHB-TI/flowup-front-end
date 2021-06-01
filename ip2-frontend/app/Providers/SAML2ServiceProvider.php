@@ -35,7 +35,7 @@ class SAML2ServiceProvider extends ServiceProvider
 
             $user = $event->getSaml2User();
             $attributes = $user->getAttributes();
-            var_dump($attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]);
+            var_dump($attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0]);
             $email = $attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0];
 
             // $laravelUser = //find user by ID or attribute
