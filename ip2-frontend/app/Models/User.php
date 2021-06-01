@@ -17,9 +17,14 @@ class User extends Model
         'firstName',
         'lastName',
         'email',
+        'password',
         'birthday',
         'role',
         'study'
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

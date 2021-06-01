@@ -14,6 +14,6 @@ chmod -R +x /home/frontend/actions-runner/_work/flowup-front-end/flowup-front-en
 docker-compose build
 docker-compose down
 docker-compose up -d
-docker-compose exec -T app php artisan migrate
+docker-compose exec -T app php artisan migrate:refresh --seed
 docker-compose exec -T app php artisan key:generate
 docker-compose exec -T app php artisan config:cache
