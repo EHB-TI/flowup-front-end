@@ -15,7 +15,7 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            return redirect("/saml2/AD/login");
+            return "https://frontend.hypere.be:4433/saml2/AD/login";
         }
     }
 }
