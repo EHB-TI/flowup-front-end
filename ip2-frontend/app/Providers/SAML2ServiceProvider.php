@@ -43,16 +43,7 @@ class SAML2ServiceProvider extends ServiceProvider
 
             $user = User::where('email', $email)->first();
 
-            if (Auth::login($user)) {
-                $request = new \Illuminate\Http\Request();
-                $request->session()->regenerate();
-
-                return redirect()->intended('dashboard');
-            }
-
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ]);
+            Auth::login($user);
         });
 
         Event::listen('Aacotroneo\Saml2\Events\Saml2LogoutEvent', function ($event) {
