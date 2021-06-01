@@ -43,7 +43,7 @@ class SAML2ServiceProvider extends ServiceProvider
             
             $frontUser = User::where('email', $email)->first();
             $frontUserId = $frontUser->id;
-            Auth::loginUsingId($frontUser);
+            Auth::loginUsingId($frontUserId);
         });
 
         Event::listen('Aacotroneo\Saml2\Events\Saml2LogoutEvent', function ($event) {
