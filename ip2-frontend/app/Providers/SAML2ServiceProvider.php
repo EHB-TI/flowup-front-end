@@ -35,16 +35,14 @@ class SAML2ServiceProvider extends ServiceProvider
 
             $user = $event->getSaml2User();
             $attributes = $user->getAttributes();
-            $email = $attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0];
+            $email_var = $attributes["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"][0];
+            $email = explode("@", $email_var)[0]."@desideriushogeschool.be";
 
             // $laravelUser = //find user by ID or attribute
             //if it does not exist create it and go on  or show an error message
             
-            var_dump($attributes);
             $frontUser = User::where('email', $email)->first();
-            var_dump($frontUser);
             $frontUserId = $frontUser->id;
-            var_dump($frontUserId);
             Auth::loginUsingId($frontUser);
         });
 
