@@ -29,16 +29,17 @@ class ConsumerController extends Controller
         try {
             error_log("2");
             $rabbitMQinfo = ConsumerController::consumerHandeling($string);
+            
+            if ($rabbitMQinfo == null) {
+                error_log("5");
+            }
+            error_log($rabbitMQinfo["xml"]);
+            //Send to RabbitMQ
+            if ($rabbitMQinfo != null) {
+                ConsumerController::sendXMLToRabbitMQ($rabbitMQinfo["xml"], $rabbitMQinfo["route"]);
+            }
         } catch (\Exception $e) {
             error_log($e);
-        }
-        if ($rabbitMQinfo == null) {
-            error_log("5");
-        }
-        error_log($rabbitMQinfo["xml"]);
-        //Send to RabbitMQ
-        if ($rabbitMQinfo != null) {
-            ConsumerController::sendXMLToRabbitMQ($rabbitMQinfo["xml"], $rabbitMQinfo["route"]);
         }
     }
 
@@ -177,8 +178,9 @@ class ConsumerController extends Controller
             //reciefed from other app
             $header->getElementsByTagName("origin")[0]->nodeValue = "FrontEnd";
             $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = "";
-            if ($type == ConsumerController::EVENT) $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue = "";
-
+            if ($type == ConsumerController::EVENT) {
+                $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue = "";
+            }
             //Send to UUID
             $ROUTEKEY = "UUID";
         } else {
