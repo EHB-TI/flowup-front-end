@@ -93,7 +93,7 @@
         <div class="mt-auto h-16 flex items-center w-full">
 			<!-- Action Section -->
 			<router-link
-                to="/settings"
+                to="/saml2/AD/logout"
 				class="h-16 mx-auto flex justify-center items-center w-full hover:bg-red-400">
 				<svg 
 				xmlns="http://www.w3.org/2000/svg" 

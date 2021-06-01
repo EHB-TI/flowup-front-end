@@ -42,12 +42,12 @@ return $settings = array(
     /**
      * Where to redirect after logout
      */
-    'logoutRoute' => '/',
+    'logoutRoute' => 'https://frontend.hypere.be:4433/',
 
     /**
      * Where to redirect after login if no other option was provided
      */
-    'loginRoute' => '/',
+    'loginRoute' => 'https://frontend.hypere.be:4433/',
 
     /**
      * Where to redirect after login if no other option was provided
