@@ -103,7 +103,7 @@ export default {
   },
   created() {
     this.axios
-      .get(`${this.$api}/api/users/5`)
+      .get(`${this.$api}/api/users/1`)
       .then((response) => {
         // handle success
         this.user = response.data;
@@ -117,7 +117,7 @@ export default {
 
     //Show events
     this.axios
-      .get(`${this.$api}/api/showByUser/5`)
+      .get(`${this.$api}/api/showByUser/1`)
       .then((response) => {
         // handle success
         this.myEvents = response.data;

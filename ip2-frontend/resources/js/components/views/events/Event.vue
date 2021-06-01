@@ -63,7 +63,6 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
-        <pre>{{ subscribers }}</pre>
     </div> 
 </template>
 <script>
