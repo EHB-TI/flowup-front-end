@@ -3,7 +3,7 @@
         <a-layout>
             <a-layout-header style="background:white; height: 120px;">
                 <a-avatar style="float:left;" :size="86" icon="user" src="https://cdn.dribbble.com/users/986811/screenshots/4601947/argentina_leo_messi.png?compress=1&resize=400x300"/>
-                <h1 style="float:left; padding:15px;">{{ user.firstName }} {{ user.lastName }} <span>(#{{ user.id }})</span></h1>
+                <h1 style="float:left; padding:15px;">{{ user.firstName }} {{ user.name }} <span>(#{{ user.id }})</span></h1>
             </a-layout-header>
             <a-layout>
                 <a-layout-content style="background: white; padding: 15px;">

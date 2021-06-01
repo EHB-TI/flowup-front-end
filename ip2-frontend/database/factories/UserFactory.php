@@ -26,12 +26,12 @@ class UserFactory extends Factory
     {
 
         $firstName = $this->faker->firstName;
-        $lastName = $this->faker->lastName;
-        $email = $firstName . '.' . $lastName . '@student.desiderius.be';
+        $name = $this->faker->name;
+        $email = $firstName . '.' . $name . '@student.desiderius.be';
 
         return [
             'firstName' => $firstName,
-            'lastName' => $lastName,
+            'name' => $name,
             'email' => $email,
             'birthday' => $this->faker->dateTimeThisCentury->format('Y-m-d'),
             'password' => $this->faker->dateTimeThisCentury->format('Y-m-d').$email,

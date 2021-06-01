@@ -101,7 +101,7 @@ class UserController extends Controller
         $new_password = $body->getElementsByTagName("birthday")[0]->nodeValue.$body->getElementsByTagName("email")[0]->nodeValue;
         $user = new User([
             'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue,
-            'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
+            'name' => $body->getElementsByTagName("lastname")[0]->nodeValue,
             'email' => $body->getElementsByTagName("email")[0]->nodeValue,
             'password' => Hash::make($new_password),
             'birthday' => $body->getElementsByTagName("birthday")[0]->nodeValue,
@@ -123,7 +123,7 @@ class UserController extends Controller
         $new_password = $body->getElementsByTagName("birthday")[0]->nodeValue.$body->getElementsByTagName("email")[0]->nodeValue;
         $newUser = [
             'firstName' => $body->getElementsByTagName("firstname")[0]->nodeValue,
-            'lastName' => $body->getElementsByTagName("lastname")[0]->nodeValue,
+            'name' => $body->getElementsByTagName("lastname")[0]->nodeValue,
             'email' => $body->getElementsByTagName("email")[0]->nodeValue,
             'password' => Hash::make($new_password),
             'birthday' => $body->getElementsByTagName("birthday")[0]->nodeValue,
