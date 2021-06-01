@@ -24,13 +24,9 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => ['auth']], function () {
-    Route::middleware('saml')->group(function () {
-        Route::middleware('api')->group(function () {
-            Route::resource('events', EventController::class);
-            Route::resource('users', UserController::class);
-        });
-    });
+Route::middleware('api')->group(function () {
+    Route::resource('events', EventController::class);
+    Route::resource('users', UserController::class);
 });
 
 //Checks

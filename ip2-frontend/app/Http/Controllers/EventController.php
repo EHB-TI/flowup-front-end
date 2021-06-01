@@ -24,9 +24,7 @@ class EventController extends Controller
 
   public function store(Request $request)
   {
-    $request->user_id = Auth::id();
-    var_dump(Auth::id());
-    var_dump(Auth::user());
+    $request->user_id = 1;
     $event = EventController::saveEvent($request);
     if ($this->sendXMLtoUUID($event, "create")) {
       return response()->json('Event created!');
@@ -41,7 +39,7 @@ class EventController extends Controller
   }
 
   public function showEventsYouAttend($request){
-    $user_id = Auth::id();
+    $user_id = 2;
 
     $events = DB::table('events')
         ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
@@ -54,7 +52,7 @@ class EventController extends Controller
 
   public function showByUser($request)
   {
-    $user_id = Auth::id();
+    $user_id = 1;
     $event = Event::where('user_id', '=', $user_id)->orderBy('startEvent', 'asc')->get();
     return response()->json($event);
   }
