@@ -16,10 +16,10 @@ class ConsumerController extends Controller
     const ERROR = "error";
 
      //XSD's paths
-     const USERXSD = "public/XML-XSD/user.xsd";
+     const USERXSD = "XML-XSD/user.xsd";
      const EVENTXSD = "XML-XSD/event.xsd";
-     const EVENTSUBSCRIBEXSD = "public/XML-XSD/eventSubscribe.xsd";
-     const ERRORXSD = "public/XML-XSD/error.xsd";
+     const EVENTSUBSCRIBEXSD = "XML-XSD/eventSubscribe.xsd";
+     const ERRORXSD = "XML-XSD/error.xsd";
 
     public static function recievemssg(AMQPMessage $message)
     {

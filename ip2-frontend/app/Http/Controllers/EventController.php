@@ -38,8 +38,8 @@ class EventController extends Controller
     return response()->json($event);
   }
 
-  public function showEventsYouAttend($user_id){
-    error_log($user_id);
+  public function showEventsYouAttend($request){
+    $user_id = Auth::id();
 
     $events = DB::table('events')
         ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
@@ -50,9 +50,10 @@ class EventController extends Controller
     return response()->json($events);
   }
 
-  public function showByUser($id)
+  public function showByUser($request)
   {
-    $event = Event::where('user_id', '=', $id)->orderBy('startEvent', 'asc')->get();
+    $user_id = Auth::id();
+    $event = Event::where('user_id', '=', $user_id)->orderBy('startEvent', 'asc')->get();
     return response()->json($event);
   }
 
