@@ -33,7 +33,6 @@ class ConsumerController extends Controller
             if ($rabbitMQinfo == null) {
                 error_log("5");
             }
-            error_log($rabbitMQinfo["xml"]);
             //Send to RabbitMQ
             if ($rabbitMQinfo != null) {
                 ConsumerController::sendXMLToRabbitMQ($rabbitMQinfo["xml"], $rabbitMQinfo["route"]);
@@ -78,7 +77,7 @@ class ConsumerController extends Controller
         //Validate XML whit XSD before sending it
         $type = $doc->documentElement->tagName;
         $XSD = "";
-        switch ($doc->documentElement->tagName) {
+        switch ($type) {
             case ConsumerController::EVENT:
                 $XSD = ConsumerController::EVENTXSD;
                 break;
@@ -92,8 +91,10 @@ class ConsumerController extends Controller
                 $XSD = ConsumerController::ERRORXSD;
                 return ["xml" => $doc->saveXML()];
         }
+        error_log($XSD);
 
         if (!$doc->SchemaValidate($XSD)) {
+            error_log("6.1");
             //Send Error to RabbitMQ
             ConsumerController::errorLoggingToMonitoring([
                 "code" => 1002,
@@ -104,6 +105,8 @@ class ConsumerController extends Controller
             return ["error" => "foutive xml"];
         }
 
+        error_log("6.2");
+        error_log($doc->saveXML());
         //Make connection to RabbitMQ
         $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
         $channel = $connection->channel();
