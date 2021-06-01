@@ -28,7 +28,7 @@ Route::middleware('api')->group(function () {
     Route::resource('users', UserController::class);
 });
 
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     //Checks
     Route::post('checkName', \App\Http\Controllers\EventController::class . '@checkName');
     Route::post('checkDescription', \App\Http\Controllers\EventController::class . '@checkDescription');
