@@ -254,7 +254,7 @@ export default {
         checkName() {
             let response="";
             this.axios
-                .post('${this.$api}/api/checkName', this.event)
+                .post(`${this.$api}/api/checkName`, this.event)
                  .then(res => (
                     this.response = res.data
                 ))
@@ -296,7 +296,7 @@ export default {
         checkDescription() {
             let response="";
             this.axios
-                .post('${this.$api}/api/checkDescription', this.event)
+                .post(`${this.$api}/api/checkDescription`, this.event)
                  .then(res => (
                     this.response = res.data
                 ))
@@ -314,7 +314,7 @@ export default {
         checkLocation() {
             let response="";
             this.axios
-                .post('${this.$api}/api/checkLocation', this.event)
+                .post(`${this.$api}/api/checkLocation`, this.event)
                  .then(res => (
                     this.response = res.data
                 ))
@@ -334,7 +334,7 @@ export default {
         checkDate() {
             let response = "";
             this.axios
-                .post('${this.$api}/api/checkDate', this.event)
+                .post(`${this.$api}/api/checkDate`, this.event)
                  .then(res => (
                     this.response = res.data
                 ))

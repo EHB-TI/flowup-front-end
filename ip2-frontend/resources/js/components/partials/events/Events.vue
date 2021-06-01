@@ -26,7 +26,6 @@
       <a-layout-footer style="background:white; height:65px;" class="mx-auto">
             <pagination :data="events" @pagination-change-page="getResults"></pagination>
       </a-layout-footer>
-      <pre>{{ $api }}</pre>
     </a-layout>
     
 </template>

@@ -53,8 +53,8 @@
                     <div v-if="showAttendees">
                         <h2>Attendees</h2>
                         <ul  style="overflow:hidden; overflow-y:auto; height:640px;">
-                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
-                                <a-avatar shape="circle" size="large" icon="user" />
+                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 8px;">
+                                <a-avatar shape="circle" size="large" icon="user" :src="`../storage/images/${sub.user_id}.jpg`"/>
                                 <span>{{ sub.firstName +' '+ sub.lastName }}</span>
                             </li>
                             <br>
@@ -63,6 +63,7 @@
                 </a-layout-sider>
             </a-layout>
         </a-layout>
+        <pre>{{ subscribers }}</pre>
     </div> 
 </template>
 <script>
@@ -76,6 +77,7 @@ export default {
                 showAttendees: false,
                 isSubscribed: false,
                 showEditButton:false,
+                path: ''
             }
         },
         async created() {
@@ -93,7 +95,7 @@ export default {
                 });
             //Fetch logged in user
             await this.axios
-                .get(`${this.$api}/api/users/1`)
+                .get(`${this.$api}/api/users/5`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -165,6 +167,7 @@ export default {
                 .get(`${this.$api}/api/showSubscribers/${this.$route.params.id}`)
                 .then((response) => {
                     this.subscribers = response.data
+                    //this.path = `storage/images/${this.subscribers.id}.jpg`
                     this.showAttendees = true;
                     console.log(this.subscribers)
                 })
@@ -193,7 +196,7 @@ export default {
                     .post(`${this.$api}/api/unparticipate/`, this.event_subscriber)
                     .then((reponse) => {
                         console.log(reponse);
-                        //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
+                        //document.getElementById("subOrUnSubButto n").textContent="UnParticipate";
                         this.refreshAttendees();
                     })
                     .catch(function (error){
