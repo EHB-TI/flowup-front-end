@@ -12,6 +12,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class EventSubscriberController extends Controller
 {
@@ -46,8 +47,9 @@ class EventSubscriberController extends Controller
     public function store(Request $request)
     {
         //
+
         $eventSubscriber = new EventSubscriber([
-            'user_id' => $request->input('user_id'),
+            'user_id' => Auth::id(),
             'event_id' => $request->input('event_id')
         ]);
         $eventSubscriber->save();
