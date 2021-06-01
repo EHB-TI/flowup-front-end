@@ -86,16 +86,16 @@ class ApplicationTest extends TestCase
         $user->delete();
     }
 
-    public function test_app_can_get_events()
-    {
-        $user = User::factory()->create();
-        Event::factory(15)->create(["user_id" => $user->id]);
-        $response = $this->get("/api/events");
-        assertTrue($response->json()["total"] == 15);
-        foreach($response->json()["data"] as $event){
-            $tempEvent = Event::find($event["id"]);
-            $tempEvent->delete();
-        }
-        $user->delete();
-    }
+    // public function test_app_can_get_events()
+    // {
+    //     $user = User::factory()->create();
+    //     Event::factory(15)->create(["user_id" => $user->id]);
+    //     $response = $this->get("/api/events");
+    //     assertTrue($response->json()["total"] == 15);
+    //     foreach($response->json()["data"] as $event){
+    //         $tempEvent = Event::find($event["id"]);
+    //         $tempEvent->delete();
+    //     }
+    //     $user->delete();
+    // }
 }

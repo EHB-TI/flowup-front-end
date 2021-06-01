@@ -25,9 +25,11 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::middleware('api')->group(function () {
-        Route::resource('events', EventController::class);
-        Route::resource('users', UserController::class);
+    Route::middleware('saml')->group(function () {
+        Route::middleware('api')->group(function () {
+            Route::resource('events', EventController::class);
+            Route::resource('users', UserController::class);
+        });
     });
 });
 
