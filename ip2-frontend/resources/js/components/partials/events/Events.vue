@@ -1,6 +1,9 @@
 <template>
+
  <a-layout style="background:white;">
+     <a-layout-header style="display:none; bg-red-500" id="header"><div id="message"></div></a-layout-header>
       <a-layout-content>
+
         <div>
             <div class="event static" v-for="event in events.data" :key="event.id">
                 <router-link :to="{name: 'event', params: { id: event.id}}">
@@ -8,7 +11,7 @@
                         <div class="card-heading absolute top-3 left-3">
                             <h3 class="title"> {{ event.name }} </h3>
                         </div>
-                        
+
 
                         <div class="absolute date">
                             <div class="top-date absolute inset-x-0 top-0 h-12 bg-red-500">
@@ -27,11 +30,11 @@
             <pagination :data="events" @pagination-change-page="getResults"></pagination>
       </a-layout-footer>
     </a-layout>
-    
+
 </template>
 <script>
 export default {
-    data() { 
+    data() {
         return {
             events: {},
 
@@ -42,11 +45,19 @@ export default {
     },
 
     created() {
+        try{
             this.axios
             .get(`${this.$api}/api/events`)
             .then(response => {
                 this.events = response.data;
             });
+        }catch(err){
+            let header = document.getElementById("header");
+            let message = document.getElementById("message");
+            message.innerHTML = err;
+            header.style.display = block;
+        }
+
     },
     methods: {
          getResults(page = 1) {
@@ -75,7 +86,7 @@ export default {
                     break;
                 case "04":
                     return "apr";
-                    break;    
+                    break;
                 case "05":
                     return "may";
                     break;
@@ -87,7 +98,7 @@ export default {
                     break;
                 case "08":
                     return "aug";
-                    break;  
+                    break;
                 case "09":
                     return "sep";
                     break;
@@ -99,7 +110,7 @@ export default {
                     break;
                 case "12":
                     return "dec";
-                    break;                      
+                    break;
             }
         }
     }

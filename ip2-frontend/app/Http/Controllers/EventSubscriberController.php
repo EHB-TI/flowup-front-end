@@ -49,7 +49,7 @@ class EventSubscriberController extends Controller
         //
 
         $eventSubscriber = new EventSubscriber([
-            'user_id' => 15,
+            'user_id' => env('USER_ID_SUB'),
             'event_id' => $request->input('event_id')
         ]);
         $eventSubscriber->save();
@@ -58,7 +58,7 @@ class EventSubscriberController extends Controller
             return response()->json('EventSubscriber created!');
         }
         return response()->json('EventSubscriber creation failed');
-        
+
     }
 
     /**
@@ -73,7 +73,7 @@ class EventSubscriberController extends Controller
         ->join('event_subscribers', 'users.id', '=','event_subscribers.user_id')
         ->select('event_subscribers.id','users.firstName', 'users.lastName')
         ->where('event_id','=',$id)->get();
-        
+
         return response()->json($eventSubscribers);
     }
 
@@ -103,7 +103,7 @@ class EventSubscriberController extends Controller
     }
 
     public function checkIfSubscribed(Request $request){
-        
+
         $user_id = $request->input('user_id');
         $event_id = $request->input('event_id');
         $subscriber = DB::table('event_subscribers')->where('user_id','=',$user_id)->where('event_id','=',$event_id)->get();
