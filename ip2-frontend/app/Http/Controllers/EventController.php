@@ -40,7 +40,7 @@ class EventController extends Controller
   }
 
   public function showEventsYouAttend($request){
-    $user_id = env('USER_ID_SUB');
+    $user_id = 15;
 
     $events = DB::table('events')
         ->join('event_subscribers', 'events.id', '=','event_subscribers.event_id')
@@ -53,7 +53,7 @@ class EventController extends Controller
 
   public function showByUser($request)
   {
-    $user_id = env('USER_ID_CREATE');
+    $user_id = 11;
     $event = Event::where('user_id', '=', $user_id)->orderBy('startEvent', 'asc')->get();
     return response()->json($event);
   }
@@ -160,7 +160,7 @@ class EventController extends Controller
 
     //Publish event to event queue
     ConsumerController::sendXMLToRabbitMQ($xml, "UUID");
-
+    
     return true;
   }
 
