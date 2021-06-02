@@ -15,5 +15,6 @@ docker-compose build
 docker-compose down
 docker-compose up -d
 docker-compose exec -T app php artisan migrate
+docker-compose exec -T app php artisan storage:link
 docker-compose exec -T app php artisan key:generate
 docker-compose exec -T app php artisan config:cache
