@@ -93,7 +93,7 @@ export default {
                 });
             //Fetch logged in user
             await this.axios
-                .get(`${this.$api}/api/users/4`)
+                .get(`${this.$api}/api/users/6`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
