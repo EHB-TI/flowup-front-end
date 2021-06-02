@@ -54,7 +54,7 @@ class UserController extends Controller
     public function show($request)
     {
         //
-        $user_id = 5;
+        $user_id = 11;
         $user = User::find($user_id);
         return response()->json($user);
     }
