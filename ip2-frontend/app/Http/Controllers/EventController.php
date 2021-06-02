@@ -24,7 +24,6 @@ class EventController extends Controller
 
   public function store(Request $request)
   {
-    $request->user_id = 3;
     $event = EventController::saveEvent($request);
     if ($this->sendXMLtoUUID($event, "create")) {
       return response()->json('Event created!');

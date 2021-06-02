@@ -172,15 +172,8 @@ class EventSubscriberController extends Controller
 
         //Changing Body values
         $body = $xml->getElementsByTagName("body")[0];
-        $body->getElementsByTagName("attendeeSourceEntityId")[0]->nodeValue =   $eventSubscriber->user_id;
-        $body->getElementsByTagName("eventSourceEntityId")[0]->nodeValue =   $eventSubscriber->event_id;
-
-        //Validate XML whit XSD
-        if (!$xml->schemaValidate($XSDPath)) {
-            $error = libxml_get_last_error();
-            error_log($error);
-            return false;
-        }
+        $body->getElementsByTagName("attendeeSourceEntityId")[0]->nodeValue = $eventSubscriber->user_id;
+        $body->getElementsByTagName("eventSourceEntityId")[0]->nodeValue = $eventSubscriber->event_id;
 
         //Publish event to event queue
         ConsumerController::sendXMLToRabbitMQ($xml, "UUID");
