@@ -139,6 +139,7 @@ class EventController extends Controller
     $header->getElementsByTagName("timestamp")[0]->nodeValue = $XSDate;
     error_log($event->id);
     $header->getElementsByTagName("sourceEntityId")[0]->nodeValue = $event->id;
+    $header->getElementsByTagName("organiserSourceEntityId")[0]->nodeValue = $event->user_id;
 
     //Changing Body values
     $body = $xml->getElementsByTagName("body")[0];
