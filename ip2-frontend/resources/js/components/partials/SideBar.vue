@@ -92,9 +92,7 @@
 
         <div class="mt-auto h-16 flex items-center w-full">
 			<!-- Action Section -->
-			<router-link
-                to="/saml2/AD/logout"
-				class="h-16 mx-auto flex justify-center items-center w-full hover:bg-red-400">
+			<a href="https://frontend.hypere.be:4433/saml2/AD/logout">
 				<svg 
 				xmlns="http://www.w3.org/2000/svg" 
 				class="h-8 w-8" 
@@ -107,7 +105,7 @@
 					stroke-width="1" 
 					d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
 				</svg>
-			</router-link>
+			</a>
 		</div>
 	</aside>
 </template>
