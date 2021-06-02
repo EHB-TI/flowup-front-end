@@ -108,8 +108,8 @@ class ConsumerController extends Controller
         error_log("6.2");
         error_log($doc->saveXML());
         //Make connection to RabbitMQ
-        error_log(env('RABBITMQ_HOST'));
-        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        error_log("10.3.56.6");
+        $connection = new AMQPStreamConnection("10.3.56.6", "5672", "guest", "guest");
         $channel = $connection->channel();
 
         //Send xml to RabbitMQ
@@ -119,8 +119,7 @@ class ConsumerController extends Controller
     }
     public static function sendXMLtoQueue(\DOMDocument $doc, $routkey)
     {
-        error_log(env('RABBITMQ_HOST'));
-        $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
+        $connection = new AMQPStreamConnection("10.3.56.6", "5672", "guest", "guest");
         $channel = $connection->channel();
         $msg = new AMQPMessage($doc->saveXML());
         //Publish event to logging queue
