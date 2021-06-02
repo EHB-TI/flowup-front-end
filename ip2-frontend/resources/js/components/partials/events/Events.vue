@@ -34,10 +34,6 @@ export default {
     data() { 
         return {
             events: {},
-
-            //api: process.env.MIX_API_CONN,
-
-
         }
     },
 

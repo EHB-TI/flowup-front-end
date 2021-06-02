@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UploadController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +24,6 @@ Route::group(['middleware' => ['auth']], function () {
         ->where('any', '.*');
     });
 });
+
+Route::post('upload', \App\Http\Controllers\UploadController::class . '@handle');
+

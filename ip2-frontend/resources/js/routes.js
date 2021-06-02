@@ -51,6 +51,5 @@ export default {
             path: '/event/:id',
             component: Event
         }
-
     ]
 }

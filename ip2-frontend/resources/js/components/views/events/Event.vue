@@ -53,8 +53,8 @@
                     <div v-if="showAttendees">
                         <h2>Attendees</h2>
                         <ul  style="overflow:hidden; overflow-y:auto; height:640px;">
-                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 5px;">
-                                <a-avatar shape="circle" size="large" icon="user" />
+                            <li  v-for="sub in subscribers" :key="sub.id" style="margin-bottom: 8px;">
+                                <a-avatar shape="circle" size="large" icon="user" :src="`../storage/images/${sub.user_id}.jpg`"/>
                                 <span>{{ sub.firstName +' '+ sub.lastName }}</span>
                             </li>
                             <br>
@@ -76,6 +76,7 @@ export default {
                 showAttendees: false,
                 isSubscribed: false,
                 showEditButton:false,
+                path: ''
             }
         },
         async created() {
@@ -165,8 +166,9 @@ export default {
                 .get(`${this.$api}/api/showSubscribers/${this.$route.params.id}`)
                 .then((response) => {
                     this.subscribers = response.data
+                    //this.path = `storage/images/${this.subscribers.id}.jpg`
                     this.showAttendees = true;
-                    console.log(this.subscribers)
+                    //console.log(this.subscribers)
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -179,7 +181,7 @@ export default {
                     axios
                     .post(`${this.$api}/api/participate/`, this.event_subscriber)
                     .then((reponse) => {
-                        console.log(reponse);
+                        //console.log(reponse);
                         //document.getElementById("subOrUnSubButton").textContent="Participate";
                         this.refreshAttendees(); 
                     })
@@ -192,8 +194,8 @@ export default {
                     axios
                     .post(`${this.$api}/api/unparticipate/`, this.event_subscriber)
                     .then((reponse) => {
-                        console.log(reponse);
-                        //document.getElementById("subOrUnSubButton").textContent="UnParticipate";
+                        //console.log(reponse);
+                        //document.getElementById("subOrUnSubButto n").textContent="UnParticipate";
                         this.refreshAttendees();
                     })
                     .catch(function (error){
@@ -208,7 +210,7 @@ export default {
                 .post(`${this.$api}/api/checkIfSubscribed/`, this.event_subscriber)
                 .then((response) => {
                     this.isSubscribed = response.data;
-                    console.log(this.isSubscribed);
+                    //console.log(this.isSubscribed);
                     var x = document.getElementById("subOrUnSubButton");
                     if(this.isSubscribed==0){
                         x.innerHTML="Participate";
@@ -221,7 +223,7 @@ export default {
                 });
             },
             checkIfOwnerEvent(){
-                console.log(this.event.user_id);
+                //console.log(this.event.user_id);
                 if(this.event.user_id == this.event_subscriber.user_id){
                     this.showEditButton=true;
                 }
