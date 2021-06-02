@@ -65,6 +65,15 @@ class EventController extends Controller
 
   public function update($id, Request $request)
   {
+
+    $this->validate($request, [
+      'name' => 'required|min:3|max:30|regex:/^[a-zA-Z0-9 _.-]*$/',
+      'description' => 'required',
+      'location' => 'required',
+      'startEvent' => 'required',
+      'endEvent' => 'required|after:startEvent'
+    ]);
+
     $event = Event::find($id);
     $event->update($request->all());
     if ($this->sendXMLtoUUID($event, "update")) {
@@ -95,8 +104,6 @@ class EventController extends Controller
   {
     $this->validate($request, [
       'name' => 'required|min:3|max:30|regex:/^[a-zA-Z0-9 _.-]*$/'
-      //pl : any kind of letter from any language
-      //s : space
 
     ]);
   }

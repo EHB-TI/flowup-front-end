@@ -14,10 +14,6 @@ class UploadController extends Controller
 
         $pathToFile = $request->file('image')->storeAs('public/images', $request->user . '.' . $extension);
 
-
-
-        
-
         return $extension;
     }
 }

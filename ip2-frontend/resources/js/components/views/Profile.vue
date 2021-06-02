@@ -19,6 +19,8 @@
           title="Upload a profile picture"
           hide-footer
         >
+
+        
           <form @submit.prevent="upload">
             <input id="file" accept="image/jpg" @change="handleOnChange" type="file" />
             <label for="file">

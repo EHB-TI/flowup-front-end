@@ -94,7 +94,7 @@ export default {
                 });
             //Fetch logged in user
             await this.axios
-                .get(`${this.$api}/api/users/5`)
+                .get(`${this.$api}/api/users/1`)
                 .then((response) => {
                     this.user = response.data
                     this.event_subscriber.user_id = this.user.id;
@@ -168,7 +168,7 @@ export default {
                     this.subscribers = response.data
                     //this.path = `storage/images/${this.subscribers.id}.jpg`
                     this.showAttendees = true;
-                    console.log(this.subscribers)
+                    //console.log(this.subscribers)
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -181,7 +181,7 @@ export default {
                     axios
                     .post(`${this.$api}/api/participate/`, this.event_subscriber)
                     .then((reponse) => {
-                        console.log(reponse);
+                        //console.log(reponse);
                         //document.getElementById("subOrUnSubButton").textContent="Participate";
                         this.refreshAttendees(); 
                     })
@@ -194,7 +194,7 @@ export default {
                     axios
                     .post(`${this.$api}/api/unparticipate/`, this.event_subscriber)
                     .then((reponse) => {
-                        console.log(reponse);
+                        //console.log(reponse);
                         //document.getElementById("subOrUnSubButto n").textContent="UnParticipate";
                         this.refreshAttendees();
                     })
@@ -210,7 +210,7 @@ export default {
                 .post(`${this.$api}/api/checkIfSubscribed/`, this.event_subscriber)
                 .then((response) => {
                     this.isSubscribed = response.data;
-                    console.log(this.isSubscribed);
+                    //console.log(this.isSubscribed);
                     var x = document.getElementById("subOrUnSubButton");
                     if(this.isSubscribed==0){
                         x.innerHTML="Participate";
@@ -223,7 +223,7 @@ export default {
                 });
             },
             checkIfOwnerEvent(){
-                console.log(this.event.user_id);
+                //console.log(this.event.user_id);
                 if(this.event.user_id == this.event_subscriber.user_id){
                     this.showEditButton=true;
                 }

@@ -28,7 +28,7 @@ class StatusController extends Controller
     // getting necessary data
     $RamUsage = 100/$mem*memory_get_usage();
     
-    $CPUload = array_sum(sys_getloadavg()) / count(sys_getloadavg());
+    $CPUload = (array_sum(sys_getloadavg()) / count(sys_getloadavg()))/10;
     $now =  new DateTime("now",new DateTimeZone("Europe/Brussels"));
     $XSDate = $now->format(\DateTime::RFC3339);
     $error = null;
