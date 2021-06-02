@@ -108,6 +108,7 @@ class ConsumerController extends Controller
         error_log("6.2");
         error_log($doc->saveXML());
         //Make connection to RabbitMQ
+        error_log(env('RABBITMQ_HOST'));
         $connection = new AMQPStreamConnection(env('RABBITMQ_HOST'), env('RABBITMQ_PORT'), env('RABBITMQ_USER'), env('RABBITMQ_PASSWORD'));
         $channel = $connection->channel();
 
