@@ -34,24 +34,24 @@ To run the tests run the command `php artisan test`
 
 packages laravel:
 
-- [Laravel-saml2]("https://github.com/aacotroneo/laravel-saml2")
-- [PHP-amqplib]("https://github.com/php-amqplib)
-- [RabbitMQ Queue driver for Laravel]("https://github.com/vyuldashev/laravel-queue-rabbitmq")
+- [Laravel-saml2](https://github.com/aacotroneo/laravel-saml2)
+- [PHP-amqplib](https://github.com/php-amqplib)
+- [RabbitMQ Queue driver for Laravel](https://github.com/vyuldashev/laravel-queue-rabbitmq)
 
 packages vue.js:
-- [Ant-design-vue]("https://www.antdv.com/docs/vue/introduce/")
-- [Bootstrap-vue]("https://bootstrap-vue.org/")
-- [Laravel-vue-pagination]("https://github.com/gilbitron/laravel-vue-pagination")
-- [Tailwindcss]("https://tailwindcss.com/")
-- [Vue-axios]("https://www.npmjs.com/package/vue-axios")
-- [Vue-template-compiler]("https://www.npmjs.com/package/vue-template-compiler")
+- [Ant-design-vue](https://www.antdv.com/docs/vue/introduce/)
+- [Bootstrap-vue](https://bootstrap-vue.org/)
+- [Laravel-vue-pagination](https://github.com/gilbitron/laravel-vue-pagination)
+- [Tailwindcss](https://tailwindcss.com/)
+- [Vue-axios](https://www.npmjs.com/package/vue-axios)
+- [Vue-template-compiler](https://www.npmjs.com/package/vue-template-compiler)
 
 
 ### Tutorials/ extra sources
 > 🛈 **Info**: Some tutorials or external documentation used in this project
 
-- [RabbitMQ Tutorials]("rabbitmq.com/tutorials")
-- [Azure Active Directory SSO with Laravel]("https://stackoverflow.com/questions/54289010/azure-active-directory-sso-with-laravel")
+- [RabbitMQ Tutorials](rabbitmq.com/tutorials)
+- [Azure Active Directory SSO with Laravel](https://stackoverflow.com/questions/54289010/azure-active-directory-sso-with-laravel)
 - [get server ram with php](https://stackoverflow.com/questions/1455379/get-server-ram-with-php)
 
 ## Heartbeat
@@ -69,5 +69,5 @@ node app.js
 ```
 ### Modules
 
-- [Amqplib]("https://www.npmjs.com/package/amqplib")
-- [Node-fetch]("https://www.npmjs.com/package/node-fetch")
+- [Amqplib](https://www.npmjs.com/package/amqplib)
+- [Node-fetch](https://www.npmjs.com/package/node-fetch)
