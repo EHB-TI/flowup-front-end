@@ -39,7 +39,7 @@ export default {
         async created() {
             //fetch logged in user
             await this.axios
-                .get(`${this.$api}/api/users/2`)
+                .get(`${this.$api}/api/users/3`)
                 .then((response) => {
                     this.user = response.data
                     console.log(this.user); 
