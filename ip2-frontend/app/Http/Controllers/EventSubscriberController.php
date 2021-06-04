@@ -49,7 +49,7 @@ class EventSubscriberController extends Controller
         //
 
         $eventSubscriber = new EventSubscriber([
-            'user_id' => 3,
+            'user_id' => 1,
             'event_id' => $request->input('event_id')
         ]);
         $eventSubscriber->save();

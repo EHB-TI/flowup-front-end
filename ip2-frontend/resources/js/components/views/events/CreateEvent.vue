@@ -252,7 +252,7 @@ export default {
     },
     created() {
         this.axios
-            .get(`${this.$api}/api/users/3`)
+            .get(`${this.$api}/api/users/1`)
             .then((response) => {
                 // handle success
                 this.user = response.data;
