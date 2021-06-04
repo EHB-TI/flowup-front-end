@@ -119,7 +119,7 @@ export default {
 
     //Show events
     this.axios
-      .get(`${this.$api}/api/showByUser/1`)
+      .get(`${this.$api}/api/showByUser/2`)
       .then((response) => {
         // handle success
         this.myEvents = response.data;
