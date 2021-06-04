@@ -26,9 +26,9 @@ jobs:
     - name: Install Dependencies
       working-directory: ${{env.working-directory}}
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Generate key
-      working-directory: ${{env.working-directory}}
-      run: php artisan key:generate
+    # - name: Generate key
+    #   working-directory: ${{env.working-directory}}
+    #   run: php artisan key:generate
     - name: Directory Permissions
       working-directory: ${{env.working-directory}}
       run: chmod -R 777 storage bootstrap/cache
